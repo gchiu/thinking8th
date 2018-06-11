@@ -1,0 +1,81 @@
+%% Thinking Forth
+%% Copyright (C) 2004 Leo Brodie
+%% Initial transcription by Ed Beroset
+%% 
+%% Chapter: Appendix D, Answers to "Further Thinking" Problems
+
+\Chapmark{D}
+\chapter{Answers~to
+\smashlt{``}Further~Thinking''
+Problems}
+\section{\Chap{3}}
+\newcounter{exercise}
+\begin{enumerate}
+\item The answer depends on whether you believe that other components will
+need to ``know the numeric code associated with each key.  Usually this
+would \emph{not} be the case.  The simpler, more compact form is therefore
+preferable.  Also in the first version, to add a new key would require a
+change in two places.
+\item The problem with the words \forth{RAM-ALLOT} and \forth{THERE} are
+that they are \emph{time-dependent}:  we must execute them in a particular
+order.  Our solution then will be to devise an interface to the RAM
+allocation pointer that is not dependent on order; the way to do this is
+to have a \emph{single} word which does both functions transparently.
+
+Our word's syntax will be
+\begin{Code}
+: RAM-ALLOT   ( #bytes-to-allot -- starting-adr) 
+    ... ;
+\end{Code}
+This syntax will remain the same whether we define it to allocate growing 
+upward:
+\begin{Code}
+: RAM-ALLOT  ( #bytes-to-allot -- starting-adr)
+    >RAM @  DUP ROT +  >RAM ! ;
+\end{Code}
+or to allocate growing downward:
+\begin{Code}
+: RAM-ALLOT  ( #bytes-to-allot -- starting-adr)
+    >RAM @  SWAP -  DUP >RAM ! ;
+\end{Code}
+\end{enumerate}
+
+\section{\Chap{4}}
+
+\ifeightyfour\begin{enumerate}
+\item\fi Our solution is as follows:
+\begin{Code}
+\ CARDS Shuffle                              6-20-83
+52 CONSTANT #CARDS
+CREATE DECK  #CARDS ALLOT   \ one card per byte
+: CARD ( i -- adr) DECK + ;
+: INIT-DECK  #CARDS 0 DO  I  I CARD  C!  LOOP ;
+INIT-DECK
+: 'CSWAP  ( a1 a2 -- )  \  swap bytes at a1 and a2
+   2DUP C@  SWAP C@  ROT C!  SWAP C! ;
+: SHUFFLE   \  shuffle deck of cards
+   #CARDS 0 DO  I CARD  #CARDS CHOOSE CARD  'CSWAP
+   LOOP ;
+\end{Code}
+\ifeightyfour\end{enumerate}\fi
+
+\section{\Chap{8}}
+\ifeightyfour\begin{enumerate}
+\item This will work:
+\begin{Code}
+20 CHOOSE  2 CHOOSE  IF NEGATE THEN
+\end{Code}
+But this is simpler:
+\begin{Code}
+40 CHOOSE  20 -
+\end{Code}
+\end{enumerate}\else
+\begin{Code}
+: DIRECTION  ( n|-n|0 -- 1|-1|0)  DUP  IF  0< 1 OR  THEN ;
+\end{Code}
+\fi
+
+%% Note: The question was random number between 0 and 19, and -20 and 0.
+%% The first solution gives between 0 and 19, or -19 and 0.
+%% The second solution doesn't give a double likelyhood for 0.
+%% It's a bit tricky to get both question and answer really correctly.
