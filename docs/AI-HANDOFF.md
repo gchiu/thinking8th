@@ -245,10 +245,12 @@ committed) before being used in a real example — never guessed.
 
 ## Current Git status
 
-Working tree is clean. 8 local commits ahead of `origin/master`, **none
+Working tree is clean. 10 local commits ahead of `origin/master`, **none
 pushed**. Latest commits, newest first:
 
 ```
+3432388 Beginner-readability pass: Preface-Ch.4, plus two real bugs found
+90042a1 Add AI handoff and generalized adaptation-method documentation
 f8786d4 Add Chapter 4 (Detailed Design/Problem Solving) and fix a list-render bug
 3b09be0 Adopt Brodie's original 6.8125in x 9.125in trim as the publication master
 1740f55 Layout hardening pass: fix 9 proof issues, test A5 as exploratory trim
