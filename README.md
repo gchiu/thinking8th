@@ -15,5 +15,3 @@ for what that means in practice.
   pulled from <https://sourceforge.net/projects/thinking-forth/> and
   licensed CC BY-NC-SA 2.0. Kept as reference material only; nothing in
   `manuscript/` is generated from it.
-- `docs/OVERNIGHT-NOTES.md` — a running log of what's been verified,
-  what's unfinished, and what to do next.
