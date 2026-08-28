@@ -1,0 +1,22 @@
+\ admit-car.8th -- Thinking 8th, Chapter 2
+\ Verified with: 8th code/ch02/admit-car.8th
+\
+\ An executable "interface sketch": the decision is separated from the
+\ actions it chooses between, and the top-level word reads as a flat
+\ sentence describing the policy.
+
+false var, garage-full?
+
+: space-available?  garage-full? @ not ;
+: let-in    "Welcome -- take a ticket.\n" . ;
+: turn-away "Sorry, we're full.\n" . ;
+
+: admit-car  \ --
+  space-available? if let-in else turn-away then ;
+
+admit-car               \ => Welcome -- take a ticket.
+
+true garage-full? !
+admit-car                \ => Sorry, we're full.
+
+bye

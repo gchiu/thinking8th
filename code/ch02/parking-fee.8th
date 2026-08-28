@@ -1,0 +1,53 @@
+\ parking-fee.8th -- Thinking 8th, Chapter 2
+\ Verified with: 8th code/ch02/parking-fee.8th
+\
+\ A decision table (tier x first/additional hour rate), implemented as
+\ an actual table looked up with "caseof", plus a valet surcharge that
+\ deliberately does NOT depend on the table, because it isn't part of
+\ the same "thing that may change".
+
+0 constant DAY
+1 constant EVENING
+2 constant WEEKEND
+
+0 var, tier
+false var, valet?
+
+: set-day      DAY tier ! ;
+: set-evening  EVENING tier ! ;
+: set-weekend  WEEKEND tier ! ;
+: valet-on     true valet? ! ;
+
+[ 400 , 200 , 100 ] constant first-hour-rates   \ cents, indexed by tier
+[ 200 , 100 , 100 ] constant addl-hour-rates    \ cents, indexed by tier
+
+: first-hour-rate   \ -- cents
+  first-hour-rates tier @ caseof ;
+
+: addl-hour-rate    \ -- cents
+  addl-hour-rates tier @ caseof ;
+
+: valet-surcharge   \ cents -- cents
+  valet? @ if 500 n:+ then ;
+
+: parking-fee  \ hours -- cents
+  1 n:-  addl-hour-rate n:*
+  first-hour-rate n:+
+  valet-surcharge ;
+
+\ --- checks against hand-calculated expectations ---
+
+set-day
+3 parking-fee . cr        \ => 800   (400 + 2*200)
+
+set-evening
+3 parking-fee . cr        \ => 400   (200 + 2*100)
+
+set-weekend
+5 parking-fee . cr        \ => 500   (100 + 4*100)
+
+valet-on
+set-day
+1 parking-fee . cr        \ => 900   (400 + 0 + 500)
+
+bye

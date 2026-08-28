@@ -102,19 +102,72 @@ first chapter written from scratch.
   `grep` of `docs/help.sql` instead of the live `help`/`apropos` words.
   Future sessions should keep doing it this way rather than running setup.
 
+### Correction to the note above
+
+Brodie's actual Chapter 2 is **"Analysis"** (the programming cycle,
+iterative development, defining interfaces/rules/data structures) — not
+"A Dozen Easy Pieces" (that title belongs to a different, unrelated Forth
+book, *Starting Forth*). Corrected after actually reading
+`thinking-forth-1.0/chapter2.tex`.
+
+### Chapter 2 ("Analysis") — done this session
+
+Wrote `manuscript/chapter02-analysis.md`. Chapter 2 is mostly
+language-agnostic project-management wisdom delivered through Brodie's
+1980s interviews with working Forth programmers. Those interviews are
+Brodie's own copyrighted material (real people, real quotes) and were
+**not** paraphrased-to-the-point-of-reproduction or attributed as if
+original to this book; the chapter instead extracts the underlying lesson
+(iterate, don't over-plan, prototype) in fully original prose and cites
+Brodie/the interviews only in general terms.
+
+Where Brodie's own examples were genuinely reusable (the REQUEST/NEED
+"interface pseudocode" idea; the phone-bill "decision table" idea), this
+session deliberately built **original, differently-scenarios** rather than
+copying Brodie's specific invented numbers/domain, per the project's
+originality requirement — both new examples teach the identical lesson:
+
+- **Interfaces as executable sketches**: an `admit-car` / `space-available?`
+  parking-garage entry policy, in place of Brodie's warehouse
+  REQUEST/REORDER example. Verified,
+  [`code/ch02/admit-car.8th`](../code/ch02/admit-car.8th).
+- **Decision tables**: a three-tier (day/evening/weekend) parking fee with
+  a first-hour/additional-hour rate and a flat valet surcharge, in place of
+  Brodie's phone-bill rate schedule. Verified,
+  [`code/ch02/parking-fee.8th`](../code/ch02/parking-fee.8th) — output
+  `800 / 400 / 500 / 900`, matches hand-calculated expectations exactly.
+
+### New verified 8th technical finding
+
+- **`caseof` is a real table-lookup, not sugar for `if`/`else` chains.**
+  Confirmed by running `[ 400 , 200 , 100 ] constant first-hour-rates
+  first-hour-rates tier @ caseof`: with a numeric array, `caseof` pushes
+  the item at the given index (rather than executing it — that only
+  happens when the stored item is itself a word). This makes Brodie's
+  "decision table" idea implementable as an *actual* table in 8th, which
+  is a genuinely better fit than anything available in the Forth Brodie
+  was writing about in 1984, and was called out in the chapter as such.
+- `not` is a plain, unprefixed global word (confirmed working on a `var`
+  fetched with `@`), unlike most other operators which live in a
+  namespace (`n:`, `s:`, etc.).
+
 ### Next logical place to continue
 
-Brodie's Chapter 2 is "A Dozen Easy Pieces" — a walkthrough of elementary
-Forth vocabulary (stack manipulation, arithmetic, simple defining words)
-via small worked examples. The natural next step is:
+Brodie's Chapter 3 is "Problem Solving" (or check the actual title before
+assuming — Chapter 1's title was correctly guessed, Chapter 2's was not).
+Read `thinking-forth-1.0/chapter3.tex` first before writing anything.
+General process for future chapters, unchanged from last session:
 
-1. Read `thinking-forth-1.0/chapter2.tex`.
-2. Identify which of Brodie's worked examples map directly onto existing,
-   idiomatic 8th words (most arithmetic/stack-shuffling should, modulo the
-   `n:` namespace prefix already established in Chapter 1).
-3. Verify each surviving example by execution before writing prose, exactly
-   as this session did for `apples.8th` and `breakfast.8th`.
-4. Add `code/ch02/`.
+1. Read the relevant `thinking-forth-1.0/chapterN.tex` fully (or in large
+   sections) before deciding what's language-specific vs. general wisdom.
+2. For genuinely Forth-specific code examples, verify the 8th idiom by
+   execution before writing prose.
+3. For Brodie's own invented example scenarios (not core language
+   features), prefer inventing an original scenario that teaches the same
+   lesson over reproducing his specific numbers/domain — for copyright
+   cleanliness, per this project's originality requirement.
+4. Do not reproduce or closely paraphrase Brodie's interview subjects'
+   quotes; extract the lesson in original prose and cite generally.
 
 No uncommitted junk, temp files, or generated binaries were left in the
 repository; scratch test files used to verify examples before finalizing
