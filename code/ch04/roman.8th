@@ -1,0 +1,63 @@
+\ roman.8th -- Thinking 8th, Chapter 4
+\ Verified with: 8th code/ch04/roman.8th
+\
+\ Converts a number to a Roman numeral, using the standard "greedy
+\ descending table" algorithm: a list of (value, symbol) pairs from
+\ largest to smallest, taking as many of the largest chunk that still
+\ fits before moving to the next. The table already encodes the
+\ subtractive shortcuts (900 -> "CM", 40 -> "XL", etc.), so the
+\ algorithm itself doesn't need to know they're special cases.
+
+[ 1000 , 900 , 500 , 400 , 100 , 90 , 50 , 40 , 10 , 9 , 5 , 4 , 1 ]
+constant roman-values
+
+[ "M" , "CM" , "D" , "CD" , "C" , "XC" , "L" , "XL" , "X" , "IX" , "V" , "IV" , "I" ]
+constant roman-numerals
+
+0 var, remaining
+"" var, result
+0 var, tier
+
+: value@    roman-values tier @ caseof ;
+: numeral@  roman-numerals tier @ caseof ;
+
+: append    \ s --
+  result @ swap s:+ result ! ;
+
+: due?      \ -- flag   (does this tier's value still fit in what's left?)
+  remaining @ value@ n:< not ;
+
+: consume-tier  \ --
+  due? if
+    repeat
+      numeral@ append
+      remaining @ value@ n:- remaining !
+      due?
+    while
+    then ;
+
+: apply-tier  \ index --
+  tier !
+  consume-tier ;
+
+: roman  \ n -- s
+  remaining !
+  "" result !
+  ' apply-tier 0 12 loop
+  result @ ;
+
+\ --- checks against known values, including the traditionally
+\     trickiest ones (1994) and the largest classical Roman numeral (3999) ---
+
+1 roman . cr        \ => I
+4 roman . cr        \ => IV
+9 roman . cr        \ => IX
+14 roman . cr       \ => XIV
+40 roman . cr       \ => XL
+49 roman . cr       \ => XLIX
+90 roman . cr       \ => XC
+444 roman . cr      \ => CDXLIV
+1994 roman . cr     \ => MCMXCIV
+3999 roman . cr     \ => MMMCMXCIX
+
+bye

@@ -525,18 +525,112 @@ title page (still no header/footer/page number), and the final page
 holding). No further margin adjustment was needed beyond the initial
 choice above — verified by inspection, not just assumed.
 
+### Chapter 4 ("Detailed Design/Problem Solving") — done this session
+
+Read `thinking-forth-1.0/chapter4.tex` in full (title checked, ~1800
+lines). Brodie's chapter covers general problem-solving technique
+(Polya-style: work backward, recognize auxiliary problems, etc.), a
+"detailed design" step list, 8th's-worth-keeping syntax conventions
+(numbers precede names, definitions consume their arguments, zero-
+relative numbering, avoid input-stream lookahead...), a
+calculation-vs-data-structure-vs-logic decision hierarchy, and an
+extended worked example (converting a number to Roman numerals).
+
+Wrote `manuscript/chapter04-detailed-design.md`. The general
+problem-solving material (water-jug puzzle, nine-dots puzzle) is
+condensed into original prose — these are famous, generic puzzles, not
+Brodie's invention, safe to reference by description without
+reproducing his wording. The syntax-conventions section ties two points
+back to earlier chapters rather than treating them as new: "recognize
+the auxiliary problem" connects to Chapter 3's `defer:`, and "avoid
+input-stream lookahead" is answered the same way. The
+calculation/data-structure/logic section uses an original parking-garage
+clearance example (calculation) + a callback to Chapter 2's rate table
+(data structure, already established, not re-derived) + an original
+`level-open?` example (logic).
+
+**Roman numerals: an original algorithm, not Brodie's.** Brodie's own
+solution is a byte-table-plus-column-offset design tied to raw
+`CREATE`/`C@`/`C,` memory manipulation (`COLUMN#`, `ONER`/`FIVER`/`TENER`,
+`ALMOST`, `DIGIT`) that doesn't map naturally to 8th's container-based
+idioms and is, in any case, his own specific creative expression of the
+problem, not just "the Roman numeral problem" itself (which is a
+generic, timeless exercise, fine to reuse). Designed and verified an
+independent solution instead: two parallel arrays (values descending,
+matching symbols including the subtractive shortcuts like `"CM"`) and a
+greedy "consume this tier while it still fits" loop, looked up with
+`caseof` (nice callback to Chapter 2's decision-table lesson).
+[`code/ch04/roman.8th`](../code/ch04/roman.8th), executed, output
+verified against 10 known values including `1994` -> `MCMXCIV` and the
+largest classical value `3999` -> `MMMCMXCIX`.
+
+**A real stack-balance bug caught and fixed during verification** (not
+in the final manuscript, but worth recording the failure mode): an early
+draft of the `level-open?` logic example did `8 n:< if drop false ;then`
+— but `n:<` already consumes both its operands to produce the flag, so
+by the time the `if`-true branch ran there was nothing left on the stack
+for `drop` to remove, and it crashed with an access violation. Fixed by
+dropping the now-redundant `drop`. A reminder that "the code runs at
+all" and "the code is stack-balanced in every branch" are different
+questions — this one only surfaced by exercising the *false* branch of
+an early check, not just the happy path.
+
+**New verified 8th technical findings:**
+- `;then` exists and works as documented: shorthand for `;; then`, i.e.
+  "if true, exit the word immediately; either way, close the `if`." Good
+  for guard-clause-style early returns.
+- No `n:<=`/`n:>=` — express "a >= b" as `a b n:< not`.
+- Confirmed a **pre-tested** while-loop shape for 8th:
+  `COND if repeat BODY COND while then` — the `if` guards against
+  running the body zero times when the condition starts false (unlike
+  the docs' own `repeat...while` example, which is post-tested / always
+  runs the body at least once). Verified in isolation before use.
+- `a:each`'s quotation receives `(item index --)`, both available,
+  confirmed by direct test. `' word low high loop` passes just the index.
+
+### DOCX tooling bug found and fixed while building Chapter 4's proof
+
+**Multi-line list items were silently broken since the very first DOCX
+build** — not just in Chapter 4, but retroactively in every proof PDF
+produced across this whole project so far, including ones already
+signed off on. `tools/build-docx.js`'s markdown parser for `-`/`1.`
+lists only consumed the literal marker line; a continuation line that
+merely wrapped in the `.md` source (indented, no `-`/`N.` of its own —
+which is how essentially every multi-sentence list item in this
+manuscript is written) fell through into becoming its own ordinary,
+non-indented paragraph. Visually this showed up as a bullet/number
+whose first line was properly indented, followed by "wrapped" text that
+was actually a separate paragraph starting back at the page margin —
+easy to mistake for a hanging-indent styling bug (which is what it first
+looked like) rather than a parsing bug. Confirmed the real cause by
+checking whether Chapter 2's numbered list (which does span multiple
+source lines per item) had the same problem in the regenerated proof —
+it did, before the fix, and doesn't after.
+
+**Fixed**: both list parsers now gather continuation lines the same way
+the plain-paragraph parser already did (stop only at blank lines or the
+start of a new block). Also added an explicit `bullet-numbering`
+config (previously bullets used the bare `bullet:` shorthand with no
+custom indent) and explicit `indent: { left: 720, hanging: 360 }` on
+both list-item paragraph types, belt-and-suspenders alongside the
+numbering config's own indent. Rebuilt, re-validated, re-rendered — the
+Chapter 2 numbered list and Chapter 4 bulleted list both confirmed
+correct in the current proof. **This fix is already baked into the
+committed `manuscript/Thinking-8th.docx` and `proof/Thinking-8th-proof.pdf`**
+alongside Chapter 4 — no separate cleanup pass needed for Chapters 1-3.
+
 ### Next logical place to continue
 
-1. Read `thinking-forth-1.0/chapter4.tex`, determine its real
+1. Read `thinking-forth-1.0/chapter5.tex`, determine its real
    title/purpose (don't assume), continue the established
    verify-then-write process for the Markdown source.
-2. Tag new fenced code blocks with ` ```8th ` / ` ```text ` **from the
-   start** this time (saves a cleanup pass later — Chapters 1-3 needed
-   one, see the layout-hardening section above).
-3. Rebuild the DOCX with the now-default `brodie` profile
-   (`cd tools && node build-docx.js` — no env var needed), regenerate the
-   proof PDF via Word COM **using `$doc.Close(0)`, never a bare
-   `Close()`** (see the "real bug" note above — this is a permanent
-   process change, not a one-off), spot-check a few rendered pages
-   (chapter opening, any code blocks, the TOC entry, the last page),
-   then commit `.md` + `.docx` + `.pdf` together as one checkpoint.
+2. Tag new fenced code blocks with ` ```8th ` / ` ```text ` from the
+   start (established habit now, not a fix-up).
+3. If a new list (bulleted or numbered) is needed, the wrap-continuation
+   bug above is already fixed — no special handling required, multi-line
+   items in the `.md` source will render correctly.
+4. Rebuild the DOCX (`cd tools && node build-docx.js` — `brodie` profile
+   is the default), regenerate the proof PDF via Word COM using
+   `$doc.Close(0)` (never a bare `Close()`), spot-check a few rendered
+   pages (chapter opening, any code blocks, the TOC, the last page),
+   commit `.md` + `.docx` + `.pdf` together as one checkpoint.

@@ -208,23 +208,48 @@ function parseMarkdown(text) {
       continue;
     }
 
-    // bullet list
+    // bullet list -- an item's text may wrap onto following indented
+    // lines in the markdown source; gather those into the same item.
     if (/^-\s+/.test(line)) {
       const items = [];
       while (i < lines.length && /^-\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^-\s+/, ""));
+        const parts = [lines[i].replace(/^-\s+/, "")];
         i++;
+        while (
+          i < lines.length &&
+          lines[i].trim() !== "" &&
+          !/^-\s+/.test(lines[i]) &&
+          !/^\d+\.\s+/.test(lines[i]) &&
+          !/^#{1,6}\s+/.test(lines[i]) &&
+          !/^```/.test(lines[i])
+        ) {
+          parts.push(lines[i].trim());
+          i++;
+        }
+        items.push(parts.join(" "));
       }
       blocks.push({ type: "bullets", items });
       continue;
     }
 
-    // numbered list
+    // numbered list -- same wrapped-continuation handling as bullets
     if (/^\d+\.\s+/.test(line)) {
       const items = [];
       while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\d+\.\s+/, ""));
+        const parts = [lines[i].replace(/^\d+\.\s+/, "")];
         i++;
+        while (
+          i < lines.length &&
+          lines[i].trim() !== "" &&
+          !/^-\s+/.test(lines[i]) &&
+          !/^\d+\.\s+/.test(lines[i]) &&
+          !/^#{1,6}\s+/.test(lines[i]) &&
+          !/^```/.test(lines[i])
+        ) {
+          parts.push(lines[i].trim());
+          i++;
+        }
+        items.push(parts.join(" "));
       }
       blocks.push({ type: "numbered", items });
       continue;
@@ -346,13 +371,20 @@ function blocksToDocxNodes(blocks) {
       nodes.push(new Paragraph({ style: "BlockQuotation", children: parseInline(b.text) }));
     } else if (b.type === "bullets") {
       for (const item of b.items) {
-        nodes.push(new Paragraph({ bullet: { level: 0 }, children: parseInline(item) }));
+        nodes.push(
+          new Paragraph({
+            numbering: { reference: "bullet-numbering", level: 0 },
+            indent: { left: 720, hanging: 360 },
+            children: parseInline(item),
+          })
+        );
       }
     } else if (b.type === "numbered") {
       for (const item of b.items) {
         nodes.push(
           new Paragraph({
             numbering: { reference: "book-numbering", level: 0 },
+            indent: { left: 720, hanging: 360 },
             children: parseInline(item),
           })
         );
@@ -626,6 +658,18 @@ const doc = new Document({
             level: 0,
             format: LevelFormat.DECIMAL,
             text: "%1.",
+            alignment: AlignmentType.START,
+            style: { paragraph: { indent: { left: 720, hanging: 360 } } },
+          },
+        ],
+      },
+      {
+        reference: "bullet-numbering",
+        levels: [
+          {
+            level: 0,
+            format: LevelFormat.BULLET,
+            text: "•",
             alignment: AlignmentType.START,
             style: { paragraph: { indent: { left: 720, hanging: 360 } } },
           },
