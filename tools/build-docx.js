@@ -24,21 +24,32 @@ const REPO = path.resolve(__dirname, "..");
 const MANUSCRIPT_DIR = path.join(REPO, "manuscript");
 const PROOF_DIR = path.join(REPO, "proof");
 
-const PROFILE_NAME = (process.env.PAGE_PROFILE || "letter").toLowerCase();
+const PROFILE_NAME = (process.env.PAGE_PROFILE || "brodie").toLowerCase();
 
 const PROFILES = {
+  // Decided trim size: Leo Brodie's own original Thinking Forth trim
+  // (tf.sty's \oldgeometry: paperwidth=6.8125in, paperheight=9.125in).
+  // This is now the publication master.
+  brodie: {
+    label: "6.8125\" x 9.125\" (Brodie's original Thinking Forth trim)",
+    width: 9810,
+    height: 13140,
+    margin: { top: 864, bottom: 1008, left: 864, right: 792 },
+    outPath: path.join(MANUSCRIPT_DIR, "Thinking-8th.docx"),
+  },
+  // Reference / historical only -- no longer the master.
   letter: {
-    label: "US Letter",
+    label: "US Letter (reference only)",
     width: 12240,
     height: 15840,
     margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 },
-    outPath: path.join(MANUSCRIPT_DIR, "Thinking-8th.docx"),
+    outPath: path.join(PROOF_DIR, "Thinking-8th-letter-reference.docx"),
   },
+  // Exploratory only -- tested and rejected (see docs/OVERNIGHT-NOTES.md):
+  // code wrapping at this width was judged worse than the smaller page
+  // count was worth, for a programming book.
   a5: {
-    // ISO A5: 148mm x 210mm. Exploratory trim-size test only -- NOT the
-    // master. Same type sizes as Letter, deliberately, so this is a fair
-    // A/B comparison of trim size alone.
-    label: "A5 (exploratory test)",
+    label: "A5 (exploratory test, rejected)",
     width: 8391,
     height: 11906,
     margin: { top: 1008, bottom: 1080, left: 864, right: 864 },
@@ -48,7 +59,7 @@ const PROFILES = {
 
 const PROFILE = PROFILES[PROFILE_NAME];
 if (!PROFILE) {
-  console.error("Unknown PAGE_PROFILE:", PROFILE_NAME, "-- expected letter or a5");
+  console.error("Unknown PAGE_PROFILE:", PROFILE_NAME, "-- expected brodie, letter, or a5");
   process.exit(1);
 }
 const OUT_PATH = PROFILE.outPath;

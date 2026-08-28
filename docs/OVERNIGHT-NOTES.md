@@ -484,21 +484,59 @@ Graham-proposed option with real trade-offs measured above (much better
 wrapping cost at current type sizes; +57% page count). Waiting on Graham's
 call before touching the master's page size.
 
+### Trim size decided (2026-08-29): Brodie's original 6.8125" x 9.125"
+
+Graham decided: use Leo Brodie's own original *Thinking Forth* trim size
+(6.8125in x 9.125in — `tf.sty`'s `\oldgeometry`), not A5, not Letter.
+Reasoning: preserves the original's proportions/character, gives
+substantially more horizontal room than A5 (this is a programming book —
+readable code lines matter more than minimizing page count), and Letter
+was unnecessarily large/document-like.
+
+**This is now the default and only master trim.** `tools/build-docx.js`'s
+`PROFILES` was restructured:
+- `brodie` (6.8125in x 9.125in) is now the **default** profile (plain
+  `node build-docx.js`, no env var needed) and writes to
+  `manuscript/Thinking-8th.docx` — i.e. it's the master now.
+- `letter` and `a5` still exist as named profiles (`PAGE_PROFILE=letter`
+  / `PAGE_PROFILE=a5`) but now write into `proof/` as reference/rejected
+  material, not the master. `a5`'s output path is unchanged from the
+  earlier exploratory test (`proof/Thinking-8th-A5-test.docx`), so those
+  already-committed files were left as-is rather than regenerated.
+
+Margins chosen for the `brodie` profile (not copied from Brodie's own
+LaTeX margins, which reserve a wide right margin for marginalia/tip boxes
+this book doesn't use): top 0.6in, bottom 0.7in, left 0.6in, right 0.55in
+— giving a ~5.66in text column (vs. Letter's ~6.5in, A5's ~4.63in).
+
+**Verified this fixes the A5 code-wrapping problem it was chosen to
+fix:** the same "before/after `defer:`" annotated block in Chapter 3 that
+visibly wrapped at A5 (including its 72-character line, the longest in
+the manuscript) now renders with **no wrapping at all** at this trim —
+confirmed by rendering and reading the actual page. Page count: 26 (vs.
+21 at Letter, 33 at A5) — a reasonable middle ground, as expected.
+
+Also re-checked at this trim: TOC (backslash fix still holds), the Ch.2
+rate table (clean, no cramping), a chapter opening (the long title
+"Chapter 3: Preliminary Design and Decomposition" now wraps to two
+lines — normal and expected at this narrower width, not a defect), the
+title page (still no header/footer/page number), and the final page
+(Chapter 3's Summary still ends cleanly, keepNext/widowControl still
+holding). No further margin adjustment was needed beyond the initial
+choice above — verified by inspection, not just assumed.
+
 ### Next logical place to continue
 
-1. **Get a page-size decision from Graham** (Letter / 6x9 / 6.8125x9.125 /
-   A5 — see above) before the manuscript grows past Chapter 3, since
-   margins and possibly code-block font size depend on it. If A5 is
-   chosen, budget time to address the code-wrapping finding above (retune
-   the `Code`/`CodeOutput` style font size independently of body text is
-   the likely fix, or reflow the handful of longest source lines).
-2. Once decided: if changing away from the current Letter master, update
-   `PROFILES.letter` in `tools/build-docx.js` (rename/repoint as needed),
-   rebuild, re-validate, regenerate the proof PDF, spot check, commit.
-3. Then: read `thinking-forth-1.0/chapter4.tex`, determine its real
+1. Read `thinking-forth-1.0/chapter4.tex`, determine its real
    title/purpose (don't assume), continue the established
-   verify-then-write process for the Markdown source, tag new fenced code
-   blocks with ` ```8th ` / ` ```text ` from the start this time (saves a
-   cleanup pass later), rebuild the DOCX, regenerate the proof PDF (using
-   `$doc.Close(0)` — see above), spot-check, commit `.md` + `.docx` +
-   `.pdf` together.
+   verify-then-write process for the Markdown source.
+2. Tag new fenced code blocks with ` ```8th ` / ` ```text ` **from the
+   start** this time (saves a cleanup pass later — Chapters 1-3 needed
+   one, see the layout-hardening section above).
+3. Rebuild the DOCX with the now-default `brodie` profile
+   (`cd tools && node build-docx.js` — no env var needed), regenerate the
+   proof PDF via Word COM **using `$doc.Close(0)`, never a bare
+   `Close()`** (see the "real bug" note above — this is a permanent
+   process change, not a one-off), spot-check a few rendered pages
+   (chapter opening, any code blocks, the TOC entry, the last page),
+   then commit `.md` + `.docx` + `.pdf` together as one checkpoint.
