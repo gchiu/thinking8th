@@ -1,0 +1,11 @@
+{
+  "name": "thinking8th-docx-build",
+  "private": true,
+  "description": "Builds manuscript/Thinking-8th.docx from the manuscript/*.md source files.",
+  "scripts": {
+    "build": "node build-docx.js"
+  },
+  "dependencies": {
+    "docx": "^9.7.1"
+  }
+}

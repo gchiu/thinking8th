@@ -253,11 +253,110 @@ DOCX later — not attempted yet. See this session's DOCX work below (if
 any was completed before the session ended) for the current state of the
 Word master and its style set.
 
+### DOCX master built this session
+
+`manuscript/Thinking-8th.docx` now exists and contains the full manuscript
+(title page, TOC, Preface, Notation, Chapters 1-3).
+
+**Environment note (important for future sessions):** this machine has
+neither `pandoc` nor LibreOffice/`soffice` installed, contrary to what the
+`docx` skill assumes. What *is* available: Node + npm (so the `docx` npm
+package installs fine), and a working, automatable **Microsoft Word**
+install (COM-automatable via PowerShell — confirmed working, see below).
+Given no pandoc, the conversion approach is a small hand-rolled
+markdown->docx converter, not pandoc+reference-doc.
+
+- `tools/build-docx.js` (Node, uses the `docx` npm package) reads every
+  `manuscript/*.md` file in filename-sorted order and rebuilds
+  `manuscript/Thinking-8th.docx` from scratch each run. `tools/package.json`
+  pins the `docx` dependency. Run with:
+  ```
+  cd tools && npm install && node build-docx.js
+  ```
+  `tools/node_modules` is git-ignored; `npm install` must be re-run after a
+  fresh clone. The script auto-discovers `manuscript/*.md` by filename sort
+  (`00-preface.md`, `01-notation.md`, `chapter01-*.md`, ...) — a new
+  `chapterNN-*.md` is picked up automatically, no script edit needed, as
+  long as the naming convention is kept.
+- Styles defined (all in `tools/build-docx.js`'s `styles` object): Title,
+  Subtitle, Heading 1 (used for chapter/front-matter titles — page-break-
+  before is baked into the style, along with a bottom rule; this doubles as
+  the "chapter title" style Graham asked for, since Word's TOC field keys
+  off the real built-in Heading1/2/3 styles), Heading 2 (Brodie's
+  \section), Heading 3 (reserved, unused so far — no chapter has needed a
+  \subsection yet), Code, Code Output (defined but not yet wired into the
+  markdown->docx conversion — see caveat below), Block Quotation, Caption,
+  Table Text, Note. A numbered-list config (`book-numbering`) and native
+  Word bullets are wired up.
+- **Known caveat, deliberately not fixed yet (low value, per "don't chase
+  pixel-perfect"):** the converter applies the "Code" style to *every*
+  fenced code block uniformly; it does not yet distinguish 8th source from
+  printed terminal output (both are bare ` ``` ` fences in the markdown,
+  undifferentiated). A "Code Output" style exists and is ready to use once
+  the markdown adopts some marker (e.g. a language tag) for output blocks.
+- **Known caveat:** the "Comments: `\`, not `( ... )`" heading (Notation
+  chapter) loses its backslash character specifically in the generated
+  Word TOC entry (visible in the TOC as "Comments: , not..."); the heading
+  itself renders correctly in the body. This looks like a Word-native TOC
+  field quirk with a literal backslash in heading text, not a bug in the
+  generated XML (the docx passed full OOXML schema validation). Not worth
+  rewording an already-good heading to route around a cosmetic TOC-only
+  glitch; noted here instead.
+- Validated: `python <docx-skill>/scripts/office/validate.py
+  manuscript/Thinking-8th.docx` passes full OOXML schema validation
+  (0 errors). Also opened and re-saved via real Word (COM automation, see
+  below), which is a stronger validity signal than schema-only checking.
+
+### Proof PDF workflow (per Graham's mid-session instruction)
+
+`proof/Thinking-8th-proof.pdf` is generated **from** the DOCX, never edited
+independently. Since neither `pandoc` nor `soffice` exist on this machine,
+PDF export uses real Word via PowerShell COM automation:
+```powershell
+$word = New-Object -ComObject Word.Application
+$word.Visible = $false
+$doc = $word.Documents.Open("D:\repos\thinking8th\manuscript\Thinking-8th.docx")
+$doc.Fields.Update() | Out-Null          # refreshes the TOC page numbers
+$doc.SaveAs2("D:\repos\thinking8th\proof\Thinking-8th-proof.pdf", 17)  # 17 = wdFormatPDF
+$doc.Close(); $word.Quit()
+```
+This doubles as the "open and validate the DOCX" step Graham asked for —
+if Word can open it, update its fields, and re-save it, the file is
+structurally sound in the way that actually matters. Rendered the PDF to
+JPEG (`pdftoppm`, from the Poppler install already on this machine's PATH)
+and inspected several pages directly: title page, TOC, a Notation page
+(code shading, inline `code` spans, bold/italic all correct), the
+Chapter 2 rate table (this caught and led to fixing a real bug — see
+below), and the last page of Chapter 3 (confirms the document ends
+cleanly). Deleted the inspection JPEGs afterward; only the PDF is kept
+under `proof/`.
+
+**Real bug found and fixed during this visual check:** the initial
+table-header-bolding code tried to read a `.text` property off an
+already-constructed `TextRun` object (`r.text`), which is `undefined` on a
+`docx`-npm `TextRun` (it's not a plain data object) — so every table
+header cell rendered as invisible bold empty text. Fixed by threading a
+`forceBold` option through `parseInline` itself, so header-cell runs are
+built bold from the start rather than patched after construction. Rebuilt,
+re-validated, re-rendered, confirmed the fix (`code/ch02`'s rate table
+headers "first hour" / "additional hour" now visible). This is exactly why
+the instruction to actually open/render generated documents matters — the
+schema validator alone did not catch this, because empty bold runs are
+perfectly valid OOXML.
+
 ### Next logical place to continue
 
-1. If the DOCX master isn't yet created/populated through Chapter 2 (or 3),
-   that is the immediate next step — see the FORMAT CHANGE note above.
-2. After that: read `thinking-forth-1.0/chapter4.tex`, determine its real
-   title/purpose (don't assume), and continue the same verify-then-write
-   process, remembering to update the DOCX alongside the Markdown from now
-   on rather than as an afterthought.
+1. Read `thinking-forth-1.0/chapter4.tex`, determine its real title/purpose
+   (don't assume — Chapter 2's title was guessed wrong once already this
+   project), and continue the established verify-then-write process for
+   the Markdown source.
+2. Add the new chapter file to `manuscript/` following the
+   `chapterNN-slug.md` naming convention (picked up automatically by the
+   build script), rebuild `manuscript/Thinking-8th.docx`
+   (`cd tools && node build-docx.js`), regenerate
+   `proof/Thinking-8th-proof.pdf` via the Word COM snippet above, spot-
+   check a couple of rendered pages, then commit the `.md` + `.docx` +
+   `.pdf` together as one checkpoint.
+3. Optional future refinement, not urgent: distinguish "Code" vs. "Code
+   Output" fenced blocks in the markdown so the already-defined "Code
+   Output" Word style actually gets used.
