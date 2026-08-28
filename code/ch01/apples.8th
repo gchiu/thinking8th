@@ -1,0 +1,43 @@
+\ apples.8th -- Thinking 8th, Chapter 1
+\ Verified with: 8th code/ch01/apples.8th   (run from the repo root)
+\
+\ Demonstrates hiding the construction of a data structure behind a
+\ word, exactly as "APPLES" does in Thinking Forth chapter 1 -- but
+\ using 8th's own var/constant machinery instead of raw memory access.
+
+0 var, apples
+
+20 apples !
+apples @ . cr                  \ => 20
+
+1 apples n:+!
+apples @ . cr                  \ => 21
+
+\ --- Now suppose, at the eleventh hour, we need two tallies ---------
+
+0 var, color                   \ which color is "current"?
+0 var, reds
+0 var, greens
+
+: red    reds color ! ;
+: green  greens color ! ;
+
+\ "apples" is now a WORD, not a var -- but it still answers a
+\ reference you can @ and ! and n:+!, so no caller needs to change.
+: apples  color @ ;
+
+red
+20 apples !
+apples @ . cr                  \ => 20
+
+green
+5 apples !
+apples @ . cr                  \ => 5
+
+1 apples n:+!
+apples @ . cr                  \ => 6
+
+red
+apples @ . cr                  \ => 20  (untouched by the green tally)
+
+bye

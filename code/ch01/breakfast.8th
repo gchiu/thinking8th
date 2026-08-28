@@ -1,0 +1,23 @@
+\ breakfast.8th -- Thinking 8th, Chapter 1
+\ Verified with: 8th code/ch01/breakfast.8th
+\
+\ 8th's equivalent of Brodie's BREAKFAST example: a word built
+\ entirely out of other words, with the data stack passing
+\ information between them implicitly.
+
+true var, hurried
+
+: hurried?  hurried @ ;
+: cereal    "cereal\n" . ;
+: eggs      "eggs and bacon\n" . ;
+: clean     "wash up\n" . ;
+
+: breakfast
+  hurried? if cereal else eggs then clean ;
+
+breakfast                      \ hurried, so: cereal / wash up
+
+false hurried !
+breakfast                      \ not hurried: eggs and bacon / wash up
+
+bye
