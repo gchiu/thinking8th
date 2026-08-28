@@ -1,0 +1,86 @@
+\ thermostat.8th -- Thinking 8th, Chapter 3
+\ Verified with: 8th code/ch03/thermostat.8th
+\
+\ A small component-based design: a mode-decision component (with one
+\ hidden primitive, set-mode, shared by both the automatic and the
+\ manual paths), and a sensor component with a forward-referenced
+\ diagnostics hook, wired up only after the fact.
+
+0 constant IDLE
+1 constant HEATING
+2 constant COOLING
+
+IDLE var, mode
+
+[ "idle" , "heating" , "cooling" ] constant mode-names
+
+: mode@      \ -- mode
+  mode @ ;
+
+: mode-name  \ mode -- s
+  mode-names swap caseof ;
+
+\ The one place that knows both the old and the new mode -- and so the
+\ one place that can decide, cheaply, whether anything actually changed.
+: set-mode   \ new-mode --
+  dup mode@ n:= not if
+    dup mode !
+    mode-name "now %s\n" s:strfmt .
+  else
+    drop
+  then ;
+
+\ Both the automatic decision below AND these manual overrides funnel
+\ through set-mode -- that's what makes the change-detection above
+\ apply uniformly, with no caller needing to know it's there.
+: heat        HEATING set-mode ;
+: cool        COOLING set-mode ;
+: hvac-idle   IDLE    set-mode ;
+
+: decide-mode  \ degrees -- new-mode
+  dup 68 n:< if
+    drop HEATING
+  else
+    76 n:> if COOLING else IDLE then
+  then ;
+
+\ --- sensor component ---
+
+defer: on-bad-reading   \ degrees -- ; forward reference: filled in
+                        \ below by a diagnostics component that doesn't
+                        \ exist yet when read-temp is written.
+
+: plausible?  \ degrees -- flag
+  dup -20 n:> swap 120 n:< and ;
+
+0 var, sensor-temp    \ stands in for a real sensor; easy to drive from tests
+
+: read-temp  \ -- degrees
+  sensor-temp @
+  dup plausible? not if dup on-bad-reading then ;
+
+: auto-cycle   \ --
+  read-temp decide-mode set-mode ;
+
+\ --- exercise the base design ---
+
+60 sensor-temp !  auto-cycle    \ idle -> heating: logs
+61 sensor-temp !  auto-cycle    \ still heating: silent
+72 sensor-temp !  auto-cycle    \ heating -> idle: logs
+999 sensor-temp ! auto-cycle    \ implausible AND idle -> cooling:
+                                 \ mode-change logs; diagnostic hook is
+                                 \ still a no-op, so it stays silent
+
+\ --- the diagnostics component, designed and wired in afterward ---
+
+: report-bad-reading  \ degrees --
+  "sensor reading %d looks implausible -- check wiring\n" s:strfmt . ;
+
+' report-bad-reading w:is on-bad-reading
+
+999 sensor-temp ! auto-cycle    \ same bad reading, same mode (cooling):
+                                 \ no mode-change log, but now diagnosed
+
+mode@ mode-name "final mode: %s\n" s:strfmt .
+
+bye

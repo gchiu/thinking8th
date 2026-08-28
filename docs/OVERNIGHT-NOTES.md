@@ -172,3 +172,92 @@ General process for future chapters, unchanged from last session:
 No uncommitted junk, temp files, or generated binaries were left in the
 repository; scratch test files used to verify examples before finalizing
 them live only in the session scratchpad, outside the repo.
+
+## Session 2026-08-29 (continuation, survived a laptop restart)
+
+### Editorial pass (approved by Graham, done before Chapter 3)
+
+Fixed a typo in `01-notation.md` ("unit of an Forth" -> "unit of a Forth"),
+softened an unnecessary legal conclusion in the preface ("a new,
+independent work" -> "an original adaptation"), and narrowed three
+rhetorically-overreaching claims in Chapter 1 (information-hiding as the
+"only" way to build anything in 8th; an absolute claim that 8th "doesn't
+distinguish... at the language level" between things and actions; an
+implication that module/object-based code is inherently less changeable).
+No content added; Chapters 1-2 otherwise unchanged.
+
+### Chapter 3 ("Preliminary Design/Decomposition") — done this session
+
+Read `thinking-forth-1.0/chapter3.tex` in full before writing (title
+double-checked this time, no repeat of the Chapter 2 mistake). Brodie's
+actual chapter covers two decomposition strategies (by component, by
+sequential complexity), worked through via a "Tiny Editor" example, then
+"the limits of level thinking" (where to start, don't bury your tools, and
+a critique of "objects" that later editions of Brodie's own book
+acknowledge is really a critique of selector-dispatch, not OOP generally).
+
+Wrote `manuscript/chapter03-decomposition.md` around one original running
+example — a thermostat — rather than adapting the tiny editor (which would
+have been closer to reproducing Brodie's specific invented scenario than
+the project's originality standard allows). The thermostat carries the
+whole chapter: a `set-mode` word discovered to be shared by both an
+automatic decision path and manual overrides (echoing Brodie's
+INSERT-reuses-OVERWRITE moment); a "change in plan" (log only on mode
+*transitions*, not every cycle) absorbed in one line because `set-mode`
+already saw both old and new mode; and a `defer:`/`w:is` forward reference
+letting an early-written sensor component call into a diagnostics
+component that doesn't exist yet. The "objects" critique was deliberately
+reframed narrowly (selector-dispatch vs. many named words) rather than
+repeated as a broad claim against OOP, per this session's fairness
+standard.
+
+Verified: [`code/ch03/thermostat.8th`](../code/ch03/thermostat.8th), run
+against `D:\8th\bin\win64\8th.exe`, output exactly:
+```
+now heating
+now idle
+now cooling
+sensor reading 999 looks implausible -- check wiring
+final mode: cooling
+```
+Also independently verified the standalone `60 decide-mode .` snippet
+quoted in the "Limits of Level Thinking" section (prints `1`, i.e.
+HEATING) since it's presented outside the main file.
+
+### New verified 8th technical findings
+
+- **`defer:` / `w:is`** work exactly as documented in
+  `docs/md/07_words_interpreter.md`: `defer: name` creates a no-op forward
+  reference; `' word-name w:is deferred-name` attaches real behavior later.
+  Calling the deferred word before assignment is silent, not an error.
+- **`n:<` / `n:>` / `n:=`** confirmed to take `(a b -- flag)` with the
+  conventional operator order (`a b n:<` tests `a < b`), consistent with
+  standard Forth comparison-word ordering. There is no `n:<>`; "not equal"
+  is `n:= not` (using the plain `not` word already confirmed in Chapter 2).
+
+### Unresolved / deferred to a later session
+
+- `SED:` / `debug/sed`, `w:@`/`w:!` word-locals, and the `o:` object system
+  are still unexplored (noted previously; still not needed yet).
+- Brodie's Chapter 4 title not yet checked — read it before assuming.
+
+### FORMAT CHANGE (mid-session correction from Graham)
+
+The editable manuscript master is now **`manuscript/Thinking-8th.docx`**,
+not the Markdown files. Markdown remains as source/checkpoint material and
+should keep being written/verified first per the established method, but
+each chapter now also needs to be added to the DOCX, using Word styles
+modeled on `thinking-forth-1.0`'s LaTeX layout conventions (not LaTeX
+itself, and not pixel-perfect). PDF will eventually be generated from the
+DOCX later — not attempted yet. See this session's DOCX work below (if
+any was completed before the session ended) for the current state of the
+Word master and its style set.
+
+### Next logical place to continue
+
+1. If the DOCX master isn't yet created/populated through Chapter 2 (or 3),
+   that is the immediate next step — see the FORMAT CHANGE note above.
+2. After that: read `thinking-forth-1.0/chapter4.tex`, determine its real
+   title/purpose (don't assume), and continue the same verify-then-write
+   process, remembering to update the DOCX alongside the Markdown from now
+   on rather than as an afterthought.
