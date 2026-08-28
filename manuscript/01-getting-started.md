@@ -15,14 +15,28 @@ no separate compiler, linker, or build system to install alongside it.
 
 ## Where to get it
 
-Download 8th from [https://8th-dev.com/](https://8th-dev.com/). Unzip
-the distribution wherever you like. Inside, you'll find a `bin`
-folder with the executable for your platform (on Windows, for instance,
-`bin/win64/8th.exe`), a `docs` folder, and a `samples` folder full of
-example programs.
+Go to [https://8th-dev.com/](https://8th-dev.com/). 8th is distributed
+by its author, Ron Aaron: complete the download/request form on the
+website, and you'll be sent a link to download the appropriate ZIP
+archive for your platform.
 
-That's the only thing you need to follow this book — no account, no
-package manager, no other tools.
+Unzip the distribution wherever you like. Inside it you'll find, among
+other things:
+
+- the 8th executable for your platform;
+- the official documentation;
+- libraries;
+- sample programs.
+
+On Windows, for example, the 64-bit executable is found under
+`bin/win64/8th.exe`.
+
+That's the only tool you need to follow this book — no package manager,
+no other software to install.
+
+The exact download and licensing arrangements may change over time, so
+follow the current instructions on the 8th website rather than relying
+on this book for account or subscription details.
 
 ## Running a program
 
