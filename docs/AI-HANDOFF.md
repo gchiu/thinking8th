@@ -31,7 +31,8 @@ Chapters completed, verified, and committed, in reading order:
 | File | Adapts | Status |
 |---|---|---|
 | `manuscript/00-preface.md` | — | done |
-| `manuscript/01-notation.md` | — | done |
+| `manuscript/01-getting-started.md` | — | done |
+| `manuscript/02-notation.md` | — | done |
 | `manuscript/chapter01-philosophy.md` | Ch.1, "The Philosophy of Forth" | done |
 | `manuscript/chapter02-analysis.md` | Ch.2, "Analysis" | done |
 | `manuscript/chapter03-decomposition.md` | Ch.3, "Preliminary Design/Decomposition" | done |
@@ -42,6 +43,27 @@ file under `code/chNN/`. Not yet started: Chapter 5 onward (Brodie's book
 has 8 chapters + appendices; check `thinking-forth-1.0/chapterN.tex` for
 each one's *actual* title before assuming — two of the four done so far had
 titles that turned out different from a first guess).
+
+**Beginner-readability rule (established after a dedicated pass over
+Preface–Ch.4 — apply it from the start in every future chapter, don't
+write first and fix vocabulary sequencing after):** for every 8th word or
+syntactic form, the order is **idea → new word, explained in plain
+English first (then in 8th's own shorthand notation, if there is one,
+introduced explicitly as shorthand for the plain-English version just
+given) → tiny verified demo → larger example that uses it**. Never use a
+word in a code example before the reader has been told what it does.
+Assume a competent programmer with zero prior Forth, stack-language, or
+8th knowledge; Forth comparisons are asides a non-Forth reader can skip,
+never a comprehension prerequisite. Words already taught by the end of
+Chapter 4 (don't re-explain, just use): the stack, `.`/`cr`, `dup`/
+`drop`/`swap`, comments (`\`, `--`, `(* *)`), words vs. functions, `:`/
+`;`, namespaces (`n:`/`s:`/`a:`/`m:`), stack-effect comments (SED
+notation), `var`/`var,`/`@`/`!`, `if`/`else`/`then`, booleans, `not`,
+`and`, `constant`, array literals, `caseof`, `n:<`/`n:>` (and their
+non-obvious operand order), `s:strfmt`, `'` (tick), `defer:`/`w:is`,
+`;then`, `repeat`/`while!`/`loop`. (Plain `while` — not `while!` — was
+used once, found to leak; see below. Prefer `while!` going forward
+unless there's a specific reason not to.)
 
 ## Publication workflow (DOCX master → PDF proof)
 
@@ -150,9 +172,19 @@ committed) before being used in a real example — never guessed.
 - No `n:<=`/`n:>=` — build "a >= b" as `a b n:< not`.
 - `;then` = shorthand for `;; then` (early-return-if-true, still closes the
   `if`). Useful for guard clauses.
-- Pre-tested while loop shape: `COND if repeat BODY COND while then` (the
+- Pre-tested while loop shape: `COND if repeat BODY COND while! then` (the
   docs' own `repeat...while` example is post-tested — runs the body at
   least once — which is often *not* what you want).
+- **`while` never consumes the boolean it tests — on *either* the
+  loop-back or the fall-through path.** Confirmed by checking `depth`
+  before/after in an isolated test. Using plain `while` inside a loop
+  that recomputes its condition fresh each iteration (rather than
+  reusing one carried value, as the docs' own example does) leaks one
+  stray value per iteration. Found this the hard way: it was in
+  `code/ch04/roman.8th`'s `consume-tier`, silently harmless there only
+  because nothing downstream ever inspected the stack below what it
+  expected. Fixed by using **`while!`** (the consuming variant) instead
+  — same behavior, no leak. Default to `while!` for this pattern.
 - `a:each`'s quotation receives `(item index --)`. `' word low high loop`
   passes just the index.
 - 8th's execution model (per its own docs): compiling a word packs into an
@@ -169,7 +201,14 @@ committed) before being used in a real example — never guessed.
   generation, not a bug in the emitted OOXML). Fix: insert a zero-width
   space (U+200B) immediately after the backslash in the heading source text
   — invisible everywhere it renders. Already applied in
-  `manuscript/01-notation.md`'s "Comments" heading; don't strip it.
+  `manuscript/02-notation.md`'s "Comments" heading; don't strip it.
+- **`**[bold link](url)**` — a markdown link wrapped in bold — renders as
+  literal, unparsed markdown text**, because `parseInline`'s bold-span
+  handler grabs raw text between `**` markers without recursing into it
+  for nested links. Don't nest bold and links in the markdown source;
+  style a link plainly instead. (One instance found and fixed, in
+  `01-getting-started.md`; grepped the repo to confirm it was the only
+  one.)
 - **A markdown list item that wraps onto an indented continuation line**
   (how nearly every multi-sentence list item in this manuscript is written)
   needs the parser to keep gathering lines until a blank line or a new
@@ -233,7 +272,10 @@ to confirm this is still accurate before doing anything else.
    running example, or inventing a fresh original scenario — never
    reproducing Brodie's own specific invented scenarios or interview
    quotes), write original prose, tag fenced code blocks `` ```8th ``/
-   `` ```text `` from the start.
+   `` ```text `` from the start. **Apply the beginner-readability rule
+   above as you write, not as a fix-up pass afterward** — for every new
+   8th word, explain it in plain English (and its SED shorthand, if
+   used) before the code that relies on it, with a tiny verified demo.
 3. Add `manuscript/chapter05-<slug>.md`, add matching verified files under
    `code/ch05/`.
 4. Rebuild the DOCX, regenerate the PDF proof (`$doc.Close(0)`!), spot-check

@@ -33,7 +33,7 @@ constant roman-numerals
       numeral@ append
       remaining @ value@ n:- remaining !
       due?
-    while
+    while!
     then ;
 
 : apply-tier  \ index --

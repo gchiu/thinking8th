@@ -46,6 +46,8 @@ alongside it. Where an example can't reasonably be executed — because it
 needs a GUI, a network, hardware, or some other environment this book
 doesn't assume — that is said plainly, rather than guessed at.
 
-Read the following section, "A Note on Notation," next; it explains a
-handful of things about how 8th source code is written in this book that
-will save you from misreading the very first examples.
+Read the next two short sections before Chapter 1: "Getting 8th and
+Running Your First Program," which gets 8th installed and running on
+your own machine, and "A Note on Notation," which explains a handful of
+things about how 8th source code is written in this book that will save
+you from misreading the very first examples.

@@ -72,7 +72,9 @@ a rule about *how* it's shared (like "only change it if it's actually
 different") has exactly one place to live.
 
 Now the two things that actually want to change the mode. The automatic
-decision:
+decision uses two new comparisons: `n:<` and `n:>` both take two numbers
+and push a boolean, in the order you'd read them aloud — `a b n:<` asks
+"is `a` less than `b`?", not the other way around:
 
 ```8th
 : decide-mode  \ degrees -- new-mode
@@ -113,7 +115,12 @@ thermostat should only speak up when the mode actually *changes* — nobody
 wants a log line every ten seconds saying "still heating."
 
 Because `set-mode` already sees both the old mode and the new one, it
-already *has* the information this change needs. Adding it costs one line:
+already *has* the information this change needs. Adding it costs one
+line, using one new word: `s:strfmt` takes a value and a format string
+containing a placeholder (`%s` for a string, `%d` for a number) and
+produces the finished string, value substituted in —
+`"cooling" "now %s\n" s:strfmt` leaves the string `"now cooling\n"` on
+the stack, ready to print:
 
 ```8th
 [ "idle" , "heating" , "cooling" ] constant mode-names
@@ -182,7 +189,8 @@ comes later. But the sensor code still needs to call *something* when it
 sees a bad reading, today, before that something has been written.
 
 8th's answer to this is `defer:` — a word declared now, whose body is
-supplied later:
+supplied later. The plausibility check below also uses `and`, which
+takes two booleans and is true only if both of them are:
 
 ```8th
 defer: on-bad-reading   \ degrees --
@@ -200,7 +208,12 @@ defer: on-bad-reading   \ degrees --
 Until something is attached to it, `on-bad-reading` is silently a no-op —
 `read-temp` compiles and runs correctly with no diagnostics component in
 sight. Later, once that component is designed, it attaches itself with
-`w:is`:
+two new words. `'` (a single quote, called "tick") precedes a word's
+name and pushes a *reference* to that word instead of running it —
+`' report-bad-reading` puts a handle to `report-bad-reading` itself on
+the stack, not the result of calling it. `w:is` then takes that
+reference and a deferred word, and makes the deferred word run the
+given one from now on:
 
 ```8th
 : report-bad-reading  \ degrees --

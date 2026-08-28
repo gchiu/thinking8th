@@ -619,18 +619,108 @@ correct in the current proof. **This fix is already baked into the
 committed `manuscript/Thinking-8th.docx` and `proof/Thinking-8th-proof.pdf`**
 alongside Chapter 4 — no separate cleanup pass needed for Chapters 1-3.
 
+### Beginner-readability pass (2026-08-29/30) — Preface through Chapter 4
+
+Graham read the manuscript as a newcomer and found a real pedagogical
+problem: words like `var,`, `@`, `dup`, `caseof`, `;then`, `repeat`,
+`while`, `loop`, and `'` (tick) were being used in examples before being
+explained, forcing the reader to infer 8th syntax from context. Fixed
+across Preface through Chapter 4. Rule going forward, stated explicitly
+by Graham and now the house style: **idea → new word (plain English
+first, then notation if any) → tiny verified demo → larger example**,
+never the reverse, and never assume Forth knowledge as a prerequisite
+(Forth comparisons are asides a non-Forth reader can skip, not gates).
+
+**Structural changes:**
+- New file `manuscript/01-getting-started.md`, "Getting 8th and Running
+  Your First Program" — what 8th is, where to get it
+  (https://8th-dev.com/), running a `.8th` file, the `-e` flag for a
+  one-line expression, the interactive prompt, `bin/setup.8th` for
+  `help`/`apropos`, where the docs live. Inserted between Preface and
+  Notation (`01-notation.md` renamed to `02-notation.md` — the build
+  script auto-discovers by filename sort, so this just worked once the
+  rename landed).
+- `02-notation.md` substantially rewritten and reordered. Final order:
+  the stack (concept, LIFO demo with plain `1 2 3 . cr . cr . cr`, no
+  namespace words needed yet) → printing (`.`/`cr`/strings) →
+  `dup`/`drop`/`swap` → comments → words-not-functions → `:`/`;` →
+  namespaces (`n:+` as the first namespaced word) → stack effects in
+  plain English *then* SED shorthand (`\ n -- n²`) → variables →
+  conditionals → booleans. Namespaces now comes before stack-effect
+  comments specifically because the SED example (`square`) needs
+  `n:*` — got this backwards on a first pass and had to reorder.
+- Chapters 1-4 audited word-by-word for anything used before being
+  covered by the primer or an earlier chapter. Fixed: `n:+!` (Ch.1,
+  explained inline before the apples example), a dangling/inaccurate
+  backward-reference to "the variable example above" that never
+  actually used `n:+` (Ch.1, corrected), `not` (Ch.2, one-line gloss
+  before first use), `constant` + array literals + `caseof` (Ch.2,
+  each got a tiny verified demo before the real decision-table example
+  — previously `caseof` had prose explanation but no demo, and
+  `constant`/arrays had neither), `n:<`/`n:>` operand order (Ch.3 —
+  non-obvious which side is which, now stated explicitly), `and`
+  (Ch.3, one-line gloss), `s:strfmt` (Ch.3, explained with its exact
+  argument order before use), `'`/tick (Ch.3, explained before
+  `w:is` — this was a real gap, tick was used with zero introduction),
+  `;then` (Ch.4, explanation moved from *after* its code block to
+  *before* — was backwards), `repeat`/`while!`/`loop` (Ch.4, all three
+  were used with zero prior introduction; added a tiny `count-down`
+  demo before the real `consume-tier` example).
+
+**A real bug found while fixing the `repeat`/`while` explanation, not
+just a documentation gap:** the published `consume-tier` word (Ch.4,
+`code/ch04/roman.8th`) used bare `while`, which — confirmed by direct
+experiment, checking `depth` before and after — **never consumes the
+boolean it tests, on either the loop-back or the fall-through path**.
+Every iteration of the loop leaked one stray boolean onto the stack.
+The leak was invisible in the book's own test output because nothing in
+`roman.8th` ever inspects the stack below what it explicitly expects —
+but it's a genuine stack-balance bug, not just a style issue, and would
+bite in a longer-running program or anything that later inspects stack
+depth. **Fixed by switching to `while!`** (the consuming variant,
+confirmed to exist and work correctly by the same experiment) in both
+`code/ch04/roman.8th` and the matching manuscript code block. Re-ran
+all 10 test values afterward; output unchanged (the fix is behavior-
+preserving, only the leak is gone). This was the only place in the
+project using this loop pattern — grepped the whole repo to confirm.
+
+**A second real bug, in the DOCX build script:** `**[text](url)**` —
+bold wrapping a markdown link — rendered as literal, unparsed markdown
+syntax in the DOCX (`**[https://...](https://...)**` printed verbatim)
+because `parseInline`'s bold-span handling grabs raw text between `**`
+markers without recursing into it for nested links. Found on the new
+Getting Started page. Fixed by removing the bold wrapping at the one
+place it occurred (`01-getting-started.md`'s link to 8th-dev.com) rather
+than teaching the parser to handle nesting — simpler and there was only
+one instance (grepped to confirm). **If a future chapter wants a bold
+link, don't** — style it some other way, or fix the parser properly
+first.
+
+Rebuilt, re-validated (OOXML schema, 549 paragraphs), regenerated the
+proof PDF (`$doc.Close(0)`, confirmed docx untouched), and visually
+spot-checked: the getting-started page (link renders correctly now),
+the notation page with the resequenced SED section, Chapter 1's fixed
+`n:+!`/backward-reference passages, Chapter 4's `count-down` demo and
+the fixed `consume-tier` (both fit on one page, no splitting), and the
+final page. All correct. Page count: 43 (up from 34, mostly the new
+Getting Started section and the many inline explanations added).
+
 ### Next logical place to continue
 
 1. Read `thinking-forth-1.0/chapter5.tex`, determine its real
    title/purpose (don't assume), continue the established
    verify-then-write process for the Markdown source.
-2. Tag new fenced code blocks with ` ```8th ` / ` ```text ` from the
-   start (established habit now, not a fix-up).
-3. If a new list (bulleted or numbered) is needed, the wrap-continuation
-   bug above is already fixed — no special handling required, multi-line
-   items in the `.md` source will render correctly.
-4. Rebuild the DOCX (`cd tools && node build-docx.js` — `brodie` profile
-   is the default), regenerate the proof PDF via Word COM using
+2. **Apply the beginner-readability rule from the start this time**:
+   idea → word (plain English, then notation) → tiny verified demo →
+   larger example, for every new 8th word Chapter 5 needs — don't
+   write the chapter first and fix vocabulary sequencing after. Check
+   `docs/AI-HANDOFF.md`'s vocabulary list for what's already been
+   taught (Preface through Ch.4) before assuming something needs
+   re-explaining.
+3. Tag new fenced code blocks with ` ```8th ` / ` ```text ` from the
+   start (established habit, not a fix-up).
+4. Rebuild the DOCX (`cd tools && node build-docx.js` — `brodie`
+   profile is the default), regenerate the proof PDF via Word COM using
    `$doc.Close(0)` (never a bare `Close()`), spot-check a few rendered
    pages (chapter opening, any code blocks, the TOC, the last page),
    commit `.md` + `.docx` + `.pdf` together as one checkpoint.

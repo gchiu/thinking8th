@@ -56,7 +56,8 @@ for operations, arrows for the data moving between them. It's a useful tool
 for explaining a design to someone who doesn't read code. But if the person
 you're explaining it to *does* read code, a word-based language can often
 skip the diagram and go straight to something almost as readable, and far
-more useful, because you can run it:
+more useful, because you can run it. One new word appears below: `not`
+takes a boolean off the stack and pushes the opposite one back.
 
 ```8th
 false var, garage-full?
@@ -129,10 +130,37 @@ glance, in a way prose and nested conditionals both bury.
 
 Once the rule is a table, 8th lets you implement it as an actual table,
 looked up by index, rather than as a chain of comparisons pretending to be
-one. 8th's `caseof` takes a container and an index (or a string key, for a
-map) and returns whatever is stored there — a number, a string, or, if it's
-a word, the *result of calling it*. Read as "look this up," a decision
-table and a `caseof` array are the same idea:
+one. That takes three pieces of new vocabulary, each small.
+
+`constant` is like `var,` except the value can never change afterward,
+and reading it back needs no `@` — the name alone produces the value:
+
+```8th
+3 constant three
+three . cr        \ prints 3
+```
+
+Square brackets, with commas between items, build an **array** — an
+ordered list, indexed from `0`:
+
+```8th
+[ "zero" , "one" , "two" ] constant names
+```
+
+And `caseof` looks a value up by position: give it an array and an
+index, and it returns whatever is stored at that position (or, for a
+map, give it a string key instead of a number). If what's stored there
+happens to be a word, `caseof` calls it and returns the result instead
+of the word itself:
+
+```8th
+names 0 caseof . cr    \ prints zero
+names 1 caseof . cr    \ prints one
+```
+
+Read as "look this up," a decision table and a `caseof` array are the
+same idea — put the whole table in an array, in tier order, and let
+`caseof` do the looking up:
 
 ```8th
 0 constant DAY

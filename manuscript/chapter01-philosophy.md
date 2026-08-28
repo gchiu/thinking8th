@@ -126,9 +126,10 @@ the **namespace**. Its own manual defines a namespace as "a vocabulary of
 (usually) related words" — which is Brodie's definition of "lexicon,"
 independently arrived at, formalized, and enforced by the interpreter
 rather than left to convention. Every built-in word that operates on
-numbers lives in the `n:` namespace (`n:+`, `n:-`, `n:1-`, `n:+!` — you
-used two of these already, in the variable example above). Strings live in
-`s:`, arrays in `a:`, maps in `m:`, and so on. When you write your own
+numbers lives in the `n:` namespace — `n:+`, which "A Note on Notation"
+already showed you, along with `n:-`, `n:1-`, and others you'll meet as
+they come up. Strings live in `s:`, arrays in `a:`, maps in `m:`, and so
+on. When you write your own
 component, you can give its words their own namespace prefix the same way,
 and 8th's `with:` / `;with` lets you temporarily bring a namespace's words
 into scope unprefixed, for readability, without ever losing the boundary
@@ -151,7 +152,10 @@ in Forth, for the same underlying reason: a variable's *name* and the
 *value it produces when read* are two different things, so the second can
 be redefined without disturbing the first.
 
-Start with a plain variable:
+Start with a plain variable. One new word appears below: `n:+!` takes a
+number and a variable reference, and adds the number to whatever the
+variable currently holds, in place — a shorthand for fetching, adding,
+and storing back, in one step:
 
 ```8th
 0 var, apples

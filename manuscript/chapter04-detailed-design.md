@@ -161,7 +161,10 @@ Logic is last on purpose. It wins only when the decision genuinely
 depends on a combination of conditions that isn't well described as
 either a formula or a lookup — for instance, whether a level is currently
 open to traffic, which might depend on the hour *and* whether there's a
-maintenance flag set *and* whether a special event has reserved it:
+maintenance flag set *and* whether a special event has reserved it. This
+is also a natural place for a new word, `;then`: shorthand for "if this
+condition is true, exit the word right now" — an early return, useful
+for exactly this kind of guard-clause checklist:
 
 ```8th
 false var, maintenance?
@@ -174,9 +177,9 @@ false var, event-reserved?
   true ;
 ```
 
-*(This exercises 8th's early-return word, `;then` — an `if` that, when
-true, exits the word immediately rather than falling through to the rest
-of its body. It reads well for guard clauses like these three.)*
+Read each guard the same way: "if this is true, leave `false` and
+return immediately; otherwise fall through to the next check." Only if
+none of the three guards fires does execution reach the final `true`.
 
 Logic isn't wrong here — some things really are conditional — but reach
 for it last. A chain of `if`s is easy to write and hard to verify by
@@ -224,7 +227,37 @@ of `DCCCC`: the table already encodes the special-case shortcuts, so the
 algorithm on top of it doesn't need to know they're special cases at all.
 
 **Working backward from the pieces.** The word that has to exist no
-matter what is "keep taking a given chunk while it still fits":
+matter what is "keep taking a given chunk while it still fits" — a
+repetition, which needs two new words. `repeat` marks the top of a
+loop; `while!` goes at the bottom, checking the boolean on top of the
+stack and jumping back to the matching `repeat` if it's true, or
+falling through to whatever comes after if it's false, consuming that
+boolean either way. On its own, `repeat ... while!` always runs its
+body at least once before the first check — but wrapping the whole
+thing in `if`, testing the same condition first, skips the body
+entirely when it isn't needed even once:
+
+```8th
+0 var, remaining
+
+: due?  \ -- flag
+  remaining @ 0 n:> ;
+
+: count-down  \ --
+  due? if
+    repeat
+      remaining @ . cr
+      remaining @ 1 n:- remaining !
+      due?
+    while!
+    then ;
+
+3 remaining ! count-down    \ prints 3, 2, 1
+0 remaining ! count-down    \ prints nothing -- due? was already false
+```
+
+`consume-tier` is the same shape, with two more tables to read from
+instead of one variable to count down:
 
 ```8th
 0 var, remaining
@@ -246,7 +279,7 @@ matter what is "keep taking a given chunk while it still fits":
       numeral@ append
       remaining @ value@ n:- remaining !
       due?
-    while
+    while!
     then ;
 ```
 
@@ -255,12 +288,17 @@ matter what is "keep taking a given chunk while it still fits":
 value/symbol pair instead of a red/green tally. `consume-tier` doesn't
 care what tier it's operating on; it just keeps appending that tier's
 symbol and subtracting that tier's value for as long as `due?` says yes,
-using the pre-checked loop shape (`if` … `repeat` … `while` … `then`)
+using the pre-checked loop shape (`if` … `repeat` … `while!` … `then`)
 that tests *before* the first iteration, so a tier that doesn't apply at
 all — `M` when only 4 is left — correctly does nothing.
 
-**The outer word** just has to visit all thirteen tiers in order, letting
-`consume-tier` decide how many symbols each one contributes:
+**The outer word** just has to visit all thirteen tiers in order,
+letting `consume-tier` decide how many symbols each one contributes.
+`loop` is the last new word this example needs: give it a word
+reference (with `'`, the same tick you saw attach a diagnostics handler
+in Chapter 3), a low index, and a high index, and it calls that word
+once for every index in that range, inclusive, passing the index in
+each time:
 
 ```8th
 : apply-tier  \ index --
@@ -273,6 +311,10 @@ all — `M` when only 4 is left — correctly does nothing.
   ' apply-tier 0 12 loop
   result @ ;
 ```
+
+`' apply-tier 0 12 loop` calls `apply-tier` thirteen times, once per
+tier from `0` (a thousand) to `12` (one) — exactly the visiting order
+the algorithm needs, with no explicit counting.
 
 Run against a spread of values, including the traditionally trickiest
 ones — `1994`, and `3999`, the largest number classical Roman numerals
