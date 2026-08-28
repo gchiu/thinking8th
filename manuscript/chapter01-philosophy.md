@@ -41,9 +41,11 @@ same idea a name a few years later: *data abstraction*. Their example was a
 stack: routines to push, pop, and test for empty, with the actual
 representation hidden behind them.
 
-This is the idea 8th — like Forth before it — takes further than almost any
-other language: not as a design pattern you apply with discipline, but as
-the *only* way the language lets you build anything at all.
+This is the idea 8th — like Forth before it — makes unusually natural to
+follow: not a design pattern you have to remember to apply, but close to
+the default shape of an 8th program. Build out of small, named words with
+data passed implicitly between them, and you are already most of the way
+toward decomposing by what might change, whether you set out to or not.
 
 ## Words Are the Unit, Not Functions or Modules
 
@@ -217,9 +219,10 @@ section, applied to *nouns* instead of *verbs*: `apples` is a word, so
 calling it is implicit; and it produces a reference on the stack rather
 than a name in the source text, so `@`, `!`, and `n:+!` don't need to know
 or care whether that reference came from a plain variable or from three
-lines of logic. 8th, like Forth, doesn't distinguish between "a thing" and
-"an action that produces a thing" at the language level — only in how you
-choose to think about a particular word.
+lines of logic. 8th, like Forth, doesn't force you to distinguish between
+"a thing" and "an action that produces a thing" — a word can play either
+role, and nothing about how you invoke it gives away which one it's
+playing today.
 
 ## Is 8th a High-Level Language?
 
@@ -284,9 +287,10 @@ language that gets out of the way.
 Strip away the unfamiliar punctuation, and 8th is making the same wager
 Forth made: that a program built entirely out of small, named, freely
 composable words — with data flowing between them implicitly, on a stack,
-rather than declared and passed by hand — produces software that is easier
-to change than one built out of subroutines, modules, or objects with
-explicit interfaces. Where Forth left the discipline of grouping those
+rather than declared and passed by hand — makes Parnas's kind of
+change-driven decomposition unusually natural to fall into, rather than
+something you have to impose on top of subroutines, modules, or objects
+with explicit interfaces. Where Forth left the discipline of grouping those
 words into coherent components ("lexicons," in Brodie's term) up to the
 programmer, 8th builds a formal version of the same idea into the language
 as namespaces. Where Forth achieved portability by being small and easy to

@@ -35,10 +35,10 @@ answers show up in this book.
 [the Thinking Forth SourceForge project](https://sourceforge.net/projects/thinking-forth/)
 under a Creative Commons Attribution-NonCommercial-ShareAlike 2.0 license,
 and a copy of its original LaTeX source is kept in this repository, under
-`thinking-forth-1.0/`, as reference material. This book is a new,
-independent work: original prose and original, independently verified 8th
-code, inspired by Brodie's structure and spirit rather than copied from his
-text. It carries the same non-commercial, share-alike spirit forward.
+`thinking-forth-1.0/`, as reference material. This book is an original
+adaptation: original prose and original, independently verified 8th code,
+inspired by Brodie's structure and spirit rather than copied from his text.
+It carries the same non-commercial, share-alike spirit forward.
 
 Every code example in this book that can be run has been run, against the
 8th distribution it was written against, and its actual output is shown

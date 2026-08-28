@@ -35,7 +35,7 @@ word's name, before its body.
 
 ## Words, not functions
 
-Brodie calls the unit of an Forth program a "word," and so does 8th's own
+Brodie calls the unit of a Forth program a "word," and so does 8th's own
 manual: "the same as a function, procedure, or routine in other languages."
 This book uses "word" throughout, for the same reason Brodie did — because
 in both languages, a defining name and an executable unit are the same
