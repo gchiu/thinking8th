@@ -41,7 +41,7 @@ rules later (a minimum-run timer, a "don't switch modes twice in five
 minutes" guard) — so it belongs behind its own small set of words, not
 scattered through whatever code happens to decide when to heat or cool.
 
-```
+```8th
 0 constant IDLE
 1 constant HEATING
 2 constant COOLING
@@ -74,7 +74,7 @@ different") has exactly one place to live.
 Now the two things that actually want to change the mode. The automatic
 decision:
 
-```
+```8th
 : decide-mode  \ degrees -- new-mode
   dup 68 n:< if
     drop HEATING
@@ -85,7 +85,7 @@ decision:
 
 And a person overriding it by hand:
 
-```
+```8th
 : heat        HEATING set-mode ;
 : cool        COOLING set-mode ;
 : hvac-idle   IDLE    set-mode ;
@@ -115,7 +115,7 @@ wants a log line every ten seconds saying "still heating."
 Because `set-mode` already sees both the old mode and the new one, it
 already *has* the information this change needs. Adding it costs one line:
 
-```
+```8th
 [ "idle" , "heating" , "cooling" ] constant mode-names
 
 : mode-name  \ mode -- s
@@ -184,7 +184,7 @@ sees a bad reading, today, before that something has been written.
 8th's answer to this is `defer:` — a word declared now, whose body is
 supplied later:
 
-```
+```8th
 defer: on-bad-reading   \ degrees --
 
 : plausible?  \ degrees -- flag
@@ -202,7 +202,7 @@ Until something is attached to it, `on-bad-reading` is silently a no-op —
 sight. Later, once that component is designed, it attaches itself with
 `w:is`:
 
-```
+```8th
 : report-bad-reading  \ degrees --
   "sensor reading %d looks implausible -- check wiring\n" s:strfmt . ;
 
@@ -216,7 +216,7 @@ written, what "diagnosing a bad reading" would eventually mean. Running the
 same reading (`999`, well outside a plausible range) before and after this
 assignment shows the difference directly:
 
-```
+```8th
 \ before the diagnostics component is wired in:
 999 sensor-temp ! auto-cycle
 \ => "now cooling"   (mode genuinely changes; no diagnostic — the hook
@@ -232,7 +232,7 @@ assignment shows the difference directly:
 This is [`code/ch03/thermostat.8th`](../code/ch03/thermostat.8th) in full;
 running it start to finish prints exactly:
 
-```
+```text
 now heating
 now idle
 now cooling
@@ -256,7 +256,7 @@ for this chapter — but `decide-mode` could just as easily have been written
 and tested first, standing on nothing but plain numbers on the stack, long
 before `read-temp` or `sensor-temp` existed:
 
-```
+```8th
 60 decide-mode .   \ works today, no sensor required
 ```
 

@@ -344,19 +344,161 @@ the instruction to actually open/render generated documents matters — the
 schema validator alone did not catch this, because empty bold runs are
 perfectly valid OOXML.
 
+### Layout hardening pass (2026-08-29, before Chapter 4)
+
+Graham reviewed the 22-page Letter proof and asked for nine specific fixes
+before continuing. All nine done in `tools/build-docx.js` plus small
+markdown edits, then Graham asked to also test A5 as a trim size before
+finalizing anything — that test is below, master is **still Letter**,
+nothing permanent changed on trim size.
+
+**Fixes made:**
+1. **Blank page removed.** Cause: manual `PageBreak()` paragraphs stacked
+   on top of `Heading1`'s own baked-in `pageBreakBefore: true`, producing
+   an extra blank page each time. Removed the manual breaks; the heading
+   style's own `pageBreakBefore` is sufficient.
+2. **"Contents" no longer lists itself in the TOC.** Gave it its own
+   `TOCHeading` paragraph style (visually identical to `Heading1` —
+   same page-break-before, border, size — but with no `outlineLevel`), so
+   it's outside the `headingStyleRange: "1-3"` sweep the TOC field uses.
+3. **TOC backslash bug, root-caused and fixed.** Word's *own* TOC-field
+   generation (not anything in the OOXML I emit — confirmed by an isolated
+   4-heading A/B test docx) silently drops a literal `\` character from a
+   TOC entry's display text when it sits directly next to other text, in a
+   way unrelated to run boundaries or styling (tried isolating it in its
+   own run and that alone did **not** fix it). Confirmed fix: insert a
+   zero-width space (U+200B) immediately **after** the backslash in the
+   heading source text. Applied to `01-notation.md`'s "Comments: `\`, not
+   `( ... )`" heading — the character is invisible in every rendering
+   (body text, TOC, print) and is there **on purpose**; don't strip it if
+   you ever touch that line, and don't be surprised if a plain-text diff
+   tool renders it oddly.
+4. **Preface no longer names `01-notation.md`** — now says "the following
+   section, 'A Note on Notation.'"
+5. **Page numbers + header/footer added.** Footer: centered page number
+   (`PageNumber.CURRENT`), small and gray. Header: "Thinking 8th," small
+   italic gray, right-aligned. Both suppressed on the title page via
+   `titlePage: true` + separate empty `first` header/footer. No running
+   chapter-title header (no `STYLEREF` field) — judged out of scope for a
+   "don't redesign" cleanup pass; would be the natural next typographic
+   refinement if/when the book is closer to final.
+6. **Code blocks no longer split across pages when they'd fit on one.**
+   `codeParagraphs()` now chains every line but the last with
+   `keepNext: true` (plus `keepLines: true` on each), so Word treats the
+   whole block as one keep-together unit. Verified against the longest
+   blocks in the manuscript (the 12-line rate-table block in Ch.2, several
+   in Ch.3) — none split in the rebuilt proof.
+7. **Widow/orphan control.** Added `widowControl: true` explicitly to
+   every prose-bearing style (`Normal`, `Code`, `CodeOutput`,
+   `BlockQuotation`, `Note`) and `keepNext: true` to all three heading
+   styles (so a heading can't be stranded at the bottom of a page,
+   separated from the paragraph under it). This is what fixed Chapter 3's
+   "Summary" heading, which previously split across two pages — it now
+   sits cleanly on one page with its full paragraph, confirmed visually.
+8. **"Code Output" style wired up.** Fenced code blocks in the markdown
+   now carry a language tag: ` ```8th ` for real source, ` ```text ` for
+   printed program output. `tools/build-docx.js` picks the Word style
+   accordingly (`Code` = gray-shaded monospace; `CodeOutput` = italic gray
+   monospace with a left rule, no shading). All ~24 fenced blocks across
+   the manuscript were classified and tagged by hand (20 source, 4
+   output). Confirmed visually distinct in the rebuilt proof.
+9. **Relative code-file hyperlinks reviewed, left as-is.** They resolve
+   correctly today (`manuscript/Thinking-8th.docx` and `code/` are sibling
+   directories, so `../code/ch01/apples.8th` opens correctly from Word).
+   Documented caveat for whoever handles final distribution: a
+   *standalone* distributed PDF/DOCX (outside this repo's directory
+   layout) will have dead links. Not fixed now, per Graham's own framing
+   ("for now they may remain useful... do not assume [it] will be
+   meaningful in the eventual distributed PDF") — likely resolution later
+   is either an appendix with inlined code, or converting links to plain
+   path text at final-publication time.
+
+**Real bug found and fixed in the tooling itself, not the manuscript:**
+the Word-COM PDF-export snippet used in earlier sessions (`$doc.Close()`
+with no argument) let Word **silently save changes back into the source
+`.docx`** on close — because `Fields.Update()` marks the document dirty,
+and an argument-less `Close()` under unattended COM automation apparently
+defaults to saving rather than discarding. This had already happened once
+undetected: `manuscript/Thinking-8th.docx` grew from ~33.5KB to ~46.7KB
+and gained 28 paragraphs (Word had materialized the dynamic TOC field into
+real static paragraphs) after what was meant to be a read-only proof
+export. **Fix: always call `$doc.Close(0)`** (`0` =
+`wdDoNotSaveChanges`), confirmed by checking the docx's size/mtime is
+unchanged after the PDF export. This matters a lot given the standing
+instruction that the DOCX is the master and the PDF/proof pipeline must
+never write back to it — **use `Close(0)` in every future Word-COM
+snippet, no exceptions.**
+
+### A5 trim-size test (exploratory only — master is still Letter)
+
+Per Graham's request, tested A5 (148mm x 210mm) as a possible trim size,
+motivated by wanting a page to feel like "a bounded unit of thought," the
+way Brodie's book used the disk-block/screen page rhythm. Built via
+`PAGE_PROFILE=a5 node build-docx.js` (script now takes this env var;
+`letter`, the default, is unaffected and still writes to
+`manuscript/Thinking-8th.docx`). A5 output goes to
+`proof/Thinking-8th-A5-test.docx` / `-proof.pdf`, deliberately **not** in
+`manuscript/`, and is not the master.
+
+Same fonts/sizes as Letter in both, on purpose — a fair trim-only
+comparison, not a re-tuned A5 design. Margins used for the test: top
+0.7in, bottom 0.75in, left/right 0.6in (giving a ~4.63in text column,
+vs. Letter's ~6.5in).
+
+**Findings:**
+- **Page count:** 21 (Letter) vs. **33 (A5)**, +57%, for identical content.
+- **Body-text readability:** genuinely good at A5 — comfortable measure,
+  doesn't feel cramped, reads more like an actual book than Letter does.
+- **Tables:** fine, no cramping (checked the Ch.2 rate table).
+- **Chapter openings, headers/footers, widow/orphan/keepNext behavior:**
+  all carry over correctly at A5 (same style rules, just different
+  absolute page numbers).
+- **Code width and wrapping — the real cost of A5:** most code blocks fit
+  the ~4.6in column fine at the current 9.5pt Consolas. But the longest
+  lines in the manuscript (up to 72 characters, all in Chapter 3) do
+  **not** all fit. Confirmed one concrete visible casualty: the
+  "before/after" annotated `defer:` example in Chapter 3 ("Decomposition
+  by Sequential Complexity") has two long commented lines that soft-wrap
+  mid-line, breaking the code's visual alignment (page 31 of the A5 test
+  PDF). This did not happen anywhere in the Letter proof. A smaller
+  code-specific font size (the "Code"/"Code Output" styles are already
+  factored out and easy to retune independently of body text) or
+  reformatting that one block's long comment lines would fix it, but
+  neither was done here since this is a trim-size test, not a final tune.
+- **Whether page-by-page rhythm helps learning:** genuinely plausible and
+  worth taking seriously — a page more often ends near a natural
+  paragraph/section boundary at A5 just because there's less content per
+  page, which does create more of a "one idea per page" feel in spots.
+  But this is a subjective, content-dependent effect that will vary
+  chapter to chapter and is hard to fully judge from 3 chapters alone.
+
+**Not decided.** Graham's first question about page size was dismissed
+(interactive question, not answered) before this A5 test was requested;
+this section is the promised "report the options" instead of a silent
+choice. Three live options, unchanged from that dismissed question:
+6"x9" (standard POD trim, also a named option in Brodie's own LaTeX
+source), 6.8125"x9.125" (Brodie's own book's actual default trim, also in
+the LaTeX source), or continuing with US Letter. A5 is now a fourth,
+Graham-proposed option with real trade-offs measured above (much better
+"bounded unit of thought" feel and portability; a real, non-trivial code-
+wrapping cost at current type sizes; +57% page count). Waiting on Graham's
+call before touching the master's page size.
+
 ### Next logical place to continue
 
-1. Read `thinking-forth-1.0/chapter4.tex`, determine its real title/purpose
-   (don't assume — Chapter 2's title was guessed wrong once already this
-   project), and continue the established verify-then-write process for
-   the Markdown source.
-2. Add the new chapter file to `manuscript/` following the
-   `chapterNN-slug.md` naming convention (picked up automatically by the
-   build script), rebuild `manuscript/Thinking-8th.docx`
-   (`cd tools && node build-docx.js`), regenerate
-   `proof/Thinking-8th-proof.pdf` via the Word COM snippet above, spot-
-   check a couple of rendered pages, then commit the `.md` + `.docx` +
-   `.pdf` together as one checkpoint.
-3. Optional future refinement, not urgent: distinguish "Code" vs. "Code
-   Output" fenced blocks in the markdown so the already-defined "Code
-   Output" Word style actually gets used.
+1. **Get a page-size decision from Graham** (Letter / 6x9 / 6.8125x9.125 /
+   A5 — see above) before the manuscript grows past Chapter 3, since
+   margins and possibly code-block font size depend on it. If A5 is
+   chosen, budget time to address the code-wrapping finding above (retune
+   the `Code`/`CodeOutput` style font size independently of body text is
+   the likely fix, or reflow the handful of longest source lines).
+2. Once decided: if changing away from the current Letter master, update
+   `PROFILES.letter` in `tools/build-docx.js` (rename/repoint as needed),
+   rebuild, re-validate, regenerate the proof PDF, spot check, commit.
+3. Then: read `thinking-forth-1.0/chapter4.tex`, determine its real
+   title/purpose (don't assume), continue the established
+   verify-then-write process for the Markdown source, tag new fenced code
+   blocks with ` ```8th ` / ` ```text ` from the start this time (saves a
+   cleanup pass later), rebuild the DOCX, regenerate the proof PDF (using
+   `$doc.Close(0)` — see above), spot-check, commit `.md` + `.docx` +
+   `.pdf` together.

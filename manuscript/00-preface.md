@@ -46,6 +46,6 @@ alongside it. Where an example can't reasonably be executed — because it
 needs a GUI, a network, hardware, or some other environment this book
 doesn't assume — that is said plainly, rather than guessed at.
 
-Read `01-notation.md` next; it explains a handful of things about how 8th
-source code is written in this book that will save you from misreading the
-very first examples.
+Read the following section, "A Note on Notation," next; it explains a
+handful of things about how 8th source code is written in this book that
+will save you from misreading the very first examples.

@@ -51,7 +51,7 @@ toward decomposing by what might change, whether you set out to or not.
 
 Here is a complete, if small, 8th program:
 
-```
+```8th
 true var, hurried
 
 : hurried?  hurried @ ;
@@ -68,7 +68,7 @@ breakfast
 Running it (see [`code/ch01/breakfast.8th`](../code/ch01/breakfast.8th))
 prints:
 
-```
+```text
 cereal
 wash up
 ```
@@ -153,7 +153,7 @@ be redefined without disturbing the first.
 
 Start with a plain variable:
 
-```
+```8th
 0 var, apples
 
 20 apples !
@@ -167,7 +167,7 @@ Now suppose, after code elsewhere already depends on `apples`, you
 discover you need two tallies — red and green — selected by which color is
 "current":
 
-```
+```8th
 0 var, color                   \ which color is "current"?
 0 var, reds
 0 var, greens
@@ -183,7 +183,7 @@ whichever variable is currently selected. But because `apples @`, `apples
 !`, and `apples n:+!` all still work exactly as before, nothing that used
 `apples` needs to change:
 
-```
+```8th
 red
 20 apples !
 apples @ . cr                  \ => 20
@@ -205,7 +205,7 @@ about, because it's genuinely useful rather than merely cosmetic: when the
 file redefines `apples` from a variable into a word, 8th prints a warning
 to the console —
 
-```
+```text
 Redefining: user:apples
 ```
 

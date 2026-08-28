@@ -58,7 +58,7 @@ you're explaining it to *does* read code, a word-based language can often
 skip the diagram and go straight to something almost as readable, and far
 more useful, because you can run it:
 
-```
+```8th
 false var, garage-full?
 
 : space-available?  garage-full? @ not ;
@@ -80,7 +80,7 @@ implementation details you can fill in underneath this sketch, one word at
 a time, without changing `admit-car` at all. Run it and it behaves exactly
 as the words suggest:
 
-```
+```8th
 admit-car
 true garage-full? !
 admit-car
@@ -88,7 +88,7 @@ admit-car
 
 prints
 
-```
+```text
 Welcome -- take a ticket.
 Sorry, we're full.
 ```
@@ -134,7 +134,7 @@ map) and returns whatever is stored there — a number, a string, or, if it's
 a word, the *result of calling it*. Read as "look this up," a decision
 table and a `caseof` array are the same idea:
 
-```
+```8th
 0 constant DAY
 1 constant EVENING
 2 constant WEEKEND
@@ -161,7 +161,7 @@ The valet surcharge isn't part of the table at all — it doesn't depend on
 the tier or the hour, so tying it to either would be exactly the kind of
 false coupling Chapter 1 warned about. It's its own small word:
 
-```
+```8th
 : valet-surcharge   \ cents -- cents
   valet? @ if 500 n:+ then ;
 ```
@@ -169,7 +169,7 @@ false coupling Chapter 1 warned about. It's its own small word:
 And the whole fee is a composition of these three pieces, matching the
 shape of the table instead of hiding it:
 
-```
+```8th
 : parking-fee  \ hours -- cents
   1 n:-  addl-hour-rate n:*
   first-hour-rate n:+
@@ -179,7 +179,7 @@ shape of the table instead of hiding it:
 This is [`code/ch02/parking-fee.8th`](../code/ch02/parking-fee.8th),
 executed and checked against hand-calculated expectations:
 
-```
+```8th
 set-day       3 parking-fee . cr    \ => 800   (400 + 2*200)
 set-evening   3 parking-fee . cr    \ => 400   (200 + 2*100)
 set-weekend   5 parking-fee . cr    \ => 500   (100 + 4*100)

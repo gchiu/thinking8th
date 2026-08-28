@@ -5,7 +5,7 @@ enough like Forth that old habits will actively mislead you in a few
 specific spots. This page exists so the very first code example in Chapter 1
 doesn't confuse you.
 
-## Comments: `\`, not `( ... )`
+## Comments: \​, not `( ... )`
 
 In most Forths, `( n1 n2 -- n3 )` is a comment — a stack-effect diagram that
 the compiler skips over. In 8th, **parentheses are not comments**. `( ... )`
@@ -22,7 +22,7 @@ used interchangeably). There is also a multi-line comment, `(* ... *)`,
 which nests. This book uses `\` throughout, following the convention used
 in 8th's own tutorials and sample code:
 
-```
+```8th
 \ this whole line is a comment
 : greet   \ -- ; prints a greeting
   "hello" . cr ;
@@ -56,7 +56,7 @@ A variable in 8th is declared with `var` (initialized to `0`) or `var,`
 (initialized to whatever is on top of the stack), and its contents are
 read with `@` and written with `!`, exactly as in Forth:
 
-```
+```8th
 0 var, count
 5 count !
 count @ .          \ prints 5

@@ -2,20 +2,56 @@
 // Deliberately a small hand-rolled markdown->docx converter (no pandoc
 // available in this environment) tailored to the specific, consistent
 // subset of markdown this project's manuscript actually uses:
-// # / ## headings, plain paragraphs, fenced code blocks, '-'/'1.' lists,
-// pipe tables, and inline **bold** / *italic* / `code` / [text](url).
+// # / ## headings, plain paragraphs, fenced code blocks (tagged ```8th
+// for source or ```text for program output), '-'/'1.' lists, pipe
+// tables, and inline **bold** / *italic* / `code` / [text](url).
+//
+// Page size is selectable via the PAGE_PROFILE env var:
+//   PAGE_PROFILE=letter node build-docx.js   (default; the real master)
+//   PAGE_PROFILE=a5     node build-docx.js   (exploratory trim-size test;
+//                                             writes to proof/, not manuscript/)
 
 const fs = require("fs");
 const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
   Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType,
-  TableOfContents, ExternalHyperlink, LevelFormat, PageBreak,
+  TableOfContents, ExternalHyperlink, LevelFormat,
+  Header, Footer, PageNumber,
 } = require("docx");
 
 const REPO = path.resolve(__dirname, "..");
 const MANUSCRIPT_DIR = path.join(REPO, "manuscript");
-const OUT_PATH = path.join(MANUSCRIPT_DIR, "Thinking-8th.docx");
+const PROOF_DIR = path.join(REPO, "proof");
+
+const PROFILE_NAME = (process.env.PAGE_PROFILE || "letter").toLowerCase();
+
+const PROFILES = {
+  letter: {
+    label: "US Letter",
+    width: 12240,
+    height: 15840,
+    margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 },
+    outPath: path.join(MANUSCRIPT_DIR, "Thinking-8th.docx"),
+  },
+  a5: {
+    // ISO A5: 148mm x 210mm. Exploratory trim-size test only -- NOT the
+    // master. Same type sizes as Letter, deliberately, so this is a fair
+    // A/B comparison of trim size alone.
+    label: "A5 (exploratory test)",
+    width: 8391,
+    height: 11906,
+    margin: { top: 1008, bottom: 1080, left: 864, right: 864 },
+    outPath: path.join(PROOF_DIR, "Thinking-8th-A5-test.docx"),
+  },
+};
+
+const PROFILE = PROFILES[PROFILE_NAME];
+if (!PROFILE) {
+  console.error("Unknown PAGE_PROFILE:", PROFILE_NAME, "-- expected letter or a5");
+  process.exit(1);
+}
+const OUT_PATH = PROFILE.outPath;
 
 // Reading order comes from filename sort: 00-preface, 01-notation, then
 // chapter01-*, chapter02-*, ... -- so a new chapterNN-*.md is picked up
@@ -33,7 +69,6 @@ const FILES = fs
 function parseInline(text, opts) {
   const forceBold = !!(opts && opts.forceBold);
   const runs = [];
-  // Tokenize left to right; each branch consumes and advances `i`.
   let i = 0;
   const n = text.length;
   let buf = "";
@@ -101,9 +136,7 @@ function parseInline(text, opts) {
           runs.push(
             new ExternalHyperlink({
               link: url,
-              children: [
-                new TextRun({ text: label, style: "Hyperlink" }),
-              ],
+              children: [new TextRun({ text: label, style: "Hyperlink" })],
             })
           );
           i = urlEnd + 1;
@@ -138,8 +171,10 @@ function parseMarkdown(text) {
       continue;
     }
 
-    // fenced code block
-    if (/^```/.test(line)) {
+    // fenced code block -- ```8th (source) or ```text (program output)
+    let fence = /^```(\w*)/.exec(line);
+    if (fence) {
+      const lang = fence[1] || "8th";
       const codeLines = [];
       i++;
       while (i < lines.length && !/^```/.test(lines[i])) {
@@ -147,7 +182,7 @@ function parseMarkdown(text) {
         i++;
       }
       i++; // skip closing fence
-      blocks.push({ type: "code", lines: codeLines });
+      blocks.push({ type: "code", lang, lines: codeLines });
       continue;
     }
 
@@ -224,37 +259,38 @@ function headingStyleFor(level) {
   return HeadingLevel.HEADING_3;
 }
 
+// One Paragraph per source line, chained with keepNext so the whole
+// block stays on one page whenever it can fit -- Word will still break
+// a block that's genuinely longer than a page, but won't split a short
+// one just because it happens to straddle where a page would end.
 function codeParagraphs(codeLines, style) {
-  if (codeLines.length === 0) {
-    return [new Paragraph({ style, children: [new TextRun({ text: " " })] })];
-  }
-  return codeLines.map(
-    (l) =>
+  const lines = codeLines.length ? codeLines : [" "];
+  return lines.map(
+    (l, idx) =>
       new Paragraph({
         style,
+        keepNext: idx < lines.length - 1 ? true : undefined,
+        keepLines: true,
         children: [new TextRun({ text: l.length ? l : " " })],
       })
   );
 }
 
 function parseTable(tableLines) {
-  // header, separator, body...
   const rows = tableLines.filter((l) => !/^\|[\s:|-]+\|$/.test(l));
   const cellsOf = (l) =>
-    l
-      .replace(/^\|/, "")
-      .replace(/\|$/, "")
-      .split("|")
-      .map((c) => c.trim());
+    l.replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
 
   const headerCells = cellsOf(rows[0]);
   const bodyRows = rows.slice(1).map(cellsOf);
   const colCount = headerCells.length;
-  const colWidth = Math.floor(9360 / colCount); // fits inside 1" margins on Letter
+  const usableWidth = PROFILE.width - PROFILE.margin.left - PROFILE.margin.right;
+  const colWidth = Math.floor(usableWidth / colCount);
 
   function makeRow(cells, isHeader) {
     return new TableRow({
       tableHeader: isHeader,
+      cantSplit: true,
       children: cells.map(
         (c) =>
           new TableCell({
@@ -274,7 +310,7 @@ function parseTable(tableLines) {
   }
 
   return new Table({
-    width: { size: 9360, type: WidthType.DXA },
+    width: { size: usableWidth, type: WidthType.DXA },
     columnWidths: Array(colCount).fill(colWidth),
     rows: [makeRow(headerCells, true), ...bodyRows.map((r) => makeRow(r, false))],
   });
@@ -293,17 +329,13 @@ function blocksToDocxNodes(blocks) {
     } else if (b.type === "para") {
       nodes.push(new Paragraph({ style: "Normal", children: parseInline(b.text) }));
     } else if (b.type === "code") {
-      nodes.push(...codeParagraphs(b.lines, "Code"));
+      const style = b.lang === "text" ? "CodeOutput" : "Code";
+      nodes.push(...codeParagraphs(b.lines, style));
     } else if (b.type === "quote") {
       nodes.push(new Paragraph({ style: "BlockQuotation", children: parseInline(b.text) }));
     } else if (b.type === "bullets") {
       for (const item of b.items) {
-        nodes.push(
-          new Paragraph({
-            bullet: { level: 0 },
-            children: parseInline(item),
-          })
-        );
+        nodes.push(new Paragraph({ bullet: { level: 0 }, children: parseInline(item) }));
       }
     } else if (b.type === "numbered") {
       for (const item of b.items) {
@@ -324,11 +356,13 @@ function blocksToDocxNodes(blocks) {
 
 // ---------- styles ----------
 
+const HEADING_KEEP = { keepNext: true, widowControl: true };
+
 const styles = {
   default: {
     document: {
       run: { font: "Cambria", size: 22 },
-      paragraph: { spacing: { after: 160, line: 276, lineRule: "auto" } },
+      paragraph: { spacing: { after: 160, line: 276, lineRule: "auto" }, widowControl: true },
     },
   },
   paragraphStyles: [
@@ -340,6 +374,7 @@ const styles = {
       paragraph: {
         alignment: AlignmentType.JUSTIFIED,
         spacing: { after: 160, line: 276, lineRule: "auto" },
+        widowControl: true,
       },
     },
     {
@@ -376,6 +411,26 @@ const styles = {
         border: {
           bottom: { style: BorderStyle.SINGLE, size: 6, color: "999999", space: 8 },
         },
+        ...HEADING_KEEP,
+      },
+    },
+    // Same look as Heading 1 (chapter-title style) but NOT an outline
+    // heading, so it doesn't get swept into the auto-generated TOC. Used
+    // only for the "Contents" label itself.
+    {
+      id: "TOCHeading",
+      name: "TOC Heading",
+      basedOn: "Normal",
+      next: "Normal",
+      quickFormat: true,
+      run: { font: "Cambria", size: 40, bold: true, color: "1A1A1A" },
+      paragraph: {
+        pageBreakBefore: true,
+        alignment: AlignmentType.LEFT,
+        spacing: { before: 0, after: 360 },
+        border: {
+          bottom: { style: BorderStyle.SINGLE, size: 6, color: "999999", space: 8 },
+        },
       },
     },
     {
@@ -385,7 +440,7 @@ const styles = {
       next: "Normal",
       quickFormat: true,
       run: { font: "Cambria", size: 27, bold: true, color: "1A1A1A" },
-      paragraph: { spacing: { before: 360, after: 160 }, outlineLevel: 1 },
+      paragraph: { spacing: { before: 360, after: 160 }, outlineLevel: 1, ...HEADING_KEEP },
     },
     {
       id: "Heading3",
@@ -394,7 +449,7 @@ const styles = {
       next: "Normal",
       quickFormat: true,
       run: { font: "Cambria", size: 23, bold: true, italics: true },
-      paragraph: { spacing: { before: 240, after: 120 }, outlineLevel: 2 },
+      paragraph: { spacing: { before: 240, after: 120 }, outlineLevel: 2, ...HEADING_KEEP },
     },
     {
       id: "Code",
@@ -408,6 +463,7 @@ const styles = {
         spacing: { before: 0, after: 0, line: 240, lineRule: "auto" },
         indent: { left: 360 },
         shading: { type: ShadingType.CLEAR, fill: "F2F2F2" },
+        widowControl: true,
       },
     },
     {
@@ -416,12 +472,13 @@ const styles = {
       basedOn: "Code",
       next: "CodeOutput",
       quickFormat: true,
-      run: { font: "Consolas", size: 19, color: "444444" },
+      run: { font: "Consolas", size: 19, color: "3A3A3A", italics: true },
       paragraph: {
         shading: { type: ShadingType.CLEAR, fill: "FFFFFF" },
         border: {
           left: { style: BorderStyle.SINGLE, size: 6, color: "999999", space: 4 },
         },
+        widowControl: true,
       },
     },
     {
@@ -434,6 +491,7 @@ const styles = {
       paragraph: {
         indent: { left: 720, right: 720 },
         spacing: { before: 120, after: 120 },
+        widowControl: true,
       },
     },
     {
@@ -473,16 +531,43 @@ const styles = {
           left: { style: BorderStyle.SINGLE, size: 12, color: "666666", space: 8 },
         },
         spacing: { before: 120, after: 120 },
+        widowControl: true,
       },
     },
   ],
 };
 
+// ---------- headers / footers ----------
+
+const footerDefault = new Footer({
+  children: [
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [
+        new TextRun({ children: [PageNumber.CURRENT], color: "666666", size: 18 }),
+      ],
+    }),
+  ],
+});
+const footerFirst = new Footer({ children: [new Paragraph({ text: "" })] });
+
+const headerDefault = new Header({
+  children: [
+    new Paragraph({
+      alignment: AlignmentType.RIGHT,
+      children: [
+        new TextRun({ text: "Thinking 8th", italics: true, color: "999999", size: 18 }),
+      ],
+    }),
+  ],
+});
+const headerFirst = new Header({ children: [new Paragraph({ text: "" })] });
+
 // ---------- assemble document ----------
 
 const bodyChildren = [];
 
-// Title page
+// Title page (no header/footer content here -- see titlePage/first below)
 bodyChildren.push(
   new Paragraph({ style: "Title", text: "Thinking 8th" }),
   new Paragraph({
@@ -493,23 +578,24 @@ bodyChildren.push(
     alignment: AlignmentType.CENTER,
     children: [
       new TextRun({
-        text: "Editable manuscript master \u2014 work in progress",
+        text: "Editable manuscript master — work in progress",
         italics: true,
         color: "666666",
       }),
     ],
-  }),
-  new Paragraph({ children: [new PageBreak()] })
+  })
 );
 
-// Table of contents
+// Table of contents. Uses the TOCHeading style (looks like a chapter
+// title, page-break-before included) rather than a real Heading 1, so
+// "Contents" doesn't list itself. The field's own heading sweep is
+// levels 1-3, i.e. the real Heading1/2/3 styles used everywhere else.
 bodyChildren.push(
-  new Paragraph({ heading: HeadingLevel.HEADING_1, text: "Contents" }),
+  new Paragraph({ style: "TOCHeading", text: "Contents" }),
   new TableOfContents("Contents", {
     hyperlink: true,
     headingStyleRange: "1-3",
-  }),
-  new Paragraph({ children: [new PageBreak()] })
+  })
 );
 
 for (const { file } of FILES) {
@@ -540,16 +626,20 @@ const doc = new Document({
     {
       properties: {
         page: {
-          size: { width: 12240, height: 15840 }, // US Letter
-          margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 },
+          size: { width: PROFILE.width, height: PROFILE.height },
+          margin: PROFILE.margin,
         },
+        titlePage: true, // lets the first page use its own (blank) header/footer
       },
+      headers: { default: headerDefault, first: headerFirst },
+      footers: { default: footerDefault, first: footerFirst },
       children: bodyChildren,
     },
   ],
 });
 
 Packer.toBuffer(doc).then((buffer) => {
+  fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   fs.writeFileSync(OUT_PATH, buffer);
-  console.log("Wrote", OUT_PATH, buffer.length, "bytes");
+  console.log("Wrote", OUT_PATH, buffer.length, "bytes", `[${PROFILE.label}]`);
 });
