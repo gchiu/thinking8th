@@ -1,0 +1,11 @@
+\ stock-component.8th -- Thinking 8th, Chapter 5
+\ A small component, in its own file, meant to be loaded with f:include
+\ rather than run directly.
+
+0 var, total
+
+: stock:add    \ n --
+  total @ n:+ total ! ;
+
+: stock:count  \ -- n
+  total @ ;

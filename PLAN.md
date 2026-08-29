@@ -62,8 +62,8 @@ different titles/content than a first guess suggested.
 | 2 | Analysis | done | `chapter02-analysis.md` |
 | 3 | Preliminary Design/Decomposition | done | `chapter03-decomposition.md` |
 | 4 | Detailed Design/Problem Solving | done | `chapter04-detailed-design.md` |
-| 5 | *(check `chapter5.tex` before assuming)* | in progress / next | `chapter05-*.md` |
-| 6 | — | not started | — |
+| 5 | Implementation: Elements of Forth Style | done | `chapter05-style.md` |
+| 6 | *(check `chapter6.tex` before assuming)* | not started / next | `chapter06-*.md` |
 | 7 | — | not started | — |
 | 8 | — | not started | — |
 | A–E | Appendices | not started, may not all be needed | — |

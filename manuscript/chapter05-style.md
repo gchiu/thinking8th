@@ -1,0 +1,215 @@
+# Chapter 5: Elements of Style
+
+Badly written Forth has been compared to code that went through a trash
+compactor, and 8th earns the same warning honestly: a language with this
+little enforced structure gives you the freedom to write something
+genuinely hard to read, right alongside the freedom to write something
+exceptionally clear. Nothing in the language nudges you toward either
+one. Style — how you organize source across files, how you comment, how
+you name things — is what decides which freedom you actually used.
+
+This chapter is about that decision: organizing source, documenting
+stack effects precisely, and choosing names that pull their weight.
+
+## Organizing Your Source
+
+In 1984, Forth stored source code in fixed-size "screens" — literally,
+disk blocks, addressed by number, loaded with directives like `-->` and
+`THRU` that told the system which screens to read next. A large chunk of
+Brodie's original chapter is about disciplines for numbering and loading
+screens well. None of that exists in 8th, or in most other languages
+written since: 8th source lives in ordinary text files, of any length,
+organized however your filesystem lets you organize anything else. The
+mechanism is gone; the underlying question it was trying to answer isn't:
+*given a program built from many small words across many components, how
+should the source be laid out so a reader can find their way around it?*
+
+The answer Chapter 3 already gave for *words within one file* — let the
+order mirror the "uses" hierarchy, foundations before what's built on
+them — extends naturally to *files within a project*: put each component
+in its own file, and load the files a component depends on before the
+files that use it.
+
+8th's word for this is `f:include`. Give it a file path (as a string,
+the same as any other), and it reads that file and runs it, exactly as
+if you'd typed its contents at this point yourself — which means every
+word the included file defines becomes available immediately afterward:
+
+```8th
+\ stock-component.8th
+0 var, total
+
+: stock:add    \ n --
+  total @ n:+ total ! ;
+
+: stock:count  \ -- n
+  total @ ;
+```
+
+```8th
+\ stock-main.8th
+"code/ch05/stock-component.8th" f:include
+
+5 stock:add
+3 stock:add
+stock:count . cr    \ => 8
+```
+
+```text
+8
+```
+
+This is [`code/ch05/stock-main.8th`](../code/ch05/stock-main.8th) and
+[`code/ch05/stock-component.8th`](../code/ch05/stock-component.8th), run
+together exactly as shown, from the repository root.
+
+That last detail matters and is easy to get wrong: `f:include`'s path is
+resolved relative to *the current working directory at the moment you
+run the program* — not relative to the file doing the including, the way
+some other languages' import statements work. `stock-main.8th` says
+`"code/ch05/stock-component.8th"`, which only resolves correctly because
+this book's convention (established in "Getting 8th and Running Your
+First Program") is to always run examples from the repository root. Move
+either file, or run it from somewhere else, and the path needs updating
+to match — 8th won't figure out "the file next to me" on your behalf.
+
+*(8th also has `needs`, which loads a file by name from a fixed set of
+library locations — worth knowing about, but a different tool: it's for
+pulling in a shared library that lives in one of those known places, not
+for organizing the files of your own application relative to each
+other.)*
+
+## Formatting: Spacing and Indentation
+
+Nothing in 8th enforces indentation — you could write every example in
+this book as one unbroken line and it would run identically. Every
+example in this book has nonetheless been indented consistently:
+`if`/`else`/`then` bodies indented one level in, a `repeat`/`while!`
+body indented the same way, a word's body indented under its `:` line.
+None of that was called out explicitly until now, because the pattern
+itself was the lesson — by Chapter 3 or so, the indentation was
+probably already telling you where a conditional's branches began and
+ended before you'd consciously noticed it doing so. That's what
+consistent formatting is *for*: structure a reader can absorb without
+deliberately parsing it.
+
+## Documenting Stack Effects, Precisely
+
+"A Note on Notation" introduced the shape of a stack-effect comment —
+`\ inputs -- outputs` — but not a shared vocabulary for describing what
+those inputs and outputs *are*. A small set of one- or two-letter
+abbreviations, used consistently, makes a SED readable at a glance
+without reading the word's body at all:
+
+| abbreviation | means |
+|---|---|
+| `n` | a number |
+| `s` | a string |
+| `flag` | a boolean |
+| `a` | an array |
+| `m` | a map |
+| `ref` | a variable reference (what a `var`'s bare name produces) |
+
+Every SED already shown in this book happens to follow this vocabulary
+— `\ hours -- cents` and `\ level -- feet` are really `n -- n` with more
+specific names substituted where the specific meaning mattered more than
+the type. Both are legitimate; use the specific name when it adds real
+information, the generic abbreviation when the type is all that matters.
+
+Some words don't have *one* stack effect — they have one for each
+outcome. Chapter 4's `level-open?` always returns exactly one flag, but
+plenty of realistic words return different *numbers* of things depending
+on what happened. A division that has to handle "don't divide by zero"
+is a small, honest example:
+
+```8th
+: safe-div  \ n1 n2 -- n1/n2 true | false
+  dup 0 n:= if
+    drop drop false
+  else
+    n:/ true
+  then ;
+
+10 2 safe-div . cr . cr    \ => true, then 5
+10 0 safe-div . cr         \ => false
+```
+
+```text
+true
+5
+false
+```
+
+Read the SED's `|` as "or": either the division succeeds and you get the
+quotient followed by `true`, or it doesn't and you get `false` alone —
+two genuinely different stack pictures for the same word, both written
+out in full, because writing only one of them would silently promise
+something that isn't always true.
+
+## Choosing Names
+
+Short names are easier to read than long ones — *if* they're still
+clear. `space-available?` earns its length because "free?" or "ok?"
+would have been too vague to be worth the four fewer characters; `.`
+earns its brevity because "print" would add nothing that context
+doesn't already supply. There's no formula for this, only the test of
+reading the finished line back and asking whether a stranger would
+understand it.
+
+One instinct worth resisting: naming a word to describe everything it
+does, rather than what it *is*. A prefix or suffix is for
+*distinguishing* one word from a similarly-named other, not for cramming
+a description into the name itself. `garage-full?` doesn't need to be
+`garage-currently-at-maximum-capacity-flag` — the `?` alone tells a
+reader "this is a question, expect a boolean back," which is exactly as
+much as the name needs to promise.
+
+That `?` is doing real, and by now familiar, work. Look back over this
+book's own examples: `hurried?`, `space-available?`, `due?`, `plausible?`,
+`level-open?` — every predicate this book has written, without the
+convention ever being named until now, ends in `?`. That's not a
+coincidence and it isn't unique to this book; it's close to universal
+practice across Forth and 8th alike, precisely because it costs one
+character and answers a real question — "can I use this directly in an
+`if`?" — before you've read a single line of the definition.
+
+8th gives this instinct a second, formal outlet beyond suffixes:
+namespaces. Chapter 1 already made the case that 8th's built-in `n:`,
+`s:`, `a:` are namespaces doing, as an enforced language feature, what
+Forth programmers used to do only by naming discipline. The same tool is
+available for your own components — nothing restricts namespace prefixes
+to 8th's own built-in words:
+
+```8th
+: stock:add    \ n --
+  total @ n:+ total ! ;
+
+: stock:count  \ -- n
+  total @ ;
+```
+
+`stock:add` and `stock:count`, from the file-organization example
+above, already used this: the `stock:` prefix says, at the call site and
+not just in the defining file, which component a word belongs to — the
+same information a suffix like `?` gives about a word's *return type*,
+now given about its *component membership* instead. Between namespace
+prefixes for "which component" and suffixes like `?` for "what kind of
+answer," 8th's own naming toolkit covers most of what Forth programmers
+used to negotiate by convention alone.
+
+## Summary
+
+8th's freedom from enforced structure doesn't make style optional — it
+makes style the entire difference between readable and unreadable code,
+since nothing else will supply that difference for you. Organize source
+files the way Chapter 3 already taught you to organize words within one
+file: foundations first, loaded with `f:include`, paths resolved
+relative to where the program runs from rather than where the including
+file lives. Format consistently enough that structure is visible before
+it's read. Write stack-effect comments with a shared vocabulary of
+abbreviations, and write out every genuinely different outcome a word
+can have rather than picking one to document and hoping the rest are
+close enough. And name things to distinguish, not to describe — a `?`
+suffix or a namespace prefix carries real information in one or two
+characters; a long descriptive name usually carries less than it looks
+like it does.

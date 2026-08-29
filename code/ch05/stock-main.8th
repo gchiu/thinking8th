@@ -1,0 +1,13 @@
+\ stock-main.8th -- Thinking 8th, Chapter 5
+\ Verified with: 8th code/ch05/stock-main.8th   (run from the repo root)
+\
+\ Loads the stock component from its own file with f:include, then uses
+\ the words it defines exactly as if they'd been typed directly here.
+
+"code/ch05/stock-component.8th" f:include
+
+5 stock:add
+3 stock:add
+stock:count . cr    \ => 8
+
+bye

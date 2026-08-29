@@ -1,0 +1,18 @@
+\ safe-div.8th -- Thinking 8th, Chapter 5
+\ Verified with: 8th code/ch05/safe-div.8th
+\
+\ A word with a genuinely variable stack effect: it returns different
+\ numbers of things depending on what happened, documented with the
+\ SED "|" (or) convention rather than picking one outcome to document.
+
+: safe-div  \ n1 n2 -- n1/n2 true | false
+  dup 0 n:= if
+    drop drop false
+  else
+    n:/ true
+  then ;
+
+10 2 safe-div . cr . cr    \ => true, then 5
+10 0 safe-div . cr         \ => false
+
+bye
