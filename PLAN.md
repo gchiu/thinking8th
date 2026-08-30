@@ -63,10 +63,27 @@ different titles/content than a first guess suggested.
 | 3 | Preliminary Design/Decomposition | done | `chapter03-decomposition.md` |
 | 4 | Detailed Design/Problem Solving | done | `chapter04-detailed-design.md` |
 | 5 | Implementation: Elements of Forth Style | done | `chapter05-style.md` |
-| 6 | *(check `chapter6.tex` before assuming)* | not started / next | `chapter06-*.md` |
-| 7 | — | not started | — |
-| 8 | — | not started | — |
+| 6 | Factoring | done | `chapter06-factoring.md` |
+| 7 | Handling Data: Stacks and States | split across two of our chapters (see below) | `chapter07-taming-the-stack.md` + a future `chapter08-*.md` |
+| 8 | *(check `chapter8.tex` before assuming)* | not started | `chapter09-*.md` (see note) |
 | A–E | Appendices | not started, may not all be needed | — |
+
+Brodie's chapter 7 turned out too large and too mixed (genuinely
+portable stack/local-variable discipline alongside two large, deeply
+Forth-memory-specific mechanisms — `CREATE`/`DOES>` state tables and
+`DOER`/`MAKE` vectored execution) for one of our chapters. Split:
+**our Chapter 7** ("Taming the Stack," done) covers the portable half —
+escaping a crowded stack, word-local variables, the auxiliary `>r`
+stack, save/restore-as-bad-factoring, sharing a component safely.
+**A future Chapter 8** will cover the rest — Brodie's "State Table"
+section (idiomatic target: 8th's maps/`o:` namespace, replacing raw
+indexed memory) and "Vectored Execution" section (idiomatic target:
+8th's native `defer:`/`w:is`, which looks like a direct, cleaner
+replacement for hand-rolled `DOER`/`MAKE` — confirmed to exist in
+`docs/md/07_words_interpreter.md`, not yet verified against the
+runtime). This pushes Brodie's own chapter 8 to become *our* Chapter 9;
+its real title hasn't been checked yet — read `chapter8.tex` before
+assuming, per this project's standing rule.
 
 Depth over speed: a chapter isn't "done" until its code has actually run
 and its prose has actually been read back for the beginner-readability
