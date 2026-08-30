@@ -278,8 +278,12 @@ committed along with this handoff update. Nothing is mid-chapter.
   data-flow diagram `fig2-3`, Ch.3's interface-seam diagrams
   `fig3-8`/`fig3-9`, Ch.4's water-jug diagrams `fig4-1`–`fig4-3`, and a
   newly-found Ch.4 noun-verb illustration `img4-110`). **No artwork was
-  inserted anywhere** — per explicit instruction, this was a
-  documentation-only audit.
+  inserted anywhere at the time this was written** — per explicit
+  instruction, this was a documentation-only audit. **Superseded
+  2026-08-30 (later the same day):** Graham reviewed and directed
+  insertion; all ten of these are now real images in
+  `manuscript/illustrations/`, wired into Chapters 1-4. See the
+  session log entry below dated the same day for what changed and why.
 - **Licensing/build uncertainty logged in `GAPS.md`**: the archive
   carries one blanket CC BY-NC-SA 2.0 notice over Brodie's whole work,
   including his own illustrations ("With illustrations by the author"
@@ -430,6 +434,53 @@ illustration audit for Ch.1–5 is complete and will not need repeating.
    (see `PLAN.md`'s renumbering note).
 4. Same method as always, and the same beginner-readability rule
    (stated near the top of this file) applied from the first draft.
+
+---
+
+## Session: 2026-08-30 (same day, later) — Illustrations wired in
+
+Graham reviewed the illustration findings above and gave two follow-up
+instructions in chat: resolve the two ambiguous-image findings, then
+wire the verified images into Chapters 1-7 and regenerate the proof.
+
+**Resolved:** the `UNKNOWN-01..07` batch is a confirmed duplicate of
+`fig3-2`..`fig3-8` (viewed both directly, identical) — no real conflict.
+`img7-211` stays mismatched and unused; irrelevant to Ch.1-7 since it's
+Chapter 8 material that doesn't exist yet.
+
+**Wired in:** the 10 previously-`GENUINELY-MISSING` figures (Ch.1's
+`fig1-7`/`fig1-8`/`fig1-9`, Ch.2's `fig2-3`, Ch.3's `fig3-8`/`fig3-9`,
+Ch.4's `fig4-1`/`fig4-2`/`fig4-3`/`img4-110`) are now real images,
+copied into a new tracked `manuscript/illustrations/` directory and
+referenced from `chapter01-philosophy.md` through
+`chapter04-detailed-design.md` with original captions. `ILLUSTRATIONS.md`
+and `GAPS.md` are updated to `INSERTED` status with full detail; don't
+re-read this paragraph as the authoritative record, read those.
+
+**Build tool:** `tools/build-docx.js` didn't support images at all
+before this — added markdown `![caption](path)` parsing, a PNG-header
+dimension reader, and page-fit sizing. While proofing the result, found
+and fixed a real pre-existing bug unrelated to images: every numbered
+list in the document shared one numbering counter, so the second and
+third numbered lists in the book started at 4./5. instead of 1./2.
+(now each gets its own reference). `.gitignore`'s blanket `*.png` rule
+needed a new carve-out for `manuscript/illustrations/`, or the commit
+would have silently dropped the images.
+
+Rebuilt and visually spot-checked all 72 pages of the proof PDF (up
+from 63 before images). Committed and pushed
+(`6c53455`) — working tree clean apart from the still-intentionally-
+untracked `thinking-forth-1.0/png/`.
+
+**Stopping point:** Chapters 1-4's illustration gaps are closed.
+Chapters 5-7 have nothing to insert (already established: Ch.5's two
+figures are decorative, Ch.6's two are code/ASCII listings already
+reproduced as real code, Ch.7's are deferred to the not-yet-written
+Chapter 8). Next task is unchanged from above: write Chapter 8
+(state tables via maps, vectored execution via `defer:`/`w:is`),
+verify `defer:`/`w:is` against the real runtime before assuming it
+behaves like Brodie's `DOER`/`MAKE`, then revisit the Chapter 7/8
+figure entries once that chapter's content exists to anchor them to.
 
 ---
 
