@@ -315,3 +315,16 @@ retroactive entries above, which are logged here only.
     mechanism in prose rather than walking through it step-by-step the
     way Brodie's figures do, since 8th's own `defer:`/`w:is` replacement
     doesn't have (or need) that same compile-time trick to illustrate.
+- **Chapter 8, i.e. `chapter8.tex` (Brodie's "Minimizing Control
+  Structures," this project's Chapter 9), has six figure references**:
+  `fig8-1` through `fig8-5` are `\verbfig` — code/pseudocode listings,
+  not drawn art, matching the "Chapter 6 onward" pattern of BVerbatim
+  figures needing no illustration slot at all. `fig8-6` ("The Epson
+  MX-80 graphics character set") is real drawn art (`\wepsfiga`) and
+  was already viewed this session (a grid of tiny character-code
+  glyphs, `code/ch09/pixel-code.8th`'s ultimate inspiration) — but this
+  adaptation's "Calculating Instead of Deciding" section deliberately
+  generalized Brodie's printer-specific example into an abstract
+  six-pixel calculation, so the actual Epson glyph-set image doesn't
+  match what the text describes. NOT-USED-IN-ADAPTATION, not missing —
+  revisit only if a future pass restores the printer-specific framing.

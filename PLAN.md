@@ -65,7 +65,7 @@ different titles/content than a first guess suggested.
 | 5 | Implementation: Elements of Forth Style | done | `chapter05-style.md` |
 | 6 | Factoring | done | `chapter06-factoring.md` |
 | 7 | Handling Data: Stacks and States | split across two of our chapters (see below) | `chapter07-taming-the-stack.md` + `chapter08-bundling-state.md` |
-| 8 | *(check `chapter8.tex` before assuming)* | not started | `chapter09-*.md` (see note) |
+| 8 | Minimizing Control Structures | done | `chapter09-minimizing-control-structures.md` |
 | A–E | Appendices | not started, may not all be needed | — |
 
 Brodie's chapter 7 turned out too large and too mixed (genuinely
@@ -81,10 +81,20 @@ the rest — Brodie's "State Table" section, using 8th's maps and
 place of raw indexed memory, and "Vectored Execution", using 8th's
 native `defer:`/`w:is` in place of hand-rolled `DOER`/`MAKE` — verified
 against the runtime, including the one corner (self-recursion) that
-doesn't map onto `defer:` at all and uses `recurse` instead. This
-pushes Brodie's own chapter 8 to become *our* Chapter 9; its real title
-hasn't been checked yet — read `chapter8.tex` before assuming, per this
-project's standing rule.
+doesn't map onto `defer:` at all and uses `recurse` instead. Brodie's
+own chapter 8, "Minimizing Control Structures," became *our* Chapter 9
+("Minimizing Control Structures," done) — condensed substantially:
+case statements, decide-vs-calculate, and decision tables were already
+covered (Ch.2/4/6/7/8), so Chapter 9 focuses on what hadn't been shown
+yet — `a:when`/`a:when!` for sequential guarded dispatch with a default,
+a two-dimensional decision table via compound map keys, `n:min`/`n:max`
+for clipping, arithmetic bit-packing, and an honest note that classic
+Forth's boolean-as-integer `AND` trick and its return-stack-based
+`R> DROP` early-exit technique both have no 8th equivalent (real
+booleans; `>r`/`r>` deliberately isn't the real return stack) and don't
+need one, since 8th already has safer, dedicated words for the same
+jobs. Appendices are next, if wanted — check with Graham before
+assuming they're in scope.
 
 Depth over speed: a chapter isn't "done" until its code has actually run
 and its prose has actually been read back for the beginner-readability

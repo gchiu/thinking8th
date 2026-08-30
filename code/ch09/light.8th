@@ -1,0 +1,19 @@
+\ light.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/light.8th
+\
+\ Store the actual value, not a flag some later code has to check --
+\ "light" folds the brightness bit directly into the color itself.
+\ n:bor is bitwise-OR on numbers, a different word from the boolean
+\ "or" used elsewhere in this chapter -- 8th keeps the two honestly
+\ separate, unlike classic Forth where a boolean was just an integer.
+
+0 constant black
+1 constant blue
+2 constant green
+
+: light  \ color -- color
+  8 n:bor ;
+
+blue light . cr    \ => 9
+
+bye

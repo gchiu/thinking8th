@@ -1,0 +1,11 @@
+\ clip.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/clip.8th
+\
+\ Clamping is a decision only if you write it as one -- n:max folds
+\ "don't go below zero" into the arithmetic itself.
+
+0 var, value
+value @ 1 n:- 0 n:max value !
+value @ . cr    \ => 0
+
+bye

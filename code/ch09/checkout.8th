@@ -1,0 +1,38 @@
+\ checkout.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/checkout.8th
+\
+\ Guard clauses (;then, from Chapter 4) reject early for reasons that
+\ have nothing to do with which button was pressed; a:when dispatches
+\ on the button itself, with a trailing unpaired word as the default.
+
+true var, card-valid?
+true var, balance-ok?
+"" var, pressed
+
+: reject     "transaction rejected\n" . ;
+: withdraw   "dispensing cash\n" . ;
+: deposit    "accepting envelope\n" . ;
+
+: withdraw?  pressed @ "withdraw" s:= ;
+: deposit?   pressed @ "deposit" s:= ;
+
+: checkout  \ button --
+  card-valid? @ not if drop reject ;then
+  balance-ok? @ not if drop reject ;then
+  pressed !
+  [ ' withdraw? , ' withdraw ,
+    ' deposit? , ' deposit ,
+    ' reject ]
+  a:when ;
+
+"withdraw" checkout
+
+false card-valid? !
+"withdraw" checkout
+
+true card-valid? !
+"deposit" checkout
+
+"anything-else" checkout
+
+bye

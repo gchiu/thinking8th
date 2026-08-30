@@ -1,0 +1,29 @@
+\ pixel-code.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/pixel-code.8th
+\
+\ Packing six independent on/off pixels into one number as a sum of
+\ precomputed weights -- multiplying by 0 or 1 already is the decision
+\ of whether to include each pixel, so no if is needed at all.
+
+[ 0 , 1 , 0 , 1 , 1 , 0 ] var, pixels
+[ 1 , 2 , 4 , 8 , 16 , 32 ] constant weights
+
+locals:
+: contribution  \ i -- n
+  "i" w:!
+  weights "i" w:@ caseof
+  pixels @ "i" w:@ caseof
+  n:* ;
+
+: character  \ -- code
+  160
+  0 contribution n:+
+  1 contribution n:+
+  2 contribution n:+
+  3 contribution n:+
+  4 contribution n:+
+  5 contribution n:+ ;
+
+character . cr    \ => 186
+
+bye

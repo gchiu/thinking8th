@@ -1,0 +1,32 @@
+\ mode-dispatch.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/mode-dispatch.8th
+\
+\ A decision that depends on two independent things at once (which
+\ key, in which mode) collapses back into caseof's ordinary
+\ one-dimensional lookup once the two are joined into one compound key.
+
+"normal" var, mode
+
+: cursor-left     "cursor left\n" . ;
+: cursor-right    "cursor right\n" . ;
+: insert-on       "insert mode on\n" . ;
+: insert-off      "insert mode off\n" . ;
+
+{
+  "normal:left" : ' cursor-left ,
+  "normal:right" : ' cursor-right ,
+  "normal:i" : ' insert-on ,
+  "insert:left" : ' insert-off ,
+  "insert:right" : ' insert-off ,
+  "insert:i" : ' insert-off
+} constant actions
+
+: dispatch  \ key --
+  mode @ ":" s:+ swap s:+ actions swap caseof ;
+
+"i" dispatch
+"insert" mode !
+"left" dispatch
+"i" dispatch
+
+bye

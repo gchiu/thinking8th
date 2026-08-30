@@ -81,14 +81,19 @@ skip, never a prerequisite.
 | `manuscript/chapter06-factoring.md` (Ch.6, "Factoring") | done |
 | `manuscript/chapter07-taming-the-stack.md` (Ch.7, "Taming the Stack") | done |
 | `manuscript/chapter08-bundling-state.md` (Ch.8, "Bundling State, Redirecting Behavior") | done |
+| `manuscript/chapter09-minimizing-control-structures.md` (Ch.9, "Minimizing Control Structures") | done |
 
 Our Chapters 7 and 8 together cover Brodie's actual chapter 7
 ("Handling Data: Stacks and States") — see `PLAN.md` for why it was
-split. Brodie's own chapter 8 becomes *our* Chapter 9; its real title
-hasn't been checked yet.
+split. Our Chapter 9 is Brodie's actual chapter 8, same title
+("Minimizing Control Structures") — condensed substantially since much
+of it (case statements, decide-vs-calculate, decision tables) was
+already covered in earlier chapters; see `PLAN.md` for exactly what's
+new there.
 
 See `PLAN.md` for the full chapter map against Brodie's actual table of
-contents and the current chapter-8-onward status.
+contents. Only the appendices remain unaccounted for — check with
+Graham whether they're in scope before starting on them.
 
 ---
 

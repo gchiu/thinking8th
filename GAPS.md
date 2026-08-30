@@ -86,6 +86,39 @@ file when something here gets resolved, or when a new one turns up.
   8th's own docs note that invoking a word's own name inside its
   definition is deprecated in favor of `recurse`. Verified with a
   factorial in `code/ch08/recurse.8th`.
+- **8th's `true`/`false` are a genuine, distinct Boolean type, not
+  integers.** `true 1 n:+` throws `Expected Number but got Boolean` —
+  confirmed directly. This rules out classic Forth's trick of using a
+  boolean (represented as all-bits-set, i.e. `-1`) directly as a number
+  to eliminate an `IF` (`( ? ) n AND` in place of `( ? ) IF n ELSE 0
+  THEN`) — there's nothing to translate, the operands are different
+  types. Bitwise operations on numbers are a separate, namespaced pair,
+  `n:bor`/`n:band`, distinct from the boolean `and`/`or`. Verified in
+  `code/ch09/light.8th`.
+- **`and`/`or` are plain boolean combinators and do not (and structurally
+  cannot) short-circuit** — both operands are already computed and on
+  the stack before the combinator runs, since that's simply how a stack
+  language evaluates an expression. Brodie's advice to nest with `if`
+  instead of combining with `or`/`and` when one check is much more
+  expensive than the other applies to 8th exactly as stated, for the
+  same underlying reason. Verified (the combinators, not the
+  short-circuit absence, which follows from the language's evaluation
+  order rather than needing a runtime test) in `code/ch09/combine.8th`.
+- **`a:when`/`a:when!` (documented under the unprefixed alias `when` in
+  `docs/md/06_flow_control.md`, but the real word is namespaced) run a
+  sequence of (test, action) word pairs and stop at the first true
+  test** — `a:when!` doesn't stop, running every matching action
+  instead. A final, unpaired word in the array acts as a default,
+  invoked only if nothing else matched. Confirmed against
+  `docs/help.sql`; verified in `code/ch09/checkout.8th` and
+  `code/ch09/mode-dispatch.8th`.
+- **`caseof` invoking a word with no return value leaves nothing extra
+  on the stack** — despite its documented signature always showing one
+  output (`a n -- x`), a zero-argument, no-return word invoked through
+  `caseof` doesn't leave a stray `null` or anything else behind.
+  Confirmed by checking stack depth before and after. Relevant any time
+  `caseof` dispatches to plain `--` action words, as in
+  `code/ch09/checkout.8th`.
 
 ## Genuinely unexplored (haven't needed them yet)
 

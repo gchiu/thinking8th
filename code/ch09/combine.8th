@@ -1,0 +1,15 @@
+\ combine.8th -- Thinking 8th, Chapter 9
+\ Verified with: 8th code/ch09/combine.8th
+\
+\ Two related conditions combined into one test, reading like the
+\ English sentence it replaces.
+
+true var, phone-ringing?
+false var, alarm-ringing?
+
+: should-get-up?  \ -- flag
+  phone-ringing? @ alarm-ringing? @ or ;
+
+should-get-up? . cr    \ => true
+
+bye
