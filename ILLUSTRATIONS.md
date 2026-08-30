@@ -171,8 +171,17 @@ point against this book's current text.
    Original replacement: the same two-box-vs-three-box shape, using this
    book's own `mode`/`set-mode` vocabulary instead of generic
    `BUFFER A`/`THING B`.
-4. **Chapter 4, "Getting Unstuck," the water-jug example.** Archive:
-   `fig4-1.eps`, `fig4-2.eps`, `fig4-3.eps` — `fig4-2` and `fig4-3`
+4. **Chapter 4, "Getting Unstuck," the water-jug example — plus a
+   distinct preceding figure, `fig4-1`, easy to conflate with it but
+   not actually part of it.** `fig4-1`'s caption is "A problem that is
+   easier to solve backward than forward" — a general "getting
+   unstuck" illustration for the section's opening point, not the
+   water-jug puzzle itself. Now **viewed** (a redrawn PNG for it turned
+   up after this entry was first written): it's a hand-drawn maze,
+   labeled "Start" and "End," with no numbers or jugs in it at all —
+   confirms it's a standalone backward-reasoning analogy, not a third
+   view of the two containers. Archive: `fig4-1.eps`, `fig4-2.eps`,
+   `fig4-3.eps` — `fig4-2` and `fig4-3`
    **viewed**. `fig4-2` is simply the two containers, drawn as labeled
    barrels ("9" and "4") in a stream. `fig4-3` is the genuinely useful
    one: a 2×2 grid contrasting "Version A" (the wrong guess, 2+4=6) against
@@ -250,3 +259,19 @@ retroactive entries above, which are logged here only.
     8th's maps and `defer:`/`w:is` are the planned idiomatic targets,
     not yet written or verified. Revisit this entry once that chapter
     exists.
+    **Update, next session:** redrawn PNGs for four of these turned up
+    in `thinking-forth-1.0/png/` and were viewed. `fig7-1` ("Example of
+    a stack commentary") matches its caption exactly — a hand-drawn
+    `CMOVE>` stack-effect worksheet with Operations/Stack-effects/
+    Return-stack columns. `fig7-3` ("Conceptual model for saving a
+    state table") and `fig7-5` ("...alternating-states tables") also
+    match exactly — labeled-box arrays (`POINTERS`→`SAVED`, then
+    `REAL`/`PSEUDO` side by side), genuinely useful references for
+    writing the future Chapter 8's map-based state-table treatment.
+    **`img7-211` does NOT match its caption** — the caption is a
+    cannon/fast-train/windmill/trapeze/hot-air-balloon joke ending "I
+    told you Ace, there were too many variables," but the PNG shows an
+    unrelated scene (a woman beside a hospital bed with a bandaged,
+    traction-suspended patient). Do not use or describe this PNG as
+    the "too many variables" cartoon — it's mislabeled or was
+    misgenerated. `fig7-7`/`fig7-8`/`fig7-9` still have no PNG.

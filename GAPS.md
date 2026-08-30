@@ -112,6 +112,29 @@ file when something here gets resolved, or when a new one turns up.
   convention, whether it's automatic, timing) are known yet; re-check
   this note and the repo root next session before assuming the old
   `thinking-forth-1.0/png/*.png` set is still the authoritative one.
+- **Follow-up, same session, confirmed:** Graham's update landed as an
+  in-place refresh of `thinking-forth-1.0/png/` itself (76 PNGs now, up
+  from 64; no separate root-level `png/` appeared) — an external
+  AI-image redrawing process, not a mechanical EPS rasterizer, going by
+  `png/README-filenames.txt`'s own wording ("These 7 redrawn diagrams
+  are bundled from the latest batch..."). Spot-checked several figures
+  already described in this file's Ch.1-5 audit against the refreshed
+  versions (`fig1-7`, `fig1-9`, `fig2-3`, `fig3-8`, `fig3-9`, `fig4-2`,
+  `fig4-3`) — all still match their captions and this project's earlier
+  descriptions, so those write-ups in `ILLUSTRATIONS.md` stand. **Two
+  real problems turned up, though, and this set should not be treated
+  as verified/authoritative without checking each figure individually:**
+  (a) `png/img7-211.png` does not depict its actual caption (a cannon/
+  windmill/trapeze/balloon "too many variables" joke) — the image shown
+  is an unrelated hospital-bed scene, either mislabeled or misgenerated;
+  (b) `png/README-filenames.txt` + `png/DESCRIPTIONS.txt` document a
+  batch of 7 files temporarily named `UNKNOWN-01..07` that DESCRIPTIONS.txt
+  maps to `fig3-2` through `fig3-8` — but properly-named `fig3-2.png`
+  through `fig3-8.png` *also* already exist in the same folder, so
+  there are two candidate versions of those seven figures and no way to
+  tell from inside this project which one is authoritative. Don't use
+  either the `UNKNOWN-*` files or assume the `fig3-*` ones are the
+  "final" versions without asking Graham which batch is meant to win.
   Because these
   existed, the six "genuinely missing" figures in `ILLUSTRATIONS.md`
   were viewed directly rather than inferred from caption text alone.
