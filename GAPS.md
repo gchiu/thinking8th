@@ -227,6 +227,44 @@ file when something here gets resolved, or when a new one turns up.
   turned out to be plain LaTeX (tables, PSTricks-free layout) rather
   than drawn art — worth checking the `.tex` source first, before
   assuming a `.eps` needs rendering, for any figure that has one.
+- **Correction — `img7-211` was never actually mismatched; the earlier
+  entry above was wrong.** Graham supplied the real 2004 3rd-edition
+  typeset PDF (`thinking-forth-2000/thinking-forth-color.pdf`, CC
+  BY-NC-SA, same license as the archive), which embeds every original
+  figure at its real location. Checked `img7-211` directly there (book
+  p. 209): the picture genuinely *is* a woman standing beside a
+  bandaged, traction-suspended patient — and that's paired with the
+  cannon/windmill/trapeze/balloon caption on purpose. The joke's whole
+  structure is the mismatch between an absurd caption and an unrelated
+  picture (a visual-pun cartoon convention); reading it as "wrong
+  image, wrong caption" was a misread of the joke, not a real
+  discrepancy in the redrawn PNG set. The PNG in `thinking-forth-1.0/
+  png/img7-211.png` was correct all along.
+- **Full spot-check against the same PDF, same session:** every other
+  figure already used in this book's manuscript —
+  `fig1-7`/`fig1-8`/`fig1-9`, `fig2-3`, `fig3-8`/`fig3-9`,
+  `fig4-1`/`fig4-2`/`fig4-3`, `img4-110`, `fig7-1`, `fig7-3`, `fig7-5`,
+  `fig8-6` — was checked against its real page in the PDF and found
+  pixel-identical to the redrawn PNG already in
+  `manuscript/illustrations/`. Also viewed `fig7-7`/`fig7-8`/`fig7-9`
+  (the `DOER`/`MAKE` step-by-step diagrams) for the first time, for
+  completeness — confirmed genuinely useful teaching diagrams, but
+  Chapter 8's `defer:`/`w:is` treatment doesn't walk through `DOER`/
+  `MAKE` step-by-step the way they do, so they remain
+  NOT-USED-IN-ADAPTATION, not missing. The redrawn PNG set turns out to
+  have been remarkably faithful across the board; no image needs
+  replacing. Page-offset note for anyone using this PDF again: PDF page
+  number = printed book page number + 18, confirmed across several
+  widely-spaced samples.
+- **The PDF's 2004 and 1994 prefaces are new material** (Brodie
+  revisiting his 1984 dismissal of object-oriented programming, and
+  comparing *Thinking Forth* to Extreme Programming) — read in full.
+  Nothing in them changes anything already written in this book; if
+  anything they confirm the nuanced treatment `chapter03-decomposition.md`
+  already gives Brodie's OOP critique (narrowing it to one specific
+  dispatch shape rather than OOP broadly) was the right call, since
+  Brodie's own later prefaces walk back the original blanket dismissal
+  the same way.
 
 ## Environment-dependent / not independently verifiable here
 

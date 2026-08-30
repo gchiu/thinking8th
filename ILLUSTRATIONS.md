@@ -1,5 +1,29 @@
 # Illustration Placeholders
 
+## A better source now exists: the 2004 3rd-edition PDF, 2026-08-30
+
+Graham supplied `thinking-forth-2000/thinking-forth-color.pdf` — the
+actual typeset 2004 3rd edition (CC BY-NC-SA, same license as the
+`thinking-forth-1.0/` archive), with every figure embedded at its real
+page. **Page-offset for navigating it: PDF page number = printed book
+page number + 18**, confirmed across several widely-spaced samples.
+Its acknowledgments section explains the `png/` figures' real
+provenance: scanned/typeset originals extracted into PNGs for Chapters
+1, 2, 7, and 8 by the 2004 production team, with the rest translated
+from hand-drawn art to LaTeX.
+
+Spot-checked every figure this book had already used
+(`fig1-7`/`fig1-8`/`fig1-9`, `fig2-3`, `fig3-8`/`fig3-9`,
+`fig4-1`/`fig4-2`/`fig4-3`, `img4-110`, `fig7-1`, `fig7-3`, `fig7-5`,
+`fig8-6`) against this PDF — every one is pixel-identical to the
+redrawn PNG already in `manuscript/illustrations/`. One earlier entry
+in this file (`img7-211`, below) turned out to be a wrong call, now
+corrected in place; everything else stands. See `GAPS.md` for the full
+verification note, including two firsts from this pass:
+`fig7-7`/`fig7-8`/`fig7-9` (the `DOER`/`MAKE` diagrams, viewed for the
+first time — still not used, see below) and the 2004/1994 prefaces
+(new material, read in full, changes nothing already written).
+
 ## Archive audit (Chapters 1–5), 2026-08-30
 
 The Brodie source archive (`thinking-forth-1.0/`) turns out to contain
@@ -293,13 +317,15 @@ retroactive entries above, which are logged here only.
     match exactly — labeled-box arrays (`POINTERS`→`SAVED`, then
     `REAL`/`PSEUDO` side by side), genuinely useful references for
     writing the future Chapter 8's map-based state-table treatment.
-    **`img7-211` does NOT match its caption** — the caption is a
-    cannon/fast-train/windmill/trapeze/hot-air-balloon joke ending "I
-    told you Ace, there were too many variables," but the PNG shows an
-    unrelated scene (a woman beside a hospital bed with a bandaged,
-    traction-suspended patient). Do not use or describe this PNG as
-    the "too many variables" cartoon — it's mislabeled or was
-    misgenerated. `fig7-7`/`fig7-8`/`fig7-9` still have no PNG.
+    ~~`img7-211` does NOT match its caption~~ — **correction, see
+    `GAPS.md`: this was wrong.** Checked against the real 2004 3rd-
+    edition PDF (`thinking-forth-2000/thinking-forth-color.pdf`,
+    supplied by Graham): the picture (a woman beside a bandaged,
+    traction-suspended patient) genuinely is paired with the cannon/
+    windmill/trapeze/balloon caption in the original — the mismatch
+    between an absurd caption and an unrelated picture *is* the joke.
+    The redrawn PNG was correct all along. `fig7-7`/`fig7-8`/`fig7-9`
+    have now been viewed too (same PDF pass) — see below.
     **Update, Chapter 8 written:** `fig7-3` and `fig7-5` are now
     **INSERTED** — copied into `manuscript/illustrations/` and wired
     into `manuscript/chapter08-bundling-state.md`'s "A Table of Related
@@ -308,9 +334,9 @@ retroactive entries above, which are logged here only.
     through Brodie's `CMOVE`-based stack-commentary form at all (it uses
     the map/`G:clone` treatment instead), so the figure has no anchor
     point in this adaptation — NOT-USED-IN-ADAPTATION, not missing.
-    `img7-211` stays unused (still mismatched, and Chapter 8's
-    `defer:`/`w:is` treatment never needed a "too many variables" joke
-    to anchor to). `fig7-7`/`fig7-8`/`fig7-9` (`DOER`/`MAKE` diagrams)
+    `img7-211` stays unused — the image itself is fine (see
+    correction above), but Chapter 8's `defer:`/`w:is` treatment never
+    needed a "too many variables" joke to anchor to. `fig7-7`/`fig7-8`/`fig7-9` (`DOER`/`MAKE` diagrams)
     are NOT-USED-IN-ADAPTATION: Chapter 8 explains `DOER`/`MAKE`'s
     mechanism in prose rather than walking through it step-by-step the
     way Brodie's figures do, since 8th's own `defer:`/`w:is` replacement

@@ -27,6 +27,13 @@ for what that means in practice.
   `thinking-forth-1.0/png/`, verified against Brodie's actual captions,
   then copied into the tracked location above (see `GAPS.md` for the
   verification and licensing history).
+- `thinking-forth-2000/thinking-forth-color.pdf` — the actual typeset
+  2004 3rd edition of *Thinking Forth* (same CC BY-NC-SA license),
+  supplied directly by Graham. Reference only, like `thinking-forth-1.0/`
+  — every figure this book has used was cross-checked against it and
+  confirmed accurate (see `ILLUSTRATIONS.md` and `GAPS.md`). Useful for
+  finding a figure's real page: PDF page number = printed book page
+  number + 18.
 
 Project tracking: [`PLAN.md`](PLAN.md) (method and chapter roadmap),
 [`GAPS.md`](GAPS.md) (uncertain or version-dependent 8th behavior),
