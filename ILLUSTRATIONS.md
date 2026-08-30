@@ -49,7 +49,27 @@ real code, a table, or equivalent prose — not a gap), `DECORATIVE`
 worked example — wasn't adapted into this book at all, so the figure has
 no anchor point here), `GENUINELY-MISSING` (the concept the figure
 supported *is* in this book's text, with nothing visual standing in for
-it).
+it — historical status, see the note below), `INSERTED` (Graham resolved
+the licensing/pedagogical question this file raised, and directed that
+the redrawn PNGs be wired into the manuscript; done 2026-08-30 — see
+"Ten figures wired in" below).
+
+**Update, 2026-08-30 — ten figures wired in.** All ten `GENUINELY-MISSING`
+entries below have been inserted as real images into the manuscript,
+on Graham's explicit instruction, resolving the licensing/pedagogical
+question raised above (his call to make, and he's made it). Source:
+the AI-redrawn PNGs verified against their captions in
+`thinking-forth-1.0/png/` (see `GAPS.md` for that verification work),
+copied into `manuscript/illustrations/` (a new, tracked location —
+`thinking-forth-1.0/` itself stays reference-only and untouched, per
+`README.md`) and referenced from the relevant `chapterNN-*.md` files
+with original, non-Brodie-caption alt text. `tools/build-docx.js` was
+extended to support markdown image syntax (`![caption](path)`) to make
+this possible. The detailed per-figure write-ups below are kept as-is —
+they're still accurate descriptions of what each image shows and why it
+was chosen — but their category is now `INSERTED`, not
+`GENUINELY-MISSING`; see each chapter's manuscript file for the actual
+placement and surrounding prose.
 
 ### Full reference table
 
@@ -64,9 +84,9 @@ it).
 | fig1-5 | 1 | A main program and subroutine in memory | `.eps` | NOT-USED-IN-ADAPTATION (memory layout not discussed) |
 | img1-013 | 1 | "…carried successive refinement far enough" | `.eps` | DECORATIVE |
 | fig1-6 | 1 | Structure chart (HIPO) | `.tex` only | NOT-USED-IN-ADAPTATION (Structured Design section heavily condensed) |
-| fig1-7 | 1 | Structured design vs. component design | `.eps` | **GENUINELY-MISSING** — see below |
-| fig1-8 | 1 | A lexicon describes a component | `.eps` | **GENUINELY-MISSING** — see below |
-| fig1-9 | 1 | The entire application consists of components | `.eps` | **GENUINELY-MISSING** — see below |
+| fig1-7 | 1 | Structured design vs. component design | `.eps` | **INSERTED** — see below |
+| fig1-8 | 1 | A lexicon describes a component | `.eps` | **INSERTED** — see below |
+| fig1-9 | 1 | The entire application consists of components | `.eps` | **INSERTED** — see below |
 | fig1-10 | 1 | Changing the indirect pointer (apples/red/green) | `.eps` | SUPERSEDED (`apples.8th`, verified, is strictly better than a static diagram) |
 | img1-028 | 1 | "Two points of view" | `.eps` | DECORATIVE |
 | img1-030 | 1 | "Two solutions to the problem of security" | `.eps` | DECORATIVE |
@@ -74,7 +94,7 @@ it).
 | fig2-1 | 2 | The iterative approach (Kim Harris) | `.eps` | NOT-USED-IN-ADAPTATION (Harris interview not reproduced, per copyright/originality policy) |
 | img2-047 | 2 | "Refining the conceptual model…" | `.eps` | DECORATIVE |
 | fig2-2 | 2 | An iterative approach to analysis | `.eps` | NOT-USED-IN-ADAPTATION (condensed to "Iteration Beats Prediction" prose) |
-| fig2-3 | 2 | A data-flow diagram | `.eps` | **GENUINELY-MISSING** — see below |
+| fig2-3 | 2 | A data-flow diagram | `.eps` | **INSERTED** — see below |
 | fig2-4 | 2 | Example of a decision tree | `.eps` | NOT-USED-IN-ADAPTATION (this book goes straight from prose to decision table, skipping the intermediate tree) |
 | fig2-5 | 2 | The decision table | `.eps` | SUPERSEDED (real Markdown table in `chapter02-analysis.md`) |
 | fig2-6 | 2 | A simplified decision table | `.eps` | SUPERSEDED (same) |
@@ -90,30 +110,35 @@ it).
 | fig3-5 | 3 | Another structure for "Process a Keystroke" | `.eps` | NOT-USED-IN-ADAPTATION (tiny editor) |
 | fig3-6 | 3 | The same section, refined/optimized | `.eps` | NOT-USED-IN-ADAPTATION (tiny editor) |
 | fig3-7 | 3 | Adding refresh | `.eps` | NOT-USED-IN-ADAPTATION (tiny editor) |
-| fig3-8 | 3 | Interface as a junction (traditional) | `.eps` | **GENUINELY-MISSING** — see below |
-| fig3-9 | 3 | Use of the interface component | `.eps` | **GENUINELY-MISSING** — see below |
+| fig3-8 | 3 | Interface as a junction (traditional) | `.eps` | **INSERTED** — see below |
+| fig3-9 | 3 | Use of the interface component | `.eps` | **INSERTED** — see below |
 | fig3-10 | 3 | Two ways to add advanced capabilities | `.eps` | NOT-USED-IN-ADAPTATION (sequential-complexity section is prose-only, but the underlying example — vectoring in a word processor — wasn't adapted either) |
 | no-scrambled | 3 | "No scrambled?" | `.eps` | DECORATIVE |
-| fig4-1 | 4 | Backward-easier problem | `.eps` | **GENUINELY-MISSING** — see below |
-| fig4-2 | 4 | Two containers (water jug) | `.eps` | **GENUINELY-MISSING** — see below |
-| fig4-3 | 4 | Achieving the end result (water jug) | `.eps` | **GENUINELY-MISSING** — see below |
+| fig4-1 | 4 | Backward-easier problem | `.eps` | **INSERTED** — see below |
+| fig4-2 | 4 | Two containers (water jug) | `.eps` | **INSERTED** — see below |
+| fig4-3 | 4 | Achieving the end result (water jug) | `.eps` | **INSERTED** — see below |
 | img4-103 | 4 | "Intent on a complicated problem" | `.eps` | DECORATIVE |
 | fig4-4 | 4 | The nine dots problem | `.eps` | NOT-USED-IN-ADAPTATION (this book's "Getting Unstuck" uses only the water-jug example, not nine dots — a scope choice, not an oversight) |
 | fig4-5 | 4 | Not quite right (nine dots) | `.eps` | NOT-USED-IN-ADAPTATION (same) |
 | img4-106 | 4 | "I'm not just sleeping…" | `.eps` | DECORATIVE |
-| img4-110 | 4 | (untitled — "noun" "verb" syntax) | `.eps` | **GENUINELY-MISSING** — see below |
+| img4-110 | 4 | (untitled — "noun" "verb" syntax) | `.eps` | **INSERTED** — see below |
 | fig4-6 | 4 | A table of 8-byte records | `.eps` | NOT-USED-IN-ADAPTATION (zero-relative-numbering point made without a worked byte-offset example) |
 | fig4-7 | 4 | Traditional compiler vs. Forth compiler | `.eps` | NOT-USED-IN-ADAPTATION (this book's compiler/performance discussion lives in Ch.1, doesn't use this figure's framing) |
 | fig4-8 | 4 | Roman numeral data access (Brodie's algorithm) | `.eps` | NOT-USED-IN-ADAPTATION (this book's `roman.8th` uses a deliberately different, original algorithm) |
 | fig5-1 | 5 | "I still don't see how these conventions…" | `.eps` | DECORATIVE |
 | fig5-2 | 5 | Wiggins, proud of his commenting technique | `.eps` | DECORATIVE |
 
-### Genuinely missing — detailed entries
+### Genuinely missing, now inserted — detailed entries
 
-These six are the only cases where a concept *this book's adapted text
-actually discusses* has no visual counterpart at all, and where an
-original diagram (not Brodie's) would plausibly help. All six were
-already flagged, in less formal form, before this archive audit; this
+*(Section title kept for history — these ten were identified as
+genuinely missing during the archive audit; as of 2026-08-30 all ten
+have been inserted into the manuscript as real images, per the note
+above.)*
+
+These were originally the only cases where a concept *this book's
+adapted text actually discusses* had no visual counterpart at all, and
+where a diagram would plausibly help. Six were flagged, in less formal
+form, before this archive audit; this
 pass confirms the archive has Brodie's own version available for
 reference (not for reuse — see the licensing note above) and adds one
 new entry (`img4-110`) found by checking every figure's exact anchor

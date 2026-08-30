@@ -3,3 +3,4 @@ node_modules/
 *.jpeg
 *.png
 !thinking-forth-1.0/**
+!manuscript/illustrations/**

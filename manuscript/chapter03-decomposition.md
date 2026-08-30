@@ -71,6 +71,21 @@ live behind its own words, not be reached into directly, precisely so that
 a rule about *how* it's shared (like "only change it if it's actually
 different") has exactly one place to live.
 
+The naive alternative, avoided here, is each side of a boundary keeping
+its own copy of whatever they share, meeting only at a narrow, easy-to-get-
+wrong junction:
+
+![Two modules meeting at a jagged boundary, each maintaining its own separate copy of BUFFER A and THING B, joined only by a handshake at the seam.](illustrations/fig3-8.png)
+
+against a design where the shared data lives once, in a component both
+sides call into rather than duplicate:
+
+![The same two modules, now empty, each with a single line down to one shared box labeled INTERFACE COMPONENT holding one copy of BUFFER A, THING B, and the handshake between them.](illustrations/fig3-9.png)
+
+`mode`/`mode@`/`set-mode` *is* that second picture: one shared component,
+called into from both the automatic and the manual side, rather than two
+copies of "the current mode" that could quietly drift apart.
+
 Now the two things that actually want to change the mode. The automatic
 decision uses two new comparisons: `n:<` and `n:>` both take two numbers
 and push a boolean, in the order you'd read them aloud — `a b n:<` asks

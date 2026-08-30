@@ -111,11 +111,17 @@ single, flat idea instead of a nested tree of calls — and it's also
 the language passes data around, rather than as a discipline layered on
 top.
 
+![A hierarchical call tree, with one box calling three others below it, redrawn as the same functionality regrouped into three components that each hold their own data, functions, and structure.](illustrations/fig1-7.png)
+
 ## Namespaces: A Lexicon You Don't Have to Invent
 
 Brodie's book coins a term for a set of words that together hide one
 component's details from the rest of an application: a **lexicon** — "your
-interface with the component from the outside." In classic Forth this is
+interface with the component from the outside."
+
+![A component box, its internal structure and algorithms hidden inside, with a lexicon of named words bracketed around the outside as the only thing visible from beyond the boundary.](illustrations/fig1-8.png)
+
+In classic Forth this is
 purely a design convention; nothing in the language enforces it or even
 knows it exists. A word belonging to a "stack" lexicon and a word belonging
 to a "queue" lexicon live in exactly the same flat dictionary, distinguished
@@ -141,6 +147,13 @@ spelling: what Brodie has to argue readers *into* doing — decompose your
 program into small lexicons with clean boundaries — 8th's own standard
 library already does, pervasively, as ordinary practice you'd have to work
 to avoid.
+
+![A whimsical robot, plugged into a coffee maker, built from a chain of lexicons stacked on top of a root Forth-like language -- sensor reading, stepper-motor control, trigonometric conversion, robot movement, robot process -- ending in a single command a person can type: MAKE COFFEE.](illustrations/fig1-9.png)
+
+A real robotics application built this way genuinely could end in a single
+word that reads as plainly as that picture suggests — every layer beneath
+it a lexicon hiding the one below, until "make coffee" is a complete
+sentence a machine can act on.
 
 ## Hiding the Construction of a Data Structure
 

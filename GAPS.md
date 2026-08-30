@@ -92,10 +92,14 @@ file when something here gets resolved, or when a new one turns up.
   cartoons/diagrams is *pedagogically* appropriate for a book that has
   gone out of its way, throughout, to build original examples rather
   than adapt his specific ones — these figures are exactly that kind of
-  specific creative artifact. Per explicit instruction, no artwork has
-  been inserted; this is a decision for Graham, not something to resolve
-  by inference. See `ILLUSTRATIONS.md`'s archive audit for the full
-  figure-by-figure inventory this bears on.
+  specific creative artifact. Per explicit instruction, no artwork had
+  been inserted at the time this was written; that was a decision for
+  Graham, not something to resolve by inference. See `ILLUSTRATIONS.md`'s
+  archive audit for the full figure-by-figure inventory this bears on.
+  **Resolved, 2026-08-30:** Graham directed that the verified images be
+  wired into the manuscript. Ten figures (Ch.1, 2, 3, 4) are now real
+  images in `manuscript/illustrations/`, referenced from the relevant
+  chapter files — see `ILLUSTRATIONS.md`'s "ten figures wired in" note.
 - **Correction, found mid-audit:** no Ghostscript/ImageMagick is
   installed directly in this environment, but a complete set of
   pre-rendered PNGs for every `.eps` in the archive (64 files) was found
@@ -135,18 +139,30 @@ file when something here gets resolved, or when a new one turns up.
   tell from inside this project which one is authoritative. Don't use
   either the `UNKNOWN-*` files or assume the `fig3-*` ones are the
   "final" versions without asking Graham which batch is meant to win.
+  **Resolved:** viewed `UNKNOWN-01` and `UNKNOWN-07` directly and
+  compared them pixel-for-pixel (by eye) against `fig3-2.png` and
+  `fig3-8.png` — identical in both cases. The `UNKNOWN-*` batch is a
+  redundant duplicate of the already-properly-named `fig3-2`..`fig3-8`,
+  not a competing version; no conflict after all, just leftover files
+  from whatever step failed to preserve their original names. Used the
+  properly-named `fig3-8`/`fig3-9` in the manuscript; the `UNKNOWN-*`
+  files were left alone (not deleted — they're Graham's, in a folder
+  this project doesn't otherwise edit). `img7-211` has no resolution —
+  still mismatched, still unused, and moot for now since it's material
+  for the not-yet-written Chapter 8, not Chapters 1-7.
   Because these
   existed, the six "genuinely missing" figures in `ILLUSTRATIONS.md`
   were viewed directly rather than inferred from caption text alone.
-- The `png/` folder is untracked (not committed) and lives under
-  `thinking-forth-1.0/`, which this project otherwise treats as
-  reference-only and never edits. Left as untracked, uncommitted
-  working material rather than either committing it (it's 64 files of
-  Brodie's own rendered artwork, and the licensing question below is
-  unresolved) or deleting it (it's useful, hard-to-reproduce reference
-  material, and deleting someone else's apparent output without knowing
-  its origin would be presumptuous). Decide what to do with it once the
-  licensing question is resolved one way or the other.
+- The `thinking-forth-1.0/png/` folder itself is still untracked
+  (not committed) — that hasn't changed, and `thinking-forth-1.0/`
+  stays reference-only per `README.md`, never directly the source
+  manuscript builds read from. **What changed:** the ten specific
+  images resolved for use were *copied* (not moved) into a new tracked
+  location, `manuscript/illustrations/`, which the manuscript actually
+  references. `thinking-forth-1.0/png/`'s other ~66 files (including the
+  redundant `UNKNOWN-*` batch and the still-mismatched `img7-211`) are
+  untouched, still untracked, still Graham's working material — nothing
+  here forces a decision about the rest of that folder.
 - The 4 figures with a `.tex` source alongside their `.eps`
   (`fig1-1`, `fig1-3`, `fig1-4`, `fig1-6`) *were* readable directly, and
   turned out to be plain LaTeX (tables, PSTricks-free layout) rather

@@ -9,7 +9,10 @@ for what that means in practice.
   with `00-preface.md`, `01-getting-started.md`, and `02-notation.md`,
   then `chapter01-philosophy.md` onward. `manuscript/Thinking-8th.docx`
   is the generated, editable publication master, built from these files
-  by `tools/build-docx.js`.
+  by `tools/build-docx.js`. `manuscript/illustrations/` holds the
+  figures referenced from chapter text via `![caption](illustrations/
+  file.png)`; see `ILLUSTRATIONS.md` for what each one is and why it was
+  chosen.
 - `code/` — every runnable example from the book, as standalone `.8th`
   files, organized by chapter. Each has been executed against the local
   8th distribution; see the comment at the top of each file for how to
@@ -18,8 +21,12 @@ for what that means in practice.
   for reading and review; not independently edited.
 - `thinking-forth-1.0/` — the original *Thinking Forth* LaTeX source,
   pulled from <https://sourceforge.net/projects/thinking-forth/> and
-  licensed CC BY-NC-SA 2.0. Kept as reference material only; nothing in
-  `manuscript/` is generated from it.
+  licensed CC BY-NC-SA 2.0. Kept as reference material only, and never
+  itself part of the build — the ten redrawn illustrations under
+  `manuscript/illustrations/` started as files found in
+  `thinking-forth-1.0/png/`, verified against Brodie's actual captions,
+  then copied into the tracked location above (see `GAPS.md` for the
+  verification and licensing history).
 
 Project tracking: [`PLAN.md`](PLAN.md) (method and chapter roadmap),
 [`GAPS.md`](GAPS.md) (uncertain or version-dependent 8th behavior),

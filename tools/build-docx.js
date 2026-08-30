@@ -16,7 +16,7 @@ const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
   Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType,
-  TableOfContents, ExternalHyperlink, LevelFormat,
+  TableOfContents, ExternalHyperlink, LevelFormat, ImageRun,
   Header, Footer, PageNumber,
 } = require("docx");
 
@@ -63,6 +63,28 @@ if (!PROFILE) {
   process.exit(1);
 }
 const OUT_PATH = PROFILE.outPath;
+
+// Reads width/height straight out of a PNG's IHDR chunk (bytes 16-23,
+// big-endian) rather than pulling in an image-processing dependency for
+// two integers.
+function pngDimensions(buf) {
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
+// Largest box a figure may occupy on the page, in pixels at 96dpi (the
+// unit docx's ImageRun transformation expects) -- computed from this
+// profile's real usable page area so figures never overflow the margin,
+// and capped in height so one tall figure can't eat most of a page.
+const USABLE_W_DXA = PROFILE.width - PROFILE.margin.left - PROFILE.margin.right;
+const USABLE_H_DXA = PROFILE.height - PROFILE.margin.top - PROFILE.margin.bottom;
+const DXA_TO_PX = 96 / 1440;
+const MAX_IMG_WIDTH_PX = Math.floor(USABLE_W_DXA * DXA_TO_PX * 0.95);
+const MAX_IMG_HEIGHT_PX = Math.floor(USABLE_H_DXA * DXA_TO_PX * 0.55);
+
+function fitImageDims(width, height) {
+  const scale = Math.min(MAX_IMG_WIDTH_PX / width, MAX_IMG_HEIGHT_PX / height);
+  return { width: Math.round(width * scale), height: Math.round(height * scale) };
+}
 
 // Reading order comes from filename sort: 00-preface, 01-notation, then
 // chapter01-*, chapter02-*, ... -- so a new chapterNN-*.md is picked up
@@ -178,6 +200,14 @@ function parseMarkdown(text) {
     let m = /^(#{1,6})\s+(.*)$/.exec(line);
     if (m) {
       blocks.push({ type: "heading", level: m[1].length, text: m[2].trim() });
+      i++;
+      continue;
+    }
+
+    // image, on its own line: ![caption](relative/path.png)
+    let img = /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.exec(line.trim());
+    if (img) {
+      blocks.push({ type: "image", caption: img[1], src: img[2] });
       i++;
       continue;
     }
@@ -358,6 +388,19 @@ function parseTable(tableLines) {
   });
 }
 
+// Word restarts a numbered list's count only when it's a genuinely new
+// numbering *instance*, not just because two <ol>-like blocks appear
+// separately in the source -- reusing one "reference" string for every
+// numbered list in the document makes the second one pick up where the
+// first left off (4. 5. 6. instead of 1. 2. 3.). Each numbered block
+// gets its own reference from NUMBERED_LIST_REFS instead.
+const MAX_NUMBERED_LISTS = 40;
+const NUMBERED_LIST_REFS = Array.from(
+  { length: MAX_NUMBERED_LISTS },
+  (_, idx) => `book-numbering-${idx}`
+);
+let numberedListIndex = 0;
+
 function blocksToDocxNodes(blocks) {
   const nodes = [];
   for (const b of blocks) {
@@ -386,10 +429,11 @@ function blocksToDocxNodes(blocks) {
         );
       }
     } else if (b.type === "numbered") {
+      const ref = NUMBERED_LIST_REFS[numberedListIndex++];
       for (const item of b.items) {
         nodes.push(
           new Paragraph({
-            numbering: { reference: "book-numbering", level: 0 },
+            numbering: { reference: ref, level: 0 },
             indent: { left: 720, hanging: 360 },
             children: parseInline(item),
           })
@@ -398,6 +442,21 @@ function blocksToDocxNodes(blocks) {
     } else if (b.type === "table") {
       nodes.push(parseTable(b.lines));
       nodes.push(new Paragraph({ text: "" }));
+    } else if (b.type === "image") {
+      const absPath = path.resolve(MANUSCRIPT_DIR, b.src);
+      const data = fs.readFileSync(absPath);
+      const { width, height } = pngDimensions(data);
+      const dims = fitImageDims(width, height);
+      nodes.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          keepNext: true,
+          children: [new ImageRun({ type: "png", data, transformation: dims })],
+        })
+      );
+      if (b.caption) {
+        nodes.push(new Paragraph({ style: "Caption", text: b.caption }));
+      }
     }
   }
   return nodes;
@@ -657,8 +716,8 @@ const doc = new Document({
   styles,
   numbering: {
     config: [
-      {
-        reference: "book-numbering",
+      ...NUMBERED_LIST_REFS.map((reference) => ({
+        reference,
         levels: [
           {
             level: 0,
@@ -668,7 +727,7 @@ const doc = new Document({
             style: { paragraph: { indent: { left: 720, hanging: 360 } } },
           },
         ],
-      },
+      })),
       {
         reference: "bullet-numbering",
         levels: [

@@ -52,7 +52,11 @@ one a language can actually help with.
 ## Sketching Interfaces in Words, Not Diagrams
 
 A common technique for the first question is the data-flow diagram: circles
-for operations, arrows for the data moving between them. It's a useful tool
+for operations, arrows for the data moving between them.
+
+![A data-flow diagram: circled operations CHECK INVENTORY, AUTHORIZE PURCHASE, and PRODUCE PURCHASE-ORDER, connected by labeled arrows for the forms and approvals passing between them, with a TRANSFER MATERIALS FROM WAREHOUSE step branching off to the side.](illustrations/fig2-3.png)
+
+It's a useful tool
 for explaining a design to someone who doesn't read code. But if the person
 you're explaining it to *does* read code, a word-based language can often
 skip the diagram and go straight to something almost as readable, and far

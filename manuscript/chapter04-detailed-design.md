@@ -47,6 +47,27 @@ pressure:
 - **Don't stop at the first working answer.** Ask whether a second pass
   would be simpler, not just whether the first one works.
 
+Working backward isn't unique to programming — it's the same move that
+solves a maze faster from the exit than from the entrance:
+
+![A hand-drawn maze labeled Start and End, with no other markings -- a problem that's genuinely easier to solve backward than forward.](illustrations/fig4-1.png)
+
+and it's exactly what solves the nine-and-four-gallon puzzle. Assume six
+gallons is already sitting in the nine-gallon container:
+
+![Two labeled containers, a nine-gallon one and a four-gallon one, sitting in a stream, both currently empty.](illustrations/fig4-2.png)
+
+— then ask what the previous pour must have been. Only two answers are
+possible, and working through both at once makes it obvious which one
+actually unravels the problem:
+
+![A two-by-two grid contrasting two backward-reasoning hypotheses: Version A pours 2 and 4 together to reach 6 and 0, which cannot be reached from empty containers by any legal pour; Version B pours 9 minus 3 to reach 6 and 4, which can.](illustrations/fig4-3.png)
+
+Version B is the one that resolves: a nine-gallon container holding nine
+and a four-gallon container holding one is reachable in a couple of legal
+pours from two empty containers, so the whole solution unwinds backward
+from there.
+
 ## Designing a Component
 
 Once you know a component is needed (Chapter 3), designing it has a
@@ -91,6 +112,12 @@ naturally from the stack: the reference has to be pushed before the word
 that consumes it can run. Chapter 1's `apples`, `red`, `green` are all
 nouns and modifiers in exactly this sense, regardless of how they're
 implemented underneath.
+
+![Three small vignettes of everyday yard work, each captioned noun-then-verb: a person mowing a lawn captioned LAWN MOW, a person painting a fence captioned FENCE PAINT, and a person fixing a post captioned POST FIX.](illustrations/img4-110.png)
+
+It's not a computing convention so much as an everyday one made visible: say
+what you're working on, then what you're doing to it, the same order this
+book's own examples have used all along.
 
 **Definitions consume the arguments they're given, in full,** even when
 that means an argument gets duplicated on the way in rather than smuggled
