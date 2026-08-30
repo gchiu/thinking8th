@@ -1,0 +1,12 @@
+\ box-map.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/box-map.8th
+\
+\ A map bundles several related values under one name -- the direct
+\ 8th answer to Brodie's CREATE/DOES>-built state table.
+
+{ "top" : 0 , "bottom" : 0 , "left" : 0 , "right" : 0 } var, box
+
+box @ "top" 10 m:! drop
+box @ "top" m:@ . cr drop    \ => 10
+
+bye

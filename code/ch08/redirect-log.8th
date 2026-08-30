@@ -1,0 +1,30 @@
+\ redirect-log.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/redirect-log.8th
+\
+\ defer:/w:is, used for its second job (Chapter 3 already used it for
+\ the first: a forward reference). Here, a word's actual behavior
+\ changes at runtime -- nothing that calls "log" needs to know or care.
+
+defer: emit-log   \ s --
+
+: emit-log-console  \ s --
+  . cr ;
+
+' emit-log-console w:is emit-log
+
+: log  \ s --
+  emit-log ;
+
+"hello" log
+
+"" var, captured
+
+: emit-log-capture  \ s --
+  captured @ swap s:+ captured ! ;
+
+' emit-log-capture w:is emit-log
+
+"world" log
+captured @ . cr    \ => world
+
+bye

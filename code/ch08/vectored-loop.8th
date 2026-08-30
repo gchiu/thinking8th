@@ -1,0 +1,25 @@
+\ vectored-loop.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/vectored-loop.8th
+\
+\ Factoring the one differing step out of an otherwise identical loop
+\ body, by deferring just that step -- Brodie's DUMP/CDUMP example,
+\ translated.
+
+defer: show-item   \ n --
+
+: show-plain    \ n --
+  . cr ;
+
+: show-tagged   \ n --
+  "item: %d\n" s:strfmt . ;
+
+: dump-list   \ arr --
+  ( swap drop show-item ) a:each drop ;
+
+' show-plain w:is show-item
+[ 1 , 2 , 3 ] dump-list
+
+' show-tagged w:is show-item
+[ 1 , 2 , 3 ] dump-list
+
+bye

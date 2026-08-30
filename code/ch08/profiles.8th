@@ -1,0 +1,28 @@
+\ profiles.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/profiles.8th
+\
+\ Two permanently live states (a comfort setpoint profile and an eco
+\ one), switched between by reassigning which map a variable currently
+\ points at -- Chapter 1's "apples" trick, applied to a whole bundle
+\ of values instead of one.
+
+{ "heat-to" : 68 , "cool-to" : 76 } var, comfort
+{ "heat-to" : 62 , "cool-to" : 80 } var, eco
+
+comfort @ var, active-profile
+
+: use-comfort   comfort @ active-profile ! ;
+: use-eco       eco @ active-profile ! ;
+
+use-eco
+active-profile @ "heat-to" m:@ . cr drop     \ => 62
+
+active-profile @ "heat-to" 60 m:! drop
+
+use-comfort
+active-profile @ "heat-to" m:@ . cr drop     \ => 68
+
+use-eco
+active-profile @ "heat-to" m:@ . cr drop     \ => 60
+
+bye

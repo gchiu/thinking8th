@@ -64,7 +64,7 @@ different titles/content than a first guess suggested.
 | 4 | Detailed Design/Problem Solving | done | `chapter04-detailed-design.md` |
 | 5 | Implementation: Elements of Forth Style | done | `chapter05-style.md` |
 | 6 | Factoring | done | `chapter06-factoring.md` |
-| 7 | Handling Data: Stacks and States | split across two of our chapters (see below) | `chapter07-taming-the-stack.md` + a future `chapter08-*.md` |
+| 7 | Handling Data: Stacks and States | split across two of our chapters (see below) | `chapter07-taming-the-stack.md` + `chapter08-bundling-state.md` |
 | 8 | *(check `chapter8.tex` before assuming)* | not started | `chapter09-*.md` (see note) |
 | A–E | Appendices | not started, may not all be needed | — |
 
@@ -75,15 +75,16 @@ Forth-memory-specific mechanisms — `CREATE`/`DOES>` state tables and
 **our Chapter 7** ("Taming the Stack," done) covers the portable half —
 escaping a crowded stack, word-local variables, the auxiliary `>r`
 stack, save/restore-as-bad-factoring, sharing a component safely.
-**A future Chapter 8** will cover the rest — Brodie's "State Table"
-section (idiomatic target: 8th's maps/`o:` namespace, replacing raw
-indexed memory) and "Vectored Execution" section (idiomatic target:
-8th's native `defer:`/`w:is`, which looks like a direct, cleaner
-replacement for hand-rolled `DOER`/`MAKE` — confirmed to exist in
-`docs/md/07_words_interpreter.md`, not yet verified against the
-runtime). This pushes Brodie's own chapter 8 to become *our* Chapter 9;
-its real title hasn't been checked yet — read `chapter8.tex` before
-assuming, per this project's standing rule.
+**Our Chapter 8** ("Bundling State, Redirecting Behavior," done) covers
+the rest — Brodie's "State Table" section, using 8th's maps and
+`G:clone` (not `o:` objects, which turned out not to be needed) in
+place of raw indexed memory, and "Vectored Execution", using 8th's
+native `defer:`/`w:is` in place of hand-rolled `DOER`/`MAKE` — verified
+against the runtime, including the one corner (self-recursion) that
+doesn't map onto `defer:` at all and uses `recurse` instead. This
+pushes Brodie's own chapter 8 to become *our* Chapter 9; its real title
+hasn't been checked yet — read `chapter8.tex` before assuming, per this
+project's standing rule.
 
 Depth over speed: a chapter isn't "done" until its code has actually run
 and its prose has actually been read back for the beginner-readability

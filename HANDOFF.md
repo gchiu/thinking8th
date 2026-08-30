@@ -80,11 +80,12 @@ skip, never a prerequisite.
 | `manuscript/chapter05-style.md` (Ch.5, "Elements of Forth Style") | done |
 | `manuscript/chapter06-factoring.md` (Ch.6, "Factoring") | done |
 | `manuscript/chapter07-taming-the-stack.md` (Ch.7, "Taming the Stack") | done |
+| `manuscript/chapter08-bundling-state.md` (Ch.8, "Bundling State, Redirecting Behavior") | done |
 
-Our Chapter 7 covers only half of Brodie's actual chapter 7 ("Handling
-Data: Stacks and States") — see `PLAN.md` for why it was split and what
-the still-to-be-written Chapter 8 (state tables via maps; vectored
-execution via `defer:`/`w:is`) will cover.
+Our Chapters 7 and 8 together cover Brodie's actual chapter 7
+("Handling Data: Stacks and States") — see `PLAN.md` for why it was
+split. Brodie's own chapter 8 becomes *our* Chapter 9; its real title
+hasn't been checked yet.
 
 See `PLAN.md` for the full chapter map against Brodie's actual table of
 contents and the current chapter-8-onward status.

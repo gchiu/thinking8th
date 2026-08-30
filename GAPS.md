@@ -62,6 +62,30 @@ file when something here gets resolved, or when a new one turns up.
   use `n:1-` (namespaced, consistent with `n:+`/`n:-`/`n:*`/`n:/`).
   Confirmed by a runtime error (`Unknown 1-`) while writing
   `code/ch07/holes.8th`.
+- **`m:@`/`m:!` follow the same "leaves the container behind" convention
+  as `a:!`**: `m:!`'s stack effect is `map key value -- map`, `m:@`'s is
+  `map key -- map value`. A fetch or store used in isolation (not
+  chained into another container op) needs an explicit `drop` afterward
+  or a stray map accumulates on the stack. Confirmed in
+  `code/ch08/box-map.8th`.
+- **`G:clone` makes a genuine deep copy**, not a second reference —
+  confirmed by cloning a map, mutating the original afterward, and
+  reading the clone back unchanged. Necessary for any save/restore
+  pattern involving a container: `var2 ! var1 @` alone would make
+  `var2` an alias for `var1`'s container, not an independent snapshot.
+  Verified in `code/ch08/draft-commit.8th`.
+- **`defer:`/`w:is` do the same job Chapter 3 already used `defer:`
+  for (a forward reference), and also a second, unrelated job**:
+  letting an already-working word's behavior be reassigned at runtime,
+  as many times as needed, with `' new-word w:is deferred-word`.
+  Confirmed against `docs/md/07_words_interpreter.md` and verified with
+  a redirect-output example in `code/ch08/redirect-log.8th` and a
+  factor-a-loop-step example in `code/ch08/vectored-loop.8th`.
+- **Direct self-recursion has its own dedicated word, `recurse`** —
+  no `defer:`/forward-declaration needed to let a word call itself.
+  8th's own docs note that invoking a word's own name inside its
+  definition is deprecated in favor of `recurse`. Verified with a
+  factorial in `code/ch08/recurse.8th`.
 
 ## Genuinely unexplored (haven't needed them yet)
 
@@ -69,8 +93,10 @@ file when something here gets resolved, or when a new one turns up.
   mentioned in `docs/help.sql`'s entry for `SED:`) — not used anywhere
   in the book yet. Would be relevant to a future chapter on testing or
   on documenting words rigorously.
-- 8th's object system (the `o:` namespace) — not used yet. Planned for
-  the future Chapter 8 (state tables as maps; see `HANDOFF.md`).
+- 8th's object system (the `o:` namespace) — still not used. Chapter 8's
+  state-table treatment ended up using plain maps (`m:`) instead, which
+  turned out sufficient; `o:` remains unexplored, not specifically
+  earmarked for any planned chapter at the moment.
 - `a:each`'s exact behavior when the array is empty, or when the
   quotation itself modifies the array mid-iteration — not tested, not
   needed yet.

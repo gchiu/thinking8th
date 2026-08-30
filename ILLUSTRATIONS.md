@@ -300,3 +300,18 @@ retroactive entries above, which are logged here only.
     traction-suspended patient). Do not use or describe this PNG as
     the "too many variables" cartoon — it's mislabeled or was
     misgenerated. `fig7-7`/`fig7-8`/`fig7-9` still have no PNG.
+    **Update, Chapter 8 written:** `fig7-3` and `fig7-5` are now
+    **INSERTED** — copied into `manuscript/illustrations/` and wired
+    into `manuscript/chapter08-bundling-state.md`'s "A Table of Related
+    Values" and "Two Live States, One Set of Names" sections, with
+    original captions. `fig7-1` was NOT inserted: Chapter 8 doesn't walk
+    through Brodie's `CMOVE`-based stack-commentary form at all (it uses
+    the map/`G:clone` treatment instead), so the figure has no anchor
+    point in this adaptation — NOT-USED-IN-ADAPTATION, not missing.
+    `img7-211` stays unused (still mismatched, and Chapter 8's
+    `defer:`/`w:is` treatment never needed a "too many variables" joke
+    to anchor to). `fig7-7`/`fig7-8`/`fig7-9` (`DOER`/`MAKE` diagrams)
+    are NOT-USED-IN-ADAPTATION: Chapter 8 explains `DOER`/`MAKE`'s
+    mechanism in prose rather than walking through it step-by-step the
+    way Brodie's figures do, since 8th's own `defer:`/`w:is` replacement
+    doesn't have (or need) that same compile-time trick to illustrate.

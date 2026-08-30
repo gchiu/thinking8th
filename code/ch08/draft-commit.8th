@@ -1,0 +1,29 @@
+\ draft-commit.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/draft-commit.8th
+\
+\ G:clone makes a genuinely independent copy of a container, so a
+\ draft can be freely edited without touching the committed value --
+\ and committing is just cloning the draft back over it.
+
+{ "top" : 0 , "bottom" : 0 , "left" : 0 , "right" : 0 } var, box
+box @ G:clone var, draft drop
+
+: begin-resize   \ --
+  box @ G:clone draft ! ;
+
+: commit-resize  \ --
+  draft @ G:clone box ! ;
+
+box @ "top" 10 m:! drop
+box @ "bottom" 50 m:! drop
+
+begin-resize
+draft @ "top" 999 m:! drop
+
+box @ "top" m:@ . cr drop      \ => 10
+draft @ "top" m:@ . cr drop    \ => 999
+
+commit-resize
+box @ "top" m:@ . cr drop      \ => 999
+
+bye

@@ -1,0 +1,16 @@
+\ recurse.8th -- Thinking 8th, Chapter 8
+\ Verified with: 8th code/ch08/recurse.8th
+\
+\ Direct self-reference, the one DOER/MAKE job that isn't really about
+\ changeable behavior at all -- 8th just has a dedicated word for it.
+
+: fact  \ n -- n!
+  dup 1 n:> if
+    dup n:1- recurse n:*
+  else
+    drop 1
+  then ;
+
+5 fact . cr    \ => 120
+
+bye
