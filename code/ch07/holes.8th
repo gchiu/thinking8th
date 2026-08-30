@@ -1,0 +1,25 @@
+\ holes.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/holes.8th
+\
+\ Sometimes a save/restore urge is a sign of bad factoring, not a
+\ problem to solve with more machinery. holes doesn't touch the
+\ "current game length" global at all -- only game does -- so there's
+\ nothing to save or restore in the first place.
+
+: play-hole  \ index --
+  "playing hole " . . cr ;
+
+locals:
+: holes  \ n --
+  "n" w:!
+  ' play-hole  0  "n" w:@ n:1-  loop ;
+
+0 var, #holes
+: long   18 #holes ! ;
+: short  9 #holes ! ;
+: game   #holes @ holes ;
+
+short
+game
+
+bye

@@ -1,0 +1,11 @@
+\ collapse-array.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/collapse-array.8th
+\
+\ 8th's own documentation gives almost exactly Brodie's warning against
+\ pick/roll: if you need that many stack positions, the values belong
+\ in an array instead. a:close is the direct way to make one, from
+\ items already on the stack.
+
+10 20 30 40 4 a:close . cr    \ => [10,20,30,40]
+
+bye

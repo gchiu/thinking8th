@@ -41,6 +41,27 @@ file when something here gets resolved, or when a new one turns up.
   `docs/help.sql`. It returns the array back on top of the stack
   (same object, already mutated in place) — the return value can be
   dropped when, as usual, you already hold the array in a `var`.
+- **Word-local variables need `locals:` before the `:` that declares
+  the word, and are accessed by string name** (`"x" w:!` / `"x" w:@`),
+  not by a bare identifier the way Forth's various local-variable
+  extensions typically read. Confirmed in `code/ch07/midpoint.8th`:
+  each word that opts in with `locals:` gets its own private set of
+  named slots — a different word using the same name (even one it
+  calls) doesn't collide, per `docs/md/03_syntax.md`'s own worked
+  example. Forgetting `locals:` on the defining word leaves `w:@`/
+  `w:!` with no scope to store into.
+- **`>r`/`r>`/`r@` are *not* the real return stack in 8th** — confirmed
+  from `docs/md/04_thestack.md`: it's a separate auxiliary stack kept
+  apart "for security reasons," so a mismatched push/pop can't corrupt
+  the actual call/return mechanism the way it can in traditional Forth.
+  The old discipline (balance every push with a pop on every code path)
+  still matters for your own values, but the catastrophic failure mode
+  Brodie warns about doesn't apply here. Verified in
+  `code/ch07/quietly.8th`.
+- **No bare `1-` (or `1+`)** — Forth's shorthand doesn't exist in 8th;
+  use `n:1-` (namespaced, consistent with `n:+`/`n:-`/`n:*`/`n:/`).
+  Confirmed by a runtime error (`Unknown 1-`) while writing
+  `code/ch07/holes.8th`.
 
 ## Genuinely unexplored (haven't needed them yet)
 
@@ -48,14 +69,8 @@ file when something here gets resolved, or when a new one turns up.
   mentioned in `docs/help.sql`'s entry for `SED:`) — not used anywhere
   in the book yet. Would be relevant to a future chapter on testing or
   on documenting words rigorously.
-- `w:@` / `w:!` (word-local variables, as opposed to the global `var`/
-  `var,` used throughout so far) — not used yet. 8th's own manual notes
-  you *can't* declare a `var` local to a word; this pair is presumably
-  the intended alternative. Relevant once a chapter needs local state
-  that shouldn't leak into the surrounding namespace.
-- 8th's object system (the `o:` namespace) — not used yet. Will likely
-  matter for whichever later chapter maps to Brodie's data-structure
-  chapters (his chapters 6–7).
+- 8th's object system (the `o:` namespace) — not used yet. Planned for
+  the future Chapter 8 (state tables as maps; see `HANDOFF.md`).
 - `a:each`'s exact behavior when the array is empty, or when the
   quotation itself modifies the array mid-iteration — not tested, not
   needed yet.
@@ -89,7 +104,15 @@ file when something here gets resolved, or when a new one turns up.
   and when, beyond a file-modification timestamp of 2026-08-30) isn't
   known. If a future session needs to re-render anything not already in
   that folder, the tool that produced it hasn't been identified, so
-  don't assume it's repeatable without checking first. Because these
+  don't assume it's repeatable without checking first. **Update from
+  Graham (mid-Chapter-7 session):** new/updated PNG files are expected
+  to be dropped in at the repository root to replace the `.eps`
+  originals going forward — likely the answer to where `png/` came from
+  and the mechanism for keeping it current. No specifics (path
+  convention, whether it's automatic, timing) are known yet; re-check
+  this note and the repo root next session before assuming the old
+  `thinking-forth-1.0/png/*.png` set is still the authoritative one.
+  Because these
   existed, the six "genuinely missing" figures in `ILLUSTRATIONS.md`
   were viewed directly rather than inferred from caption text alone.
 - The `png/` folder is untracked (not committed) and lives under

@@ -230,3 +230,23 @@ retroactive entries above, which are logged here only.
   runnable 8th examples in `manuscript/chapter06-factoring.md` (the
   `leftmargin`/`#points` example) rather than needing an illustration
   at all. No gap logged for Chapter 6.
+- **Chapter 7 (`chapter7.tex`) has seven figure references**, none
+  used, for two different reasons — checked directly, not archive-only:
+  - `fig7-1` ("Example of a stack commentary") illustrates Brodie's
+    `CMOVE>` stack-commentary form, part of the "Make Stack Drawings"
+    and "Stack Tips" material (the `COUNT`-reordering tip and the
+    single-value error-code convention) that this adaptation's Chapter
+    7 (`manuscript/chapter07-taming-the-stack.md`) chose not to cover
+    at all this round — no clean, non-contrived 8th example presented
+    itself without reintroducing `rot`-style gymnastics the chapter
+    was actively steering away from. NOT-USED-IN-ADAPTATION, not
+    missing; revisit only if that material gets added later.
+  - `fig7-3`/`fig7-5` (state-table and alternating-state-table
+    conceptual diagrams) and `fig7-7`/`fig7-8`/`fig7-9` (`DOER`/`MAKE`
+    diagrams) and `img7-211` (the "too many variables" cartoon)
+    illustrate Brodie's "The State Table" and "Vectored Execution"
+    sections, which this session deliberately deferred to a future
+    Chapter 8 (see `HANDOFF.md`) rather than covering in Chapter 7 —
+    8th's maps and `defer:`/`w:is` are the planned idiomatic targets,
+    not yet written or verified. Revisit this entry once that chapter
+    exists.

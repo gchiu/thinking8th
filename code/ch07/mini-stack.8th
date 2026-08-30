@@ -1,0 +1,17 @@
+\ mini-stack.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/mini-stack.8th
+\
+\ A private, auxiliary stack of your own, built from an ordinary
+\ mutable array: a:push adds to the top, a:pop removes from it. No
+\ custom CREATE/ALLOT bookkeeping needed, the way Forth required.
+
+[ ] var, mystack
+
+mystack @ 1 a:push mystack !
+mystack @ 2 a:push mystack !
+mystack @ 3 a:push mystack !
+
+mystack @ a:pop swap mystack ! . cr    \ => 3
+mystack @ a:pop swap mystack ! . cr    \ => 2
+
+bye

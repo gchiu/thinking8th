@@ -1,0 +1,25 @@
+\ quietly.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/quietly.8th
+\
+\ >r/r>/r@ give one word a private stash for a single temporary value
+\ -- here, the previous setting of a global flag, saved before a
+\ forced change and restored afterward, whatever it used to be.
+
+true var, verbose?
+
+: log  \ s --
+  verbose? @ if . cr else drop then ;
+
+: quietly  \ --
+  verbose? @ >r
+  false verbose? !
+  "should not print" log
+  r> verbose? ! ;
+
+true verbose? !
+"before" log     \ => before
+quietly
+"after" log      \ => after
+verbose? @ . cr  \ => true
+
+bye

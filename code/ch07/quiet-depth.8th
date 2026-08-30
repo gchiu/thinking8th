@@ -1,0 +1,27 @@
+\ quiet-depth.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/quiet-depth.8th
+\
+\ Sharing one component (here, whether log actually prints) for two
+\ unrelated purposes is fine only if each user restores what it found
+\ -- and a depth counter, not a flag, is what makes that safe when the
+\ two uses can nest inside each other.
+
+0 var, quiet-depth
+
+: log  \ s --
+  quiet-depth @ 0 n:= if . cr else drop then ;
+
+: quiet!    1 quiet-depth n:+! ;
+: unquiet!  -1 quiet-depth n:+! ;
+
+"a" log
+quiet!
+  "b" log
+  quiet!
+    "c" log
+  unquiet!
+  "d" log
+unquiet!
+"e" log
+
+bye

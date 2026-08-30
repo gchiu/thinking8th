@@ -1,0 +1,17 @@
+\ midpoint.8th -- Thinking 8th, Chapter 7
+\ Verified with: 8th code/ch07/midpoint.8th
+\
+\ Four arguments, each needed more than once -- the kind of stack
+\ traffic that turns into unreadable dup/swap/over gymnastics. Word-
+\ local variables, declared with "locals:" and accessed by name with
+\ w:@/w:!, name each one once and let the body read like prose.
+
+locals:
+: midpoint  \ x1 y1 x2 y2 -- xm ym
+  "y2" w:!  "x2" w:!  "y1" w:!  "x1" w:!
+  "x1" w:@ "x2" w:@ n:+ 2 n:/
+  "y1" w:@ "y2" w:@ n:+ 2 n:/ ;
+
+0 0 10 20 midpoint . cr . cr    \ => 10, then 5
+
+bye
