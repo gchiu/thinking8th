@@ -1,0 +1,23 @@
+\ channel-alarms.8th -- Thinking 8th, Chapter 6
+\ Verified with: 8th code/ch06/channel-alarms.8th
+\
+\ Factoring a repeated decision into data: instead of a growing chain
+\ of "if channel# is this, do that" branches, an array holds a word
+\ reference per channel, and caseof both looks up and calls it.
+
+: check-pressure     "check pressure\n" . ;
+: check-temperature  "check temperature\n" . ;
+: check-flow         "check flow\n" . ;
+
+[ ' check-pressure , ' check-pressure , ' check-temperature , ' check-temperature ,
+  ' check-flow , ' check-flow , ' check-flow , ' check-flow ]
+constant channel-actions
+
+: alarm!  \ channel# --
+  channel-actions swap caseof ;
+
+0 alarm!    \ => check pressure
+2 alarm!    \ => check temperature
+7 alarm!    \ => check flow
+
+bye

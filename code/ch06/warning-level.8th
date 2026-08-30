@@ -1,0 +1,12 @@
+\ warning-level.8th -- Thinking 8th, Chapter 6
+\ Verified with: 8th code/ch06/warning-level.8th
+\
+\ Factoring out a calculation that would otherwise be repeated (or
+\ just carried around in your head) every time this ratio is needed.
+
+: two-thirds  \ n1 -- n2
+  2 n:* 3 n:/ ;
+
+900 two-thirds . cr    \ => 600
+
+bye

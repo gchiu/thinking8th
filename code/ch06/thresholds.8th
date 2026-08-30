@@ -1,0 +1,24 @@
+\ thresholds.8th -- Thinking 8th, Chapter 6
+\ Verified with: 8th code/ch06/thresholds.8th
+\
+\ Factoring out names: one real array standing in for what would
+\ otherwise be eight separately-named variables (one per channel),
+\ read with the same caseof already used since Chapter 2, written
+\ with a:!.
+
+[ 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ] var, thresholds
+
+: threshold@   \ channel# -- n
+  thresholds @ swap caseof ;
+
+: set-threshold!  \ a channel# n --
+  a:! drop ;
+
+thresholds @ 0 100 set-threshold!
+thresholds @ 3 250 set-threshold!
+
+0 threshold@ . cr    \ => 100
+3 threshold@ . cr    \ => 250
+1 threshold@ . cr    \ => 0
+
+bye

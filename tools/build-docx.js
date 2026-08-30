@@ -232,7 +232,13 @@ function parseMarkdown(text) {
       continue;
     }
 
-    // numbered list -- same wrapped-continuation handling as bullets
+    // numbered list -- same wrapped-continuation handling as bullets.
+    // Gotcha: this matches "N. " at the start of any source line, even
+    // mid-paragraph -- a sentence that happens to line-wrap with "3."
+    // (or any digit) starting the next line gets misread as a new list
+    // item. Rewrap the prose in the .md source to avoid it rather than
+    // loosening this check, since a real list can start mid-paragraph
+    // in this parser's model (no blank-line-before requirement).
     if (/^\d+\.\s+/.test(line)) {
       const items = [];
       while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {

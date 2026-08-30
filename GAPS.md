@@ -24,6 +24,23 @@ file when something here gets resolved, or when a new one turns up.
   caseof`), not index-then-container. Confirmed by test; easy to get
   backward since some other languages' lookup functions take the key
   first.
+- **`n:/` is true division, not truncating integer division.** `1000
+  2 n:* 3 n:/` gives `666.66667` (a float), not `666`. Forth
+  programmers coming from `INTEGER-only` division will expect
+  truncation by default and be surprised. If a whole-number result
+  is required, the inputs must divide evenly, or the result needs an
+  explicit rounding/truncation step (not yet needed in this book, but
+  worth remembering before writing an example that assumes integer
+  division). Found while verifying a compile-time-factoring example in
+  ch06.
+- **`a:!`'s argument order is `array index value`** (`a n x -- a`),
+  i.e. index comes before value, not value before index. Getting the
+  two swapped throws `Expected Array but got Number` (because the
+  interpreter ends up trying to use the array itself as an array
+  argument at the wrong stack position). Confirmed against
+  `docs/help.sql`. It returns the array back on top of the stack
+  (same object, already mutated in place) — the return value can be
+  dropped when, as usual, you already hold the array in a `var`.
 
 ## Genuinely unexplored (haven't needed them yet)
 

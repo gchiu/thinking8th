@@ -220,4 +220,13 @@ inserted directly in the chapter text (something like *[Illustration:
 brief description — see ILLUSTRATIONS.md]*), unlike the Chapters 1–5
 retroactive entries above, which are logged here only.
 
-*(none yet)*
+- **Chapter 6 (`chapter6.tex`) has two `\begin{figure*}` environments**
+  (`fig6-1`, "What we're supposed to display"; `fig6-2`, "Another
+  example of limiting compile-time redundancy"). Checked directly:
+  both are `BVerbatim` code/ASCII-art listings, not drawn art — no
+  `.eps`, no `includegraphics`. `fig6-1` is a 9-box ASCII grid,
+  `fig6-2` is the `POINTS`/`#POINTS`/`DRAW` code Brodie's compile-time-
+  factoring section walks through. Both are fully reproduced as real,
+  runnable 8th examples in `manuscript/chapter06-factoring.md` (the
+  `leftmargin`/`#points` example) rather than needing an illustration
+  at all. No gap logged for Chapter 6.

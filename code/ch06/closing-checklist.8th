@@ -1,0 +1,39 @@
+\ closing-checklist.8th -- Thinking 8th, Chapter 6
+\ Verified with: 8th code/ch06/closing-checklist.8th
+\
+\ "bad" version: a flag threaded down into the checklist so it can
+\ decide, internally, whether to run the extra step.
+
+: bad-checklist  \ end-of-week? --
+  "lock the register\n" .
+  if
+    "file the weekly report\n" .
+  then
+  "turn off the lights\n" . ;
+
+true bad-checklist
+cr
+false bad-checklist
+
+cr
+
+\ "good" version: the shared part is factored into its own word, and
+\ the caller -- not a flag threaded through the shared word -- decides
+\ what extra step to run.
+
+: closing-checklist  \ --
+  "lock the register\n" .
+  "turn off the lights\n" . ;
+
+: end-of-day
+  closing-checklist ;
+
+: end-of-week
+  closing-checklist
+  "file the weekly report\n" . ;
+
+end-of-day
+cr
+end-of-week
+
+bye
