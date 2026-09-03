@@ -21,16 +21,20 @@ for what that means in practice.
   files, organized by chapter. Each has been executed against the local
   8th distribution; see the comment at the top of each file for how to
   reproduce that.
-- `proof/Thinking-8th-proof.pdf` — the book's only build output, generated
-  directly from `manuscript/book.adoc` via `tools/build-pdf.js` (which
-  shells out to `pandoc`, using `tools/book-template.typ` to drive the
-  Typst PDF engine). There is no separate editable Word/DOCX master —
-  AsciiDoc is the single source of truth, and the PDF is a build
-  artifact, not independently edited. See `HANDOFF.md`'s "Publication
-  workflow" section for how to reproduce the build, including how
-  `pandoc`/`typst` were installed without admin rights in this
-  environment, and two real Typst/pandoc quirks (`tools/fix-8th-lang.lua`,
-  `tools/fix-inline-code.js`) that the pipeline works around.
+- `proof/` — every build output, all generated from `manuscript/book.adoc`
+  and nothing else: `Thinking-8th-proof.pdf` (the canonical reading/
+  print format, Pandoc → Typst), `Thinking-8th.html` (one
+  self-contained file, images embedded), `Thinking-8th.epub`
+  (reflowable ebook), and two copies marked generated-only in their own
+  first line — `Thinking-8th.generated.md` (a reading copy, not a
+  second source of truth) and `Thinking-8th.generated.docx` (a Word
+  compatibility/review copy). There is no separate editable Word/DOCX
+  master and no format-specific source file anywhere — AsciiDoc is the
+  single source of truth, and every file in `proof/` is a build
+  artifact, not independently edited. **See [`PUBLISHING.md`](PUBLISHING.md)**
+  for the canonical-source rule, exact build commands
+  (`cd tools && node build.js`), pinned tool versions, and the real
+  Pandoc/Typst quirks the pipeline works around.
 - `thinking-forth-1.0/` — the original *Thinking Forth* LaTeX source,
   pulled from <https://sourceforge.net/projects/thinking-forth/> and
   licensed CC BY-NC-SA 2.0. Kept as reference material only, and never
@@ -50,4 +54,6 @@ for what that means in practice.
 Project tracking: [`PLAN.md`](PLAN.md) (method and chapter roadmap),
 [`GAPS.md`](GAPS.md) (uncertain or version-dependent 8th behavior),
 [`ILLUSTRATIONS.md`](ILLUSTRATIONS.md) (skipped-figure tracking),
-[`HANDOFF.md`](HANDOFF.md) (current state and workflow).
+[`HANDOFF.md`](HANDOFF.md) (current state and workflow),
+[`PUBLISHING.md`](PUBLISHING.md) (canonical-source rule and the
+multi-format build pipeline).

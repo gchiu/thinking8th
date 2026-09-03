@@ -14,31 +14,18 @@ chapter roadmap, `GAPS.md` for uncertain/version-dependent 8th behavior,
 
 ## Publication workflow
 
-**As of 2026-08-31, this is AsciiDoc + pandoc, not Markdown + DOCX.**
-`manuscript/*.adoc` (hand-edited source, one file per chapter/front-
-matter section, all `include::`d from `manuscript/book.adoc`) →
-`proof/Thinking-8th-proof.pdf` directly, via `pandoc` with Typst as the
-PDF engine. There is no DOCX master anymore — Graham's explicit
-direction was to drop it entirely in favor of AsciiDoc source + a
-pandoc-built PDF, specifically because AsciiDoc's stricter syntax is
-much harder for an outside contributor's pull request to accidentally
-break the layout with, compared to this project's former hand-rolled
-Markdown subset.
-
-Rebuild the PDF:
-
-```bash
-cd tools && node build-pdf.js
-```
-
-That's the whole build — one pandoc invocation
-(`tools/build-pdf.js`'s own header comment has the exact command if
-you need to run pandoc directly for debugging). `manuscript/book.adoc`
-auto-picks-up nothing by itself — a new chapter file needs one new
-`include::chapterNN-slug.adoc[]` line added to `book.adoc` in the
-right place, unlike the old build-docx.js's filename-sort
-auto-discovery. That's a deliberate trade: explicit ordering in one
-place a human reads, over implicit filename-sort magic.
+**See `PUBLISHING.md` for the authoritative version of this section**
+— the canonical-source rule, the full format table, exact build
+commands, pinned tool versions, and both real Pandoc/Typst quirks the
+pipeline works around, written up in full there rather than
+duplicated here. Summary: `manuscript/book.adoc` (AsciiDoc,
+`include::`s every chapter/front-matter file) is the *only* place
+prose, code examples, or illustration references belong. Everything
+under `proof/` — the PDF, HTML, EPUB, and the two explicitly-marked
+"generated" Markdown and DOCX copies — is a build artifact, produced
+by `cd tools && node build.js` (or `node build.js <format>` for just
+one), and nobody edits or sends corrections against any of them
+directly.
 
 **Neither `pandoc` nor `typst` needed admin/chocolatey access to
 install** — both ship as a single portable executable with no
@@ -50,41 +37,6 @@ releases and dropping the `.exe` into `~/bin` (already on `PATH`):
 `typst-x86_64-pc-windows-msvc.zip` from `typst/typst`. If this
 environment is ever rebuilt from scratch, redo that, don't assume a
 package manager will work.
-
-**Two real Typst/pandoc quirks the pipeline works around, both found
-by isolating them with minimal test files, not assumed:**
-
-- `tools/fix-8th-lang.lua` (a pandoc Lua filter, applied at build time
-  via `--lua-filter`): Typst's raw-block parser (this Typst version,
-  0.15.1) won't recognize a code-block language tag that starts with a
-  digit — `` ```8th `` silently prints the literal text "8th" above
-  every single code block instead of being consumed as a language tag.
-  Confirmed as a Typst parser limitation, not a pandoc bug, by testing
-  minimal `.typ` files directly. The `.adoc` *source* correctly keeps
-  `[source,8th]` (accurate, readable for a contributor); the filter
-  rewrites it to `[source,forth]` only in the built PDF.
-- `tools/fix-inline-code.js` (a one-time migration script, already run
-  — not part of the regular build, see below): pandoc's own asciidoc
-  *reader* can't correctly round-trip a literal backslash or `--`
-  inside a single-backtick inline code span — a backslash gets
-  silently dropped, and `--` gets typographically substituted into an
-  em dash, corrupting SED notation (`\ n -- m`) and string-escape
-  references (`` `\n` ``) throughout. Both are constant in this book.
-  The fix: Asciidoctor's standard "monospace, no substitutions" idiom,
-  `` `+content+` `` (backtick-plus), round-trips correctly — confirmed
-  directly. This script was run once, during the Markdown→AsciiDoc
-  migration itself, to convert every affected span; it's kept in
-  `tools/` for the record and in case a future contributor's plain
-  Markdown-style `` `\n` `` needs the same fix applied to new prose by
-  hand (there's no ongoing markdown-to-adoc conversion step anymore).
-
-Trim size is fixed: **6.8125" × 9.125"**, Brodie's own original *Thinking
-Forth* trim, same as the old DOCX pipeline — hardcoded in
-`tools/book-template.typ`'s `#set page(...)`. That template is a
-from-scratch Typst template, not an extension of pandoc's own default
-one — see the comment at the top of the file for why (pandoc's default
-template imports a packaged `conf()` function whose page-size parameter
-only accepts named presets like `"us-letter"`, not a custom trim).
 
 ## How examples are verified
 
@@ -945,6 +897,98 @@ rule errored — "pagebreaks are not allowed inside of containers" — a
 different approach, e.g. `pagebreak(weak: true)` placed via a `context`
 block or applied only to top-level document flow, wasn't attempted
 yet).
+
+---
+
+## Session: 2026-08-31 (continued) — Full multi-format publishing pipeline
+
+Manuscript frozen (no further prose/attribution/code-example/
+illustration changes unless a build defect required one — none did).
+Graham asked for the complete reproducible publication pipeline from
+`manuscript/book.adoc`: PDF (preserve the verified build), HTML, EPUB,
+a generated-only Markdown reading copy, and a generated-only DOCX
+compatibility copy — all from the same source, one obvious build
+command plus individual targets, pinned tool versions, reproducible by
+a fresh clone with no AI involved.
+
+**Format-by-format, what was decided and why** (full detail now lives
+in `PUBLISHING.md`, the new canonical reference for this):
+
+- **PDF** — unchanged, `tools/build-pdf.js` untouched.
+- **HTML** — `--standalone --embed-resources --toc`: one file, all 12
+  illustrations embedded as base64, nothing external to lose track of.
+- **EPUB** — `--toc`; confirmed Pandoc's epub3 writer produces both
+  `nav.xhtml` and `toc.ncx` automatically (EPUB3 + EPUB2-compatible
+  navigation in one build, no extra flag needed) and splits chapters
+  on level-1 headings on its own.
+- **Markdown** — used Pandoc's plain `markdown` writer, not `gfm`:
+  confirmed by direct test that `gfm` silently drops this book's
+  `8th`/`text` code-fence language tags entirely, while plain
+  `markdown` preserves them. Prepended a generated-file notice.
+- **DOCX** — `--reference-doc=tools/book-reference.docx`, a copy of
+  Pandoc's own default reference doc with one hand-edit: added
+  `<w:pgSz>`/`<w:pgMar>` to its `<w:sectPr>` (via unzip → edit
+  `word/document.xml` → re-zip, since `-V papersize=`/`-V margin.*`
+  variables don't reach a `--reference-doc`'s page geometry) so the
+  DOCX output matches this book's 6.8125"×9.125" trim like every other
+  format. No other styling touched — not a second authoring system.
+
+**One real defect found and fixed** (a build/tooling issue, not a
+manuscript change, so in scope even with the manuscript frozen): the
+generated Markdown's illustration links (`illustrations/fig1-7.png`,
+correct as written in the `.adoc` source relative to `manuscript/`)
+don't resolve from the generated file's actual location in `proof/`.
+Fixed in `tools/build.js`'s `buildMarkdown()` by rewriting those links
+to `../manuscript/illustrations/...` as a post-processing step;
+verified the rewritten paths actually resolve on disk. The equivalent
+`code/chNN/...` links needed no fix — `manuscript/` and `proof/` are
+siblings at the same depth, so the `../code/...` form already written
+in the source resolves correctly from both.
+
+**No other defects found.** Verified across every format: all 12 kept
+illustrations present with correct captions (confirmed by keyword grep
+against each format's real content — HTML source, unzipped EPUB
+XHTML, unzipped DOCX `document.xml`, the generated Markdown — not
+against a lossy plain-text re-export, which produced a false alarm
+first pass by rendering images as bracketed alt-text instead of
+showing they were actually embedded); both book tables (Ch.2's rate
+table, Ch.5's SED-abbreviation table); inline `` `n:*` ``, backslash,
+and `--` code spans (the two migration-era Pandoc/AsciiDoc-reader bugs
+already fixed in the source stayed fixed, confirmed directly in each
+format's real output, not assumed); multi-line fenced code blocks
+including the `n:*`-heavy `pixel-code.8th` example; the Ch.8 state
+diagrams (fig7-3/fig7-5); and the epilogue through its actual final
+sentence (an early "not found" grep result here was a false alarm too
+— a line-wrap in my search pattern, not missing content; the real
+tail of each file was read directly to confirm).
+
+**Not validated:** EPUB wasn't run through the official `epubcheck`
+validator — no Java in this environment, and installing a JRE felt out
+of scope for this pass. Structural inspection (valid nav.xhtml +
+toc.ncx, correct XHTML content, images and captions present) found
+nothing wrong, but that's not the same guarantee formal EPUB
+validation gives, particularly for KDP ingestion specifically. Flag
+this if Graham wants a stronger guarantee before submitting anywhere.
+
+**Files added:** `tools/build.js` (the "one obvious command," dispatches
+to per-format functions; `pdf` shells out to the existing
+`build-pdf.js` rather than duplicating its command), `tools/book-reference.docx`
+(the hand-edited reference doc), `PUBLISHING.md` (new, the canonical
+reference for all of this). Updated `README.md` and this file's
+"Publication workflow" section to point at `PUBLISHING.md` rather than
+duplicate it.
+
+**Current stopping point:** all five formats build cleanly from one
+command, verified as described above, `PUBLISHING.md` written. Not yet
+committed as of this entry (check `git log`/`git status`).
+
+**Best next task:** commit and push this as its own commit, separate
+from the completed editorial audit (already committed/pushed earlier
+this session) and separate from the AsciiDoc/pandoc migration commits
+— Graham asked for exactly that separation. If Graham wants the EPUB
+formally validated, install a JRE and run `epubcheck` against
+`proof/Thinking-8th.epub` before relying on it for KDP or another
+ingestion path.
 
 ---
 

@@ -34,12 +34,13 @@ on-ramp.
   2026-08-31 migration (was Markdown before that). `manuscript/book.adoc`
   is the master: it sets the title and `include::`s every other file,
   in reading order — a new chapter needs one new `include::` line added
-  there, not just a correctly-named file. The `.pdf` proof is generated
-  directly from `book.adoc` via `pandoc` with Typst as the PDF engine
-  (`cd tools && node build-pdf.js`) — no DOCX master anymore, dropped
-  entirely per Graham's direction; see `HANDOFF.md` for the full
-  migration record, including two real Typst/pandoc quirks the build
-  works around.
+  there, not just a correctly-named file. Five formats build from this
+  one source and nothing else — PDF, HTML, EPUB, and two files
+  explicitly marked generated-only (a Markdown reading copy, a DOCX
+  review copy) — via `cd tools && node build.js`. See `PUBLISHING.md`
+  for the canonical-source rule and exact build commands, and
+  `HANDOFF.md` for the full migration/pipeline-build history, including
+  the real Typst/pandoc quirks the build works around.
 - `code/chNN/*.8th` — every runnable example, one file per example. This
   project does not keep a separate `examples/` vs. `tests/` split:
   each `.8th` file *is* both the example shown in the book and the thing
