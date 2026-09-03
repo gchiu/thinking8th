@@ -1,0 +1,34 @@
+= Thinking 8th
+:doctype: book
+:toc:
+:toclevels: 2
+:sectnums:
+:source-highlighter:
+
+An original adaptation of Leo Brodie's _Thinking Forth_, for the 8th language.
+
+include::00-preface.adoc[]
+
+include::01-getting-started.adoc[]
+
+include::02-notation.adoc[]
+
+include::chapter01-philosophy.adoc[]
+
+include::chapter02-analysis.adoc[]
+
+include::chapter03-decomposition.adoc[]
+
+include::chapter04-detailed-design.adoc[]
+
+include::chapter05-style.adoc[]
+
+include::chapter06-factoring.adoc[]
+
+include::chapter07-taming-the-stack.adoc[]
+
+include::chapter08-bundling-state.adoc[]
+
+include::chapter09-minimizing-control-structures.adoc[]
+
+include::epilogue.adoc[]

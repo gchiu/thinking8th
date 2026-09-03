@@ -14,41 +14,77 @@ chapter roadmap, `GAPS.md` for uncertain/version-dependent 8th behavior,
 
 ## Publication workflow
 
-`manuscript/*.md` (hand-edited source) → `manuscript/Thinking-8th.docx`
-(generated) → `proof/Thinking-8th-proof.pdf` (generated from the docx).
-Never hand-edit the `.docx`; never independently edit the `.pdf`.
+**As of 2026-08-31, this is AsciiDoc + pandoc, not Markdown + DOCX.**
+`manuscript/*.adoc` (hand-edited source, one file per chapter/front-
+matter section, all `include::`d from `manuscript/book.adoc`) →
+`proof/Thinking-8th-proof.pdf` directly, via `pandoc` with Typst as the
+PDF engine. There is no DOCX master anymore — Graham's explicit
+direction was to drop it entirely in favor of AsciiDoc source + a
+pandoc-built PDF, specifically because AsciiDoc's stricter syntax is
+much harder for an outside contributor's pull request to accidentally
+break the layout with, compared to this project's former hand-rolled
+Markdown subset.
 
-Rebuild the docx:
+Rebuild the PDF:
 
 ```bash
-cd tools && npm install && node build-docx.js
+cd tools && node build-pdf.js
 ```
 
-Auto-discovers `manuscript/*.md` by filename sort — a new
-`chapterNN-slug.md` is picked up with no script change.
+That's the whole build — one pandoc invocation
+(`tools/build-pdf.js`'s own header comment has the exact command if
+you need to run pandoc directly for debugging). `manuscript/book.adoc`
+auto-picks-up nothing by itself — a new chapter file needs one new
+`include::chapterNN-slug.adoc[]` line added to `book.adoc` in the
+right place, unlike the old build-docx.js's filename-sort
+auto-discovery. That's a deliberate trade: explicit ordering in one
+place a human reads, over implicit filename-sort magic.
 
-Generate the PDF proof (no pandoc/LibreOffice on this machine — uses real
-Word via PowerShell COM):
+**Neither `pandoc` nor `typst` needed admin/chocolatey access to
+install** — both ship as a single portable executable with no
+installer. Chocolatey itself failed in this environment (`C:\ProgramData`
+isn't writable without elevation); the working path was downloading
+each tool's official portable Windows zip directly from its GitHub
+releases and dropping the `.exe` into `~/bin` (already on `PATH`):
+`pandoc-3.11-windows-x86_64.zip` from `jgm/pandoc`, and
+`typst-x86_64-pc-windows-msvc.zip` from `typst/typst`. If this
+environment is ever rebuilt from scratch, redo that, don't assume a
+package manager will work.
 
-```powershell
-$word = New-Object -ComObject Word.Application
-$word.Visible = $false
-$doc = $word.Documents.Open("D:\repos\thinking8th\manuscript\Thinking-8th.docx")
-$doc.Fields.Update() | Out-Null
-$doc.SaveAs2("D:\repos\thinking8th\proof\Thinking-8th-proof.pdf", 17)
-$doc.Close(0)
-$word.Quit()
-```
+**Two real Typst/pandoc quirks the pipeline works around, both found
+by isolating them with minimal test files, not assumed:**
 
-**`$doc.Close(0)` is mandatory.** A bare `Close()` under unattended COM
-automation silently saves Word's in-memory changes (the materialized TOC,
-etc.) back into the source `.docx`. Confirm the docx's size/mtime is
-unchanged after every proof export.
+- `tools/fix-8th-lang.lua` (a pandoc Lua filter, applied at build time
+  via `--lua-filter`): Typst's raw-block parser (this Typst version,
+  0.15.1) won't recognize a code-block language tag that starts with a
+  digit — `` ```8th `` silently prints the literal text "8th" above
+  every single code block instead of being consumed as a language tag.
+  Confirmed as a Typst parser limitation, not a pandoc bug, by testing
+  minimal `.typ` files directly. The `.adoc` *source* correctly keeps
+  `[source,8th]` (accurate, readable for a contributor); the filter
+  rewrites it to `[source,forth]` only in the built PDF.
+- `tools/fix-inline-code.js` (a one-time migration script, already run
+  — not part of the regular build, see below): pandoc's own asciidoc
+  *reader* can't correctly round-trip a literal backslash or `--`
+  inside a single-backtick inline code span — a backslash gets
+  silently dropped, and `--` gets typographically substituted into an
+  em dash, corrupting SED notation (`\ n -- m`) and string-escape
+  references (`` `\n` ``) throughout. Both are constant in this book.
+  The fix: Asciidoctor's standard "monospace, no substitutions" idiom,
+  `` `+content+` `` (backtick-plus), round-trips correctly — confirmed
+  directly. This script was run once, during the Markdown→AsciiDoc
+  migration itself, to convert every affected span; it's kept in
+  `tools/` for the record and in case a future contributor's plain
+  Markdown-style `` `\n` `` needs the same fix applied to new prose by
+  hand (there's no ongoing markdown-to-adoc conversion step anymore).
 
 Trim size is fixed: **6.8125" × 9.125"**, Brodie's own original *Thinking
-Forth* trim (`thinking-forth-1.0/tf.sty`'s `\oldgeometry`). This is the
-`brodie` profile in `tools/build-docx.js`, and the default — plain `node
-build-docx.js` builds it, no environment variable needed.
+Forth* trim, same as the old DOCX pipeline — hardcoded in
+`tools/book-template.typ`'s `#set page(...)`. That template is a
+from-scratch Typst template, not an extension of pandoc's own default
+one — see the comment at the top of the file for why (pandoc's default
+template imports a packaged `conf()` function whose page-size parameter
+only accepts named presets like `"us-letter"`, not a custom trim).
 
 ## How examples are verified
 
@@ -68,21 +104,26 @@ skip, never a prerequisite.
 
 ## Manuscript status
 
+Filenames below are `.adoc` as of the 2026-08-31 AsciiDoc migration
+(each was `.md` before that — see the migration's own session-log
+entry near the end of this file for the conversion history). All are
+`include::`d from `manuscript/book.adoc`, which is the actual master.
+
 | File | Status |
 |---|---|
-| `manuscript/00-preface.md` | done |
-| `manuscript/01-getting-started.md` | done |
-| `manuscript/02-notation.md` | done |
-| `manuscript/chapter01-philosophy.md` (Ch.1) | done |
-| `manuscript/chapter02-analysis.md` (Ch.2) | done |
-| `manuscript/chapter03-decomposition.md` (Ch.3) | done |
-| `manuscript/chapter04-detailed-design.md` (Ch.4) | done |
-| `manuscript/chapter05-style.md` (Ch.5, "Elements of Forth Style") | done |
-| `manuscript/chapter06-factoring.md` (Ch.6, "Factoring") | done |
-| `manuscript/chapter07-taming-the-stack.md` (Ch.7, "Taming the Stack") | done |
-| `manuscript/chapter08-bundling-state.md` (Ch.8, "Bundling State, Redirecting Behavior") | done |
-| `manuscript/chapter09-minimizing-control-structures.md` (Ch.9, "Minimizing Control Structures") | done |
-| `manuscript/epilogue.md` ("8th's Effect on Thinking") | done |
+| `manuscript/00-preface.adoc` | done |
+| `manuscript/01-getting-started.adoc` | done |
+| `manuscript/02-notation.adoc` | done |
+| `manuscript/chapter01-philosophy.adoc` (Ch.1) | done |
+| `manuscript/chapter02-analysis.adoc` (Ch.2) | done |
+| `manuscript/chapter03-decomposition.adoc` (Ch.3) | done |
+| `manuscript/chapter04-detailed-design.adoc` (Ch.4) | done |
+| `manuscript/chapter05-style.adoc` (Ch.5, "Elements of Forth Style") | done |
+| `manuscript/chapter06-factoring.adoc` (Ch.6, "Factoring") | done |
+| `manuscript/chapter07-taming-the-stack.adoc` (Ch.7, "Taming the Stack") | done |
+| `manuscript/chapter08-bundling-state.adoc` (Ch.8, "Bundling State, Redirecting Behavior") | done |
+| `manuscript/chapter09-minimizing-control-structures.adoc` (Ch.9, "Minimizing Control Structures") | done |
+| `manuscript/epilogue.adoc` ("8th's Effect on Thinking") | done |
 
 Our Chapters 7 and 8 together cover Brodie's actual chapter 7
 ("Handling Data: Stacks and States") — see `PLAN.md` for why it was
@@ -795,6 +836,120 @@ replacement to compare against; (5) update `README.md`,
 `HANDOFF.md`'s "Publication workflow" section, and `PLAN.md`'s file
 conventions to describe the new pipeline, since several existing docs
 currently describe the DOCX-based one as canonical.
+
+---
+
+## Session: 2026-08-31 (continued) — Markdown to AsciiDoc + pandoc migration
+
+Same day, right after the attribution/illustration alignment pass:
+Graham gave direction to move the manuscript source from Markdown to
+AsciiDoc (`.adoc`), specifically because AsciiDoc's stricter syntax is
+much harder for an outside contributor's pull request to silently
+break the layout with, and to build the PDF via `pandoc` instead of
+the old `tools/build-docx.js` + Word-COM pipeline. Confirmed two things
+before starting (see the `AskUserQuestion` in this session): finish and
+commit the attribution/illustration pass on the old pipeline first
+(done, see the entry above), and **drop DOCX entirely** — AsciiDoc
+source and a pandoc-built PDF only, no editable Word master going
+forward.
+
+**Tooling install, no admin rights available:** `choco install pandoc`
+failed (`C:\ProgramData` not writable without elevation). Worked
+around by downloading each tool's official portable Windows zip
+directly from GitHub releases and dropping the `.exe` into `~/bin`
+(already on `PATH`, no install step needed): `pandoc` 3.11 from
+`jgm/pandoc`, `typst` 0.15.1 from `typst/typst` (chosen as the PDF
+engine — a single ~20MB portable binary, vastly lighter than a LaTeX
+install, and pandoc has first-class `--pdf-engine=typst` support).
+
+**Conversion:** `pandoc -f markdown -t asciidoc` on each of the 13
+`manuscript/*.md` files, quality-checked against a hand-written
+alternative before trusting it at scale — genuinely good (headings,
+tables, images with auto-generated figure captions, links all
+converted correctly) with two real bugs found by isolating them in
+minimal test files, not assumed:
+
+1. **Typst's raw-block parser won't accept a language tag starting
+   with a digit** — `` ```8th `` prints the literal text "8th" above
+   every code block instead of being consumed as a language tag
+   (confirmed: `` ```eighth `` works fine, `` ```8th `` doesn't, in
+   Typst 0.15.1 specifically). Fixed at build time only, not in the
+   source, via `tools/fix-8th-lang.lua` — the `.adoc` files correctly
+   keep `[source,8th]`.
+2. **Pandoc's asciidoc reader can't correctly round-trip a backslash
+   or `--` inside a single-backtick inline code span** — a backslash
+   gets silently dropped, `--` gets typographically substituted into
+   an em dash. This is not cosmetic: it's this book's SED notation
+   (`` `\ n -- m` ``) and every inline `` `\n` `` string-escape
+   reference, both constant throughout. Root-caused precisely (not
+   guessed) by dumping pandoc's internal AST with `-t native` and
+   testing candidate fixes the same way. The fix that round-trips
+   cleanly: Asciidoctor's standard `` `+content+` `` "monospace, no
+   substitutions" idiom. Wrote `tools/fix-inline-code.js`, ran it once
+   across all 13 converted files (47 spans fixed), verified the fix
+   with full-book renders before and after.
+
+**Assembly:** `manuscript/book.adoc` is the new master — sets the
+title/subtitle and `include::`s all 13 chapter/front-matter files in
+reading order (confirmed pandoc's asciidoc reader resolves `include::`
+directly, no preprocessing needed).
+
+**Page setup:** pandoc's *default* typst template only accepts named
+paper presets (`"us-letter"` etc.) for page size, not this book's
+6.8125"×9.125" custom trim — confirmed by testing `-V papersize=` with
+a raw dimension string and getting a hard error listing only named
+presets. Rather than patch that template's imported, opaque `conf()`
+function, wrote `tools/book-template.typ` from scratch: exact trim
+size, heading styles (H1 with a rule underneath, matching the old DOCX
+look), shaded code blocks, italic figure captions, a native
+`#outline()` TOC. See that file's own header comment.
+
+**Verification:** full-book PDF rendered and visually inspected end to
+end — title page, TOC, every chapter, every kept illustration (with
+auto-generated "Figure N: caption" text), the epilogue, final page.
+Specifically re-checked every spot the two bugs above could have hit:
+02-notation's SED/backslash examples, Ch.6's `a:!` SED, Ch.8's map
+SEDs, Ch.9's `pixel-code.8th` (uses `n:*` inline) — all correct after
+the fixes. One minor, purely cosmetic issue noted and left alone:
+Typst's automatic hyphenation occasionally breaks an already-hyphenated
+compound word awkwardly (e.g. "easy-to-get-wrong" → "easy-to-get-
+wrong" with a stray space) — not a content bug, not fixed this pass.
+
+**File changes:** removed all 13 `manuscript/*.md` files,
+`manuscript/Thinking-8th.docx`, and `tools/build-docx.js` from the
+repo (recoverable from git history, not deleted from disk-only
+scratch work). Added the 13 `.adoc` files, `manuscript/book.adoc`,
+`tools/build-pdf.js`, `tools/book-template.typ`,
+`tools/fix-8th-lang.lua`, and `tools/fix-inline-code.js` (the last one
+a completed one-time migration script, not part of the ongoing build —
+see its own header comment). Updated `README.md` and this file's
+"Publication workflow"/"Manuscript status" sections to describe the
+new pipeline.
+
+**Known issue, not yet resolved:** `proof/Thinking-8th-proof.pdf` was
+locked by another process (`Device or resource busy`, persisted across
+retries) when trying to replace it with the freshly pandoc-built
+version. Did not force past this (no killing processes, no working
+around an OS-level file lock) — most likely Graham has the file open
+in a viewer. The freshly-built replacement exists; check whether it
+made it into place before assuming the committed PDF reflects this
+session's work, and rebuild via `cd tools && node build-pdf.js` if not.
+
+**Current stopping point:** migration functionally complete and
+verified; blocked only on the PDF file lock for the final swap-in.
+Not yet committed as of this entry (check `git log`/`git status`
+rather than assuming).
+
+**Best next task:** confirm `proof/Thinking-8th-proof.pdf` is the
+freshly-built version (rebuild if needed), commit, push. Then, only if
+Graham wants further pipeline polish: the automatic-hyphenation
+cosmetic issue noted above, and reconsidering whether chapter-start
+page breaks are worth re-adding to `tools/book-template.typ` (removed
+during this pass because a naive `pagebreak()` inside the H1 `show`
+rule errored — "pagebreaks are not allowed inside of containers" — a
+different approach, e.g. `pagebreak(weak: true)` placed via a `context`
+block or applied only to top-level document flow, wasn't attempted
+yet).
 
 ---
 

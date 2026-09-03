@@ -1,11 +1,8 @@
 {
-  "name": "thinking8th-docx-build",
+  "name": "thinking8th-tools",
   "private": true,
-  "description": "Builds manuscript/Thinking-8th.docx from the manuscript/*.md source files.",
+  "description": "Build script for proof/Thinking-8th-proof.pdf from manuscript/book.adoc via pandoc + Typst. No npm dependencies -- build-pdf.js only shells out to the pandoc/typst binaries on PATH.",
   "scripts": {
-    "build": "node build-docx.js"
-  },
-  "dependencies": {
-    "docx": "^9.7.1"
+    "build": "node build-pdf.js"
   }
 }

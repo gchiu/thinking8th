@@ -25,16 +25,21 @@ on-ramp.
    untested code as tested.
 6. Record uncertain/version-dependent findings in `GAPS.md`; record
    skipped illustrations in `ILLUSTRATIONS.md`.
-7. Rebuild `manuscript/Thinking-8th.docx` and `proof/Thinking-8th-proof.pdf`,
+7. Rebuild `proof/Thinking-8th-proof.pdf` (`cd tools && node build-pdf.js`),
    spot-check the rendered pages, commit.
 
 ## File conventions
 
-- `manuscript/*.md` — the book's source, in reading order by filename:
-  `00-preface.md`, `01-getting-started.md`, `02-notation.md`, then
-  `chapterNN-slug.md`. This is what gets edited; the `.docx` is generated
-  from it (`cd tools && node build-docx.js`), and the `.pdf` proof is
-  generated from the `.docx` (Word COM automation — see `HANDOFF.md`).
+- `manuscript/*.adoc` — the book's source, AsciiDoc as of the
+  2026-08-31 migration (was Markdown before that). `manuscript/book.adoc`
+  is the master: it sets the title and `include::`s every other file,
+  in reading order — a new chapter needs one new `include::` line added
+  there, not just a correctly-named file. The `.pdf` proof is generated
+  directly from `book.adoc` via `pandoc` with Typst as the PDF engine
+  (`cd tools && node build-pdf.js`) — no DOCX master anymore, dropped
+  entirely per Graham's direction; see `HANDOFF.md` for the full
+  migration record, including two real Typst/pandoc quirks the build
+  works around.
 - `code/chNN/*.8th` — every runnable example, one file per example. This
   project does not keep a separate `examples/` vs. `tests/` split:
   each `.8th` file *is* both the example shown in the book and the thing

@@ -1,0 +1,87 @@
+== Epilogue: 8th’s Effect on Thinking
+
+A book about a language usually ends when the last example runs. This
+one has one chapter’s worth of technique left unlearned by design:
+nothing in the preceding nine chapters was ever really about `if`, or
+`caseof`, or the stack. Those were the vocabulary. What they were
+vocabulary _for_ is worth naming directly, now that the vocabulary is in
+place.
+
+*Naming outlives the language you learned it in.* Chapter 1 opened with
+a claim that’s easy to read past on a first pass: that 8th’s namespaces
+formalize something Forth programmers had to do by discipline, and that
+most languages since have had to reinvent it under some other name —
+packages, modules, headers. The specific mechanism changes every decade.
+The underlying question doesn’t: _what is this thing called, from
+outside the place that built it?_ `mode@` and `set-mode` answer that
+question for a thermostat’s mode; `checkout`, `withdraw?`, and `deposit`
+answer it for a transaction; `apples` answered it for a tally that
+turned out to need two colors. None of those three examples share a line
+of code. They share a habit — ask what a caller needs to know, build
+exactly that much vocabulary, and hide the rest — and that habit doesn’t
+expire when you close this book and open a language with braces instead
+of a stack.
+
+*Small enough to hold in your head, on purpose.* Several things in this
+book turned out to be honest gaps rather than missing features: 8th
+performs no optimization beyond tail calls, because an optimizer that
+silently rewrites your program is a mechanism you can no longer fully
+trust. Its `+>r+`/`+r>+` aren’t the real return stack, because a
+shortcut that can corrupt how the language finds its way home isn’t a
+shortcut worth having. Its booleans are a real type, not an integer in a
+costume, because a value that’s sometimes a number and sometimes a truth
+depending on context is a value you have to think about twice every time
+you see it. None of these are limitations you route around. They’re the
+language declining to be clever on your behalf, so that the model in
+your head and the model actually running stay the same size. A program
+built this way doesn’t scale by getting more mechanisms for you to
+remember — it scales by staying made of the same few honest pieces, more
+of them, arranged more ways. That’s what "`human-scale`" means in
+practice: not that the problems stay small, but that the units you’re
+reasoning in never have to grow past what a person can actually hold.
+
+*Factoring is a way of noticing, not just a way of writing.* Chapter 6
+gave factoring a checklist — repeated code, a comment that wants to be a
+name, a decision that keeps showing up in slightly different clothes.
+The checklist is really describing a kind of attention: the moment you
+catch yourself writing the same shape twice, whether that shape is six
+lines of 8th or two paragraphs of an email you’ve sent before. Most
+people develop that attention eventually, on their own, from enough
+repeated frustration. Writing in a language where the reward for
+noticing is immediate — factor it out, watch three call sites shrink to
+one — teaches it faster, and teaches you to trust the instinct once it’s
+there. `channel-actions`, `parking-fee`, `roman`’s two tables: none of
+them were factored because a rule said to. They were factored because,
+once written out plainly, the repetition was impossible not to see.
+
+*Knowing what _not_ to build is its own skill, separate from knowing how
+to build.* This book spent real time on things 8th deliberately doesn’t
+offer: no general metaprogramming to replace with Forth’s
+`CREATE`/`+DOES>+`, no object system reached for out of habit, no
+decision table built two dimensions bigger than the problem actually
+has. Every one of those absences turned out to be a place where a
+simpler, more direct tool — a native array, a plain namespace, a
+compound string key — was already sitting there once the urge to
+generalize was set aside. Chapter 2 said it about data structures
+specifically: size the solution to the problem you have, not the one you
+can imagine, because the parts you can’t predict are exactly the parts
+you’ll want to have hidden behind a word, ready to change, not already
+locked into a general-purpose shape you’ll have to work around later.
+That’s a harder discipline than it sounds, because building the general
+version usually _feels_ like the responsible choice, right up until
+you’re maintaining it.
+
+*What travels.* Say you close this book and spend the next year writing
+in a language with none of 8th’s stack, none of its namespaces, none of
+its interactive, edit-and-watch-it-run rhythm. Some of what you
+practiced here comes along anyway, because it was never really about the
+stack. You’ll still ask what a piece of code should be called from the
+outside before you decide how it works on the inside. You’ll still
+notice the second time you write something you wrote last week, and
+reach for a name instead of a copy. You’ll still catch yourself reaching
+for a general mechanism and ask, honestly, whether the problem in front
+of you actually needs one, or whether a smaller, plainer answer was
+sitting there the whole time. A concatenative, stack-based language
+makes those habits unusually visible while you’re learning them, the way
+learning to draw makes you notice shadows you’d walked past your whole
+life. The shadows were always there. Now you can’t stop seeing them.
