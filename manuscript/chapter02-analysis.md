@@ -244,7 +244,11 @@ sharing the same lot.
 
 The temptation, faced with that uncertainty, is to generalize: build a
 data structure that could handle any garage configuration anyone might ever
-want. Resist it. A solution sized for problems you don't have yet is
+want. Resist it — Charles Moore's own rule of thumb, drawn out at length
+in Brodie's interviews with him, is blunt about exactly this temptation:
+generality usually just means complexity, and a solution should stay
+sized to the problem it actually has, not the one it might face
+someday. A solution sized for problems you don't have yet is
 usually harder to understand, harder to verify, and — because
 generalization multiplies the number of cases that interact with each
 other — no easier to change than one sized for the problem you actually

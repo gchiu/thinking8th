@@ -86,6 +86,22 @@ sides call into rather than duplicate:
 called into from both the automatic and the manual side, rather than two
 copies of "the current mode" that could quietly drift apart.
 
+One more discipline belongs here, easy to miss until it's violated:
+whatever crosses an interface should be expressed in terms the rest of
+the program can use without knowing how it was produced. `read-temp`
+already does this correctly, later in this chapter — it will return
+degrees, not a raw sensor voltage or an ADC reading — which is exactly
+why `decide-mode` can compare against `68` and `76` without caring
+whether the sensor underneath is a thermistor or a thermocouple. Get
+this backward, and the mistake is easy to make invisibly: let two
+components quietly share one raw variable that was only ever meant for
+one of them, and a change to that variable breaks the other in a spot
+neither one was looking at. `mode` is protected from exactly this
+failure by the same discipline that protects it from duplication —
+nothing outside `set-mode` ever touches the variable directly, so
+there's no raw shared state left exposed for a second component to
+lean on by accident.
+
 Now the two things that actually want to change the mode. The automatic
 decision uses two new comparisons: `n:<` and `n:>` both take two numbers
 and push a boolean, in the order you'd read them aloud — `a b n:<` asks

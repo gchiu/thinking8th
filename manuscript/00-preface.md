@@ -6,7 +6,12 @@ language, but the way of thinking that makes it worth learning. Brodie's book
 is not a manual. It is an argument about how to design software — when to
 factor, what to name, how to hide the parts of a program most likely to
 change — illustrated with a language that makes those decisions unusually
-visible.
+visible. It is also, itself, a synthesis rather than one person's solo
+argument: Brodie wrote and organized it, but its judgment is drawn as much
+from extensive interviews with Charles Moore, Forth's inventor, and dozens
+of working Forth programmers as from Brodie's own experience — a debt this
+book tries to preserve rather than flatten into "Brodie says," wherever the
+distinction actually matters.
 
 8th is a good language for the same kind of book, and a different one.
 It descends from Forth by way of Ron Aaron's Reva Forth, and it keeps the

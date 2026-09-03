@@ -96,6 +96,44 @@ need one, since 8th already has safer, dedicated words for the same
 jobs. Appendices are next, if wanted — check with Graham before
 assuming they're in scope.
 
+**Book-level audit, 2026-08-31.** Before any further numbered chapters,
+Graham asked for a full audit of the manuscript as a *book*, not just
+nine completed chapters: a proper ending (the book had none — it
+stopped cold at Chapter 9's summary), a section-by-section mapping of
+every Brodie chapter 1–8 against its Thinking 8th treatment, and a
+full illustration audit against the real 2004 3rd edition. Result:
+`manuscript/epilogue.md` ("8th's Effect on Thinking") closes the book;
+the full chapter-mapping table lives in `HANDOFF.md`; the full
+illustration audit (every figure in Brodie's book, not just the ones
+already used) lives in `ILLUSTRATIONS.md`, including a direct review of
+whether relocating fig3.8/fig3.9 into the thermostat example (instead
+of Brodie's Tiny Editor) was justified — concluded yes, reasoned there
+in full. Two small, clearly-justified manuscript fixes came out of the
+mapping audit (Ch.1's overclaimed namespace enforcement; Ch.3's missing
+"objective units" point) — see `HANDOFF.md` for both. Nothing was
+restored merely to lengthen a chapter.
+
+**Attribution and illustration alignment pass, 2026-08-31 (same day,
+later).** Follow-up requested by Graham: a full historical/intellectual
+provenance audit (every "Brodie"/"Moore" mention checked against the
+2004 edition, correcting places where Brodie's book gets credit for
+judgment that's actually Charles Moore's, as Forth's inventor), plus a
+final, stricter re-check of the illustration audit — in particular
+whether relocating fig3.8/fig3.9 into the thermostat example still
+holds up under a tighter test ("move only if it still illustrates
+precisely the same point; restore or omit if the relocation weakens
+picture-to-argument fit"). Verdict on both: three small provenance
+corrections made (Ch.1, Ch.2, Ch.6 — see `GAPS.md`'s "Historical/
+intellectual attribution audit" entry for the evidence behind each),
+one sentence added to the Preface making the Brodie/Moore relationship
+explicit, and fig3.8/fig3.9's relocation reconfirmed (`ILLUSTRATIONS.md`).
+Every kept illustration's filename was cross-checked byte-for-byte
+against the archive. Next up, per Graham's direction right after this
+pass: the manuscript source format is moving from Markdown to
+AsciiDoc, with PDF built via pandoc rather than the current DOCX +
+Word-COM pipeline. That migration is intentionally a separate,
+follow-up commit — see `HANDOFF.md`'s most recent session entry.
+
 Depth over speed: a chapter isn't "done" until its code has actually run
 and its prose has actually been read back for the beginner-readability
 rule below. Fewer, solid chapters beat more, shaky ones.

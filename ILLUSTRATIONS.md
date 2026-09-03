@@ -1,5 +1,210 @@
 # Illustration Placeholders
 
+## Full book-level illustration audit, 2026-08-31
+
+Requested by Graham: audit **every** illustration in the real 2004 3rd
+edition (`thinking-forth-2000/thinking-forth-color.pdf`) against the
+current proof, chapter by chapter, treating the PDF as authoritative for
+which illustration belongs to which discussion, ordering, caption/
+context, and deliberate joke/mismatch pairings — not as generic clip-art
+to slot in wherever convenient. This supersedes nothing below; the
+per-figure detail from the original archive audit stands and is cited
+here rather than repeated. Page numbers are 2004-edition book pages
+(PDF page = book page + 18); a page marked "~" is placed by its
+section in `thinking-forth-1.0/chapterN.tex` rather than individually
+re-opened in the PDF this pass — proportionate effort given decorative
+cartoons carry no teaching content to place correctly, only a mood to
+skip or keep.
+
+**Decision key:** `KEEP` (already inserted, correctly placed) ·
+`KEEP — RELOCATED` (inserted, but at a different discussion than
+Brodie's original; reasoned below) · `OMIT` (source material exists,
+deliberately not used — reason given each time) · `MOVE` / `MODERNIZE`
+(not used below — nothing found needing either; see closing note) ·
+`REVIEW` (used once, for the case Graham flagged directly).
+
+**Filenames, exactly as they exist in the archive — never inferred.**
+The `ID` column below uses the printed caption's dotted figure number
+(e.g. `fig1.7` = "Figure 1.7" as printed in the 2004 book) since that's
+what ties a row to its context in the discussion below. The
+*underlying file* uses a hyphen instead of a dot and is never renamed:
+`fig1-7.eps` in `thinking-forth-1.0/` (the original archive) and, for
+every row marked `KEEP`, `fig1-7.png` in `manuscript/illustrations/`
+(copied in, filename preserved exactly, when the illustration was
+verified and wired into the manuscript — see `GAPS.md` for that
+verification history). Undotted IDs (`img1-004`, `no-scrambled`) are
+themselves the exact archive filename — Brodie's own uncaptioned
+cartoons were never given a "Figure N.M" number, only a bare
+descriptive filename, and this audit preserves that distinction rather
+than inventing a figure number for them.
+
+### Chapter 1 → Thinking 8th Chapter 1
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| img1-004 | ~4 | cartoon | "GOTO 500—and here I am" | OMIT | decorative, no teaching content |
+| fig1.1 | 6 | diagram | Unstructured GOTO code | OMIT | superseded — condensed to one sentence, common knowledge |
+| fig1.2 | 7 | diagram | "Make Breakfast" structured design | OMIT | superseded — `breakfast.8th` is real code, not a design sketch |
+| fig1.3 | ~9 | code | Structured programming in BASIC | OMIT | BASIC example not adapted |
+| fig1.4 | — (`.tex` only) | table | Pascal breakfast | OMIT | superseded by `breakfast.8th`; confirmed plain LaTeX table, no art |
+| img1-010 | ~11 | cartoon | "Software patches are ugly" | OMIT | decorative |
+| fig1.5 | ~12 | diagram | Main program/subroutine in memory | OMIT | memory layout isn't part of 8th's model |
+| img1-013 | ~13 | cartoon | "…refinement far enough" | OMIT | decorative |
+| fig1.6 | — (`.tex` only) | table | HIPO structure chart | OMIT | Structured Design section condensed |
+| **fig1.7** | **21** | diagram | Structured design vs. component design | **KEEP** | inserted, "Words Are the Unit" |
+| **fig1.8** | **22** | diagram | A lexicon describes a component | **KEEP** | inserted, "Namespaces" |
+| **fig1.9** | **23** | diagram | Entire application = components (robot) | **KEEP** | inserted, "Namespaces" |
+| fig1.10 | 26 | diagram | Changing the indirect pointer (RED/GREEN) | OMIT | superseded — `apples.8th` is real running code, strictly better than a static diagram |
+| img1-028/030/033 | ~28/30/33 | cartoons | "Two points of view" / "Two solutions" / "mice and young men" | OMIT | decorative |
+
+### Chapter 2 → Thinking 8th Chapter 2
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig2.1 | 39 | diagram | Iterative approach cycle (Kim Harris) | OMIT | condensed to "Iteration Beats Prediction" prose |
+| img2-047 | 47 | cartoon | Refining a conceptual model (house design) | OMIT | decorative |
+| fig2.2 | ~48 | diagram | An iterative approach to analysis | OMIT | same condensation as fig2.1; largely redundant with it in the original too |
+| **fig2.3** | **51** | diagram | A data-flow diagram | **KEEP** | inserted, "Sketching Interfaces in Words, Not Diagrams" |
+| fig2.4 | 55 | diagram | Decision tree | OMIT | this book goes straight from prose to decision table, skipping the intermediate tree (a genuine scope choice, not an oversight) |
+| fig2.5 | 56 | diagram | The decision table | OMIT | superseded — real Markdown table in the manuscript |
+| fig2.6 | 57 | diagram | Simplified decision table | OMIT | superseded, same reason |
+| fig2.7 | 58 | diagram | Sectional decision table | OMIT | superseded — `parking-fee.8th`'s factoring achieves the identical split in real code |
+| fig2.8 | 58 | diagram | Decision table w/o operator involvement | OMIT | superseded, same reason |
+| img2-060/063/066 | ~60/63/66 | cartoons | "Two adequate solutions" / overgeneralized solution / "conventional wisdom" | OMIT | decorative |
+
+### Chapter 3 → Thinking 8th Chapter 3
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig3.1 | ~72 | diagram | Pools of thought not yet linked | OMIT | vacation/wedding anecdote not adapted |
+| fig3.2 | 76 | diagram | Tiny Editor decomposition | OMIT | this book uses an original thermostat, not Brodie's Tiny Editor |
+| fig3.3 | 80 | diagram | Traditional approach: view from the top | OMIT | Tiny Editor; also a flowchart-driven walkthrough style this book doesn't use anywhere (see Ch.5) |
+| fig3.4 | 81 | diagram | Structure for "Process a Keystroke" | OMIT | Tiny Editor, same reason |
+| fig3.5 | 82 | diagram | Another structure for "Process a Keystroke" | OMIT | Tiny Editor, same reason |
+| fig3.6 | 83 | diagram | Same section, "refined" and "optimized" | OMIT | Tiny Editor, same reason |
+| fig3.7 | 84 | diagram | Adding refresh | OMIT | Tiny Editor, same reason |
+| **fig3.8** | **85** | diagram | Interface as a junction (traditional) | **KEEP — RELOCATED** | see reasoning below |
+| **fig3.9** | **86** | diagram | Use of the interface component | **KEEP — RELOCATED** | see reasoning below |
+| fig3.10 | ~90 | diagram | Two ways to add advanced capabilities | OMIT | sequential-complexity section is prose-only; underlying word-processor vectoring example not adapted |
+| no-scrambled | ~92 | cartoon | "No scrambled?" (objects) | OMIT | decorative |
+
+**On fig3.8/fig3.9 — Graham's flagged case, reviewed directly.** In the
+2004 edition these two figures land at the end of an eleven-page,
+six-figure Tiny Editor case study (fig3.2–fig3.7): a full worked
+example of decomposing a keystroke-driven editor, redesigning it twice,
+and discovering a shared "pointer" that several editing functions
+needed. Only *after* that entire buildup does Brodie generalize the
+lesson into fig3.8/fig3.9 — and when he does, the figures themselves
+switch to **generic** vocabulary (`MODULE 1`, `MODULE 2`, `BUFFER A`,
+`THING B`), not Tiny-Editor-specific terms like `POSITION` or
+`OVERWRITE`. The figures were never a picture *of* the Tiny Editor;
+they're Brodie's own abstraction of a lesson a concrete example just
+finished teaching.
+
+This book's thermostat example (`mode`/`mode@`/`set-mode`) plays the
+identical structural role: a concrete case that discovers the same
+shared-boundary problem, at the exact point these two already-generic
+figures generalize it. The relocation trades one thing for another —
+Brodie's nine-page build-up (naive design, two competing flowcharts,
+"refined" and "optimized" variants, then breakage under a display-
+technology change) becomes this book's shorter one, consistent with
+Chapter 5's established choice not to walk through flowchart-driven
+design critique anywhere in this adaptation. What doesn't change is
+the figures' own content or their relationship to the lesson: two
+modules duplicating shared state at a seam, versus one shared
+component both sides call into — which is exactly what `mode`'s
+encapsulation *is*. Kept in place. See
+`manuscript/chapter03-decomposition.md`'s "Decomposition by Component:
+A Thermostat" section for the surrounding text (now slightly expanded
+this session with an "objective units" paragraph drawn from the Tiny
+Editor material's own follow-on lesson — see the chapter-mapping audit
+in `HANDOFF.md`).
+
+**Re-checked 2026-08-31 against the sharper test** ("move only if it
+still illustrates precisely the same conceptual point; if moving it
+weakens the relationship between picture and argument, restore it or
+omit it instead"): it passes. The relationship between picture and
+argument is not weakened by the relocation — if anything it's tighter,
+since the figures now sit immediately beside the concrete example that
+demonstrates them (`mode`/`set-mode`), rather than at the far end of a
+nine-page build-up the way they do in the original. Same verdict,
+**KEEP — RELOCATED**. Exact filenames, unchanged and verified directly
+against `thinking-forth-1.0/`: archive originals `fig3-8.eps` and
+`fig3-9.eps` (both `\wepsfiga` — scanned/typeset art, not LaTeX-drawn,
+no `.tex` sibling for either); the copies in use are
+`manuscript/illustrations/fig3-8.png` and
+`manuscript/illustrations/fig3-9.png`, copied in under those same
+names and never renamed.
+
+### Chapter 4 → Thinking 8th Chapter 4
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| **fig4.1** | **102** | diagram | A problem easier to solve backward | **KEEP** | inserted, "Getting Unstuck" |
+| **fig4.2** | **103** | diagram | Two containers | **KEEP** | inserted, "Getting Unstuck" |
+| **fig4.3** | **104** | diagram | Achieving the end result | **KEEP** | inserted, "Getting Unstuck" |
+| img4-103 | 105 | cartoon | "Intent on a complicated problem" | OMIT | decorative |
+| fig4.4 | 106 | diagram | The nine dots problem | OMIT | this book's "Getting Unstuck" uses only the water-jug example, a scope choice, not an oversight |
+| fig4.5 | 107 | diagram | Not quite right (nine dots) | OMIT | same |
+| img4-106 | ~108 | cartoon | "I'm not just sleeping…" | OMIT | decorative |
+| **img4-110** | **112** | illustration | Noun-verb yard-work vignettes | **KEEP** | inserted, "How 8th Wants to Be Written" |
+| fig4.6 | 115 | diagram | A table of 8-byte records | OMIT | 8th's arrays are already zero-indexed with no memory-offset arithmetic needed; point made without this example |
+| fig4.7 | 117 | diagram | Traditional compiler vs. Forth compiler | OMIT | this book's compiler discussion (Ch.1) doesn't use this framing, and per Ch.1's own finding 8th doesn't compile to native code the way this figure assumes |
+| fig4.8 | ~123 | diagram | Roman numeral data access (Brodie's algorithm) | OMIT | `roman.8th` uses a deliberately different, original algorithm; this figure depicts Brodie's own specific data layout |
+
+### Chapter 5 → Thinking 8th Chapter 5
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig5.1 | ~137 | cartoon | "I still don't see how these conventions…" | OMIT | decorative |
+| fig5.2 | ~150 | cartoon | Wiggins, proud of his commenting technique | OMIT | decorative |
+
+### Chapter 6 → Thinking 8th Chapter 6
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig6.1 | ~176 | ASCII/code | Boxes to be displayed | OMIT | reproduced directly as real runnable 8th (`boxes.8th`) |
+| fig6.2 | ~178 | code | `POINTS`/`DRAW` table listing | OMIT | reproduced directly as real runnable 8th (`boxes.8th`) |
+
+### Chapter 7 → Thinking 8th Chapters 7 and 8
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig7.1 | 205 | form/diagram | Example of a stack commentary | OMIT | Ch.7 doesn't walk through Brodie's `CMOVE>`-based stack-commentary form at all |
+| fig7.2 | 216 | code/text | A collection of related variables | OMIT | reproduced as real code — `box-map.8th`'s map *is* this bundle |
+| **fig7.3** | **216** | diagram | Conceptual model for saving a state table | **KEEP** | inserted, Ch.8 "A Table of Related Values" |
+| fig7.4 | 217 | code | Implementation of save/restorable state table | OMIT | reproduced as real code — `draft-commit.8th` replaces this exact mechanism with `G:clone` |
+| **fig7.5** | **218** | diagram | Conceptual model for alternating-states tables | **KEEP** | inserted, Ch.8 "Two Live States, One Set of Names" |
+| fig7.6 | 218 | code | Implementation of alternating-states mechanism | OMIT | reproduced as real code (`profiles.8th`) |
+| fig7.7 | 221 | diagram | `DOER` and `MAKE` | OMIT | Ch.8 explains `defer:`/`w:is` in prose rather than walking through `DOER`/`MAKE` step-by-step |
+| fig7.8 | 222 | diagram | Multiple `MAKE`s in parallel | OMIT | same reason |
+| fig7.9 | 223 | diagram | Multiple `MAKE`s in series | OMIT | same reason |
+| img7-211 | 209 | cartoon | "…too many variables!" | OMIT | correct pairing confirmed this session (see `GAPS.md`); simply not needed — Ch.8's `defer:`/`w:is` treatment never anchors to this joke |
+
+### Chapter 8 → Thinking 8th Chapter 9
+
+| ID | Book p. | Type | Original topic | Decision | Reason |
+|---|---|---|---|---|---|
+| fig8.1 | ~5 | code | ATM: structured approach (nested IFs) | OMIT | Ch.9's "Guards and Dispatch" uses an original checkout scenario, not Brodie's ATM |
+| fig8.2 | ~6 | code | ATM: named procedures | OMIT | same |
+| fig8.3 | ~7 | code | ATM: refactored/button dispatch | OMIT | same — though this is the closest analog to `checkout.8th`'s actual technique |
+| fig8.4 | 245 | code | Phone-rate two-dimensional table | OMIT | superseded — `mode-dispatch.8th`'s compound-key technique covers the 2D-table lesson with an original example |
+| fig8.5 | 246 | code | Tiny Editor function table | OMIT | Tiny Editor not used; `mode-dispatch.8th` is the original replacement |
+| fig8.6 | 251 | chart | Epson MX-80 graphics character set | OMIT | Ch.9's "Calculating Instead of Deciding" deliberately generalized this into an abstract six-pixel example rather than the specific Epson glyph set |
+
+**On MOVE and MODERNIZE:** neither classification was needed. Nothing
+found belongs at a *different* Thinking 8th location than where it
+already sits (the fig3.8/fig3.9 case above is a genuine relocation
+*from Brodie's chapter*, already accounted for as `KEEP — RELOCATED`,
+not a case of this book putting a figure in the wrong place). Nothing
+found needs a redrawn/updated version — every figure kept has already
+been verified pixel-identical to the 2004 original (see `GAPS.md`), and
+every figure omitted is omitted because its underlying lesson is
+already served by real, tested 8th code or an original replacement, not
+because the art itself is dated.
+
+
+
 ## A better source now exists: the 2004 3rd-edition PDF, 2026-08-30
 
 Graham supplied `thinking-forth-2000/thinking-forth-color.pdf` — the

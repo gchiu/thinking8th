@@ -191,6 +191,11 @@ too":
   Chapter 8's `defer:`/`w:is` are both this same move: change one
   thing "at the bottom," and every caller built on top of it inherits
   the change for free, with no `if` added anywhere else.
+- **Don't test for something that can't possibly happen.** A word that
+  trusts its caller to respect its own stack-effect comment doesn't
+  need to re-check what the caller already promised — a guard belongs
+  at the boundary where genuinely untrusted input enters a program, not
+  copied into every internal word downstream of that boundary.
 
 ## Calculating Instead of Deciding
 

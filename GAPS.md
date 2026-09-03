@@ -119,6 +119,22 @@ file when something here gets resolved, or when a new one turns up.
   Confirmed by checking stack depth before and after. Relevant any time
   `caseof` dispatches to plain `--` action words, as in
   `code/ch09/checkout.8th`.
+- **Namespace prefixes (`n:`, `s:`, a custom `stock:`, etc.) are purely
+  organizational — nothing about them restricts access.** Any code that
+  knows a word's full name can call it regardless of which "component"
+  declared it; `with:`/`;with` bring a namespace into unprefixed scope
+  for readability, they don't create or remove a boundary. 8th's actual
+  access-control primitive is a different, narrower word, **`private`**
+  (paired with `public`) — but it's scoped to a *loaded library file*,
+  not to namespaces in general: words declared after `private` become
+  unreachable once the library finishes loading, except briefly via the
+  special `#p:` namespace. Confirmed against
+  `docs/md/24_libraries.md`; not otherwise used or verified with a
+  runtime test in this book, since no chapter has needed genuine
+  access control yet. Found while auditing Chapter 1's claim that
+  namespaces are "enforced by the interpreter," which overstated the
+  case — corrected in the manuscript (see `HANDOFF.md`'s 2026-08-31
+  chapter-mapping audit).
 
 ## Genuinely unexplored (haven't needed them yet)
 
@@ -265,6 +281,54 @@ file when something here gets resolved, or when a new one turns up.
   dispatch shape rather than OOP broadly) was the right call, since
   Brodie's own later prefaces walk back the original blanket dismissal
   the same way.
+
+## Historical/intellectual attribution audit, 2026-08-31
+
+Graham asked for a full provenance pass: every "Brodie"/"Moore"/
+invented/identified/introduced/discovered/argued/proposed/coined/
+developed occurrence across the whole manuscript, checked against the
+real 2004 edition, correcting any place where "Brodie" gets credit for
+something the original book actually attributes to Charles Moore (as
+Forth's inventor) or presents as established prior practice. Full
+per-occurrence review (all 55 hits, every chapter) — not summarized
+here in detail to keep this file's scope to 8th-behavior facts; the
+reasoning for each fix lives with the fix itself, in-line as an edit
+comment where useful. Three real corrections came out of it, all
+small and evidence-based, none removing Brodie's genuine authorial
+role (organizing, teaching, and — for `DOER`/`MAKE` specifically —
+inventing something himself, confirmed via his own first-person "I
+invented" claim in the source, and correctly left attributed to him
+throughout):
+
+- **Ch.1:** "Leo Brodie identified [implicit calls and implicit data
+  passing] in Forth" was wrong — Brodie's own text calls these "two
+  Forth inventions," i.e. Charles Moore's design choices as Forth's
+  creator, which Brodie's chapter explains rather than originates.
+  Corrected to credit them to Forth's own founding design.
+- **Ch.2:** the "generality usually means complexity, stay sized to
+  the problem you have" point was previously unattributed prose. In
+  the source it's Moore's own stated position, drawn out at length
+  across several pages of direct interview. Added a one-sentence
+  credit.
+- **Ch.6:** "Factor at the point you feel unsure" — presented as one
+  of "Brodie's" factoring criteria — is Moore's own rule of thumb
+  almost verbatim ("A word should be a line long... short words give
+  you a good feeling," directly quoted in the source, with the
+  "factor when unsure" tip's own elaboration also a direct Moore
+  quote). Added a sentence crediting Moore before the heuristic list.
+
+Everything else checked (all remaining Ch.1/3/7/8 mentions, plus
+Ch.4/5/9's stray "introduced" hits, which turned out to be false
+positives — cross-references to this book's own earlier chapters, not
+attribution claims about Brodie or Moore at all) was already accurate:
+Ch.8 in particular is largely Brodie's *own* constructed material
+(the state-table example, and `DOER`/`MAKE` — confirmed by his own
+first-person "I invented" claim in `chapter7.tex`) and was already
+correctly attributed to him throughout, not to Moore. Also added one
+sentence to `manuscript/00-preface.md` making the Brodie/Moore
+relationship explicit up front, as requested, rather than leaving it
+implicit until a reader happens to notice the pattern chapter by
+chapter.
 
 ## Environment-dependent / not independently verifiable here
 

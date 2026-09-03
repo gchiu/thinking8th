@@ -82,6 +82,7 @@ skip, never a prerequisite.
 | `manuscript/chapter07-taming-the-stack.md` (Ch.7, "Taming the Stack") | done |
 | `manuscript/chapter08-bundling-state.md` (Ch.8, "Bundling State, Redirecting Behavior") | done |
 | `manuscript/chapter09-minimizing-control-structures.md` (Ch.9, "Minimizing Control Structures") | done |
+| `manuscript/epilogue.md` ("8th's Effect on Thinking") | done |
 
 Our Chapters 7 and 8 together cover Brodie's actual chapter 7
 ("Handling Data: Stacks and States") — see `PLAN.md` for why it was
@@ -94,6 +95,125 @@ new there.
 See `PLAN.md` for the full chapter map against Brodie's actual table of
 contents. Only the appendices remain unaccounted for — check with
 Graham whether they're in scope before starting on them.
+
+## Chapter Mapping Audit (2026-08-31)
+
+Requested by Graham: map every substantive section of Brodie's chapters
+1–8 to its treatment here, classified as retained directly / adapted
+into an 8th example / deliberately condensed / deliberately omitted as
+obsolete or Forth-specific / accidentally omitted and worth
+reconsidering. Built by re-reading each `chapterN.tex`'s section
+structure against the corresponding manuscript chapter, not from
+memory. Two things this audit is *not*: a license to restore material
+just to lengthen a chapter, and a claim that every single subsection
+below was re-verified at the same depth (Chapters 1–3 got a full
+re-read this pass; 4–5 were checked against strong existing knowledge
+plus targeted spot-checks; 6–9 were written this session with the
+source already fresh, so are reported with high confidence but weren't
+re-opened again for this audit).
+
+**Legend:** RETAINED (ported with only cosmetic change) · ADAPTED
+(same lesson, original 8th example) · CONDENSED (kept, compressed —
+often several Brodie subsections into one) · OMITTED-OBSOLETE
+(Forth/hardware/interview-specific, correctly dropped) · **GAP** (found
+this pass, not previously flagged — see whether it was fixed).
+
+### Chapter 1 → Thinking 8th Chapter 1
+
+| Brodie section | Treatment |
+|---|---|
+| An Armchair History of Software Elegance (Memorability→Information-Hiding, ~13 subsections) | CONDENSED into "A Short History of Trying to Make Software Manageable" — keeps the destination (Parnas, Liskov/Zilles data abstraction via the stack example) and drops the historical breadth (Writeability, Designing from the Top, Subroutines, Successive Refinement, Functional Strength, Coupling, HIPO as named stops) |
+| The Superficiality of Structure (Parnas's reuse/change criteria, "uses hierarchy") | ADAPTED — folded into the history section; the "uses hierarchy" idea specifically resurfaces later, in Ch.3 and Ch.5's "Organizing Your Source" |
+| Looking Back, and Forth (Implicit Calls, Implicit Data Passing) | RETAINED — "Words Are the Unit," same two bolded subheadings, `breakfast.8th` replacing Brodie's example |
+| Component Programming | ADAPTED — "Namespaces: A Lexicon You Don't Have to Invent," using fig1.7–1.9 |
+| Hide From Whom? (Forth's info-hiding = design discipline against *change*, not Modula-2-style access control against *other code*) | **GAP, fixed this session** — Ch.1 previously overclaimed that namespaces are "enforced by the interpreter." Corrected: namespaces organize, don't lock; added a short paragraph distinguishing that from 8th's actual (unrelated, library-scoped) `private` word, directly channeling Brodie's own distinction |
+| Hiding the Construction of Data Structures | RETAINED — "Hiding the Construction of a Data Structure," `apples.8th` |
+| But Is It a High-Level Language? | RETAINED, same title |
+| The Language of Design (stub components, instant feedback replaces batch-compile) | ADAPTED — folded into the end of "Is 8th a High-Level Language?" |
+| The Language of Performance (Speed, Capability, Size) | ADAPTED, honestly reframed — the speed argument doesn't survive (8th has no native-code path); reframed around portability instead |
+| Summary | RETAINED |
+
+### Chapter 2 → Thinking 8th Chapter 2
+
+| Brodie section | Treatment |
+|---|---|
+| The Nine Phases of the Programming Cycle | CONDENSED to a passing acknowledgment in the chapter intro |
+| The Iterative Approach / Value of Planning / Limitations of Planning | ADAPTED, merged into "Iteration Beats Prediction" |
+| The Analysis Phase (Requirements, Constraints, Conceptual Model) | ADAPTED into "What Analysis Actually Produces" (three questions) |
+| Defining the Interfaces | ADAPTED — "Sketching Interfaces in Words, Not Diagrams," garage example, fig2.3 |
+| Defining the Rules (Structured English, Decision Tree, Decision Table) | ADAPTED — Structured English's "hard to check by eye" pain point and the Decision Table solution both present; the intermediate Decision Tree step deliberately skipped (already flagged in `ILLUSTRATIONS.md`) |
+| Defining the Data Structures | ADAPTED — "Data Structures and the Limits of Generality," garage-spaces example replacing the library-index one |
+| Achieving Simplicity (generality↔complexity, "exploit the don't-cares," quantize, keep the user out of trouble, use available tools) | CONDENSED — only the generality↔complexity point ("simple and changeable beats general") survived explicitly; "exploit the don't-cares," "to simplify, quantize," and "keep the user out of trouble" are real, distinct, portable tips not currently restated anywhere. Judgment call: left as CONDENSED, not restored — genuinely secondary to this chapter's actual payload (the parking-fee decision table), and Ch.9 already independently covers "avoid the need for special handling," a close cousin of "keep the user out of trouble," as a new bullet added this session |
+| Budgeting and Scheduling | OMITTED-OBSOLETE — project management, not a programming technique |
+| Reviewing the Conceptual Model | OMITTED-OBSOLETE — process-review step, folded implicitly into the book's general iterate-and-test theme |
+| Summary | RETAINED |
+
+### Chapter 3 → Thinking 8th Chapter 3
+
+| Brodie section | Treatment |
+|---|---|
+| Decomposition by Component | ADAPTED — thermostat replaces the setup for Tiny Editor |
+| Example: A Tiny Editor (fig3.2–3.7, ~9 pages) | OMITTED-OBSOLETE by design — original examples policy; see `ILLUSTRATIONS.md`'s fig3.8/3.9 note for the full reasoning on what specifically was and wasn't carried forward |
+| Maintaining a Component-based Application | ADAPTED — "A Change in Plan" (mode-name logging change) |
+| Designing and Maintaining a Traditional Application (+ its own "Change in Plan," the bad/traditional response to the same change) | CONDENSED into one prose paragraph ("Compare that to what would have happened...") rather than a full second worked example — a deliberate compression, not an omission |
+| The Interface Component (+ "A Design Mistake": express shared data in *objective units*, using an oven-temperature example almost identical in spirit to this book's thermostat) | ADAPTED, and **GAP found and fixed this session** — the "objective units" point (a real, distinct lesson from "too narrow," about interfaces leaking raw/unconverted state) wasn't in the chapter at all. Brodie's own example for it is a thermostat-adjacent oven-temperature scenario, an unusually direct fit; added a short paragraph tying it to `read-temp` already returning degrees, not a raw sensor voltage |
+| Decomposition by Sequential Complexity | RETAINED, `defer:`/`on-bad-reading` |
+| The Limits of "Level" Thinking — Where to Begin? (Moore's "fun-down" interview, tip list on where to start) | ADAPTED, condensed into one paragraph of criteria (feedback, stakeholder-visibility) |
+| — No Segregation Without Representation (the "objects" critique; also the IBM PC ROM/video-routines anecdote, "don't bury your tools") | ADAPTED — the objects critique is retained faithfully, including the accurate acknowledgment that Brodie's own later prefaces walk it back (confirmed word-for-word against the real 1994/2004 prefaces this session); the ROM/video anecdote's point is folded into the "interface too narrow" material already present |
+| — The Tower of Babble (all code, regardless of distance from the machine, should read the same; a true Forth engine has one continuous dictionary) | OMITTED-OBSOLETE — doesn't map cleanly onto 8th's actual architecture, which (per Ch.1) doesn't compile to machine code the way this point assumes |
+| Summary | RETAINED |
+
+### Chapter 4 → Thinking 8th Chapter 4
+
+| Brodie section | Treatment |
+|---|---|
+| Problem-Solving Techniques (tips 4.1–4.11) | RETAINED — "Getting Unstuck," all tips present |
+| Interview with a Software Inventor (Donald Burgess) | OMITTED-OBSOLETE — named interview, not reproduced per the no-manufactured/no-reproduced-interviews policy |
+| Detailed Design (4-step list) | RETAINED — "Designing a Component" |
+| Forth Syntax (tips 4.13–4.22) | ADAPTED — "How 8th Wants to Be Written" covers numbers-precede-words, name-precedes-text, noun-verb, definitions-consume-arguments, avoid-lookahead, zero-relative-numbering. Minor, genuinely Forth-memory-specific tips dropped (addresses precede counts, sources precede destinations — `CMOVE` conventions). "Don't write your own interpreter" (4.22) folded into Ch.1's stronger, earlier statement of the same point |
+| Algorithms and Data Structures (general definitions, letter-filing example) | OMITTED-OBSOLETE — basic definitional content this book's assumed audience doesn't need explained |
+| Calculations vs. Data Structures vs. Logic | RETAINED, same title and ordering-of-preference |
+| Solving a Problem: Computing Roman Numerals | ADAPTED — original algorithm and code, same problem |
+| Summary / For Further Thinking | RETAINED / not applicable (this book doesn't carry chapter exercises anywhere) |
+
+### Chapter 5 → Thinking 8th Chapter 5
+
+| Brodie section | Treatment |
+|---|---|
+| Listing Organization (9 subsections of screen mechanics + "Alternative to Screens: Named Files") | CONDENSED heavily — screens material reduced to one paragraph of historical context; `f:include` is the direct port of "Named Files" |
+| Screen Layout / Spacing and Indentation | CONDENSED / ADAPTED |
+| Comment Conventions (12 subsections: Stack Notation/Picture/Effect/Comment/Abbreviations/Flags/Variable-Possibilities, Data-Structure, Input-stream, Purpose, Defining-word, Compiling-word comments) | ADAPTED for the SED/abbreviation/variable-stack-effect material (well covered); CONDENSED for the rest. Data-Structure, Input-stream, Defining-word, and Compiling-word comments are all genuinely Forth-memory-specific (byte layouts, `CREATE`/`DOES>`) and correctly not applicable. **Purpose Comments — a real, portable, currently-unstated tip** ("every definition should have a purpose comment unless obvious from its name or SED") was not restored this pass; flagged here as the one item in this section worth a small addition in a future pass, not done now to avoid scope creep on an already-large audit |
+| Vertical Format vs. Horizontal Format | CONDENSED — this book has consistently used one format throughout by example, without stating the tradeoff explicitly the way Brodie does |
+| Choosing Names: The Art | RETAINED, same title |
+| Naming Standards: The Science / More Tips for Readability | Not independently re-verified this pass (lower confidence) — likely folded into "Choosing Names," not separately re-checked against the source |
+| Summary | RETAINED |
+
+### Chapters 6–9 (written this session with the source fresh)
+
+Not re-audited at the same depth this pass since each was written with
+`chapterN.tex` read in full immediately beforehand, within this same
+extended session — see each chapter's own commit message for what was
+retained/adapted/condensed/omitted, and `PLAN.md` for the Ch.7 split
+rationale and the Ch.8/Brodie-ch.8 correspondence. One retrospective
+addition made this session: Ch.9 gained a "don't test for something
+that can't possibly happen" bullet (from Brodie's "Redesigning"
+subsection), which had been genuinely dropped without acknowledgment
+when Ch.9 was first written.
+
+### Overall assessment
+
+No chapter shows an *accidental* structural gap at the level of a whole
+missing section — everything Brodie covers either has a direct 8th
+analog already present, or was condensed/omitted for a defensible,
+statable reason (Forth-memory-specificity, a named interview not
+reproduced, an original-examples policy, redundancy with an earlier
+chapter). The two concrete **GAPs** this audit surfaced and fixed
+(Ch.1's namespace-enforcement overclaim; Ch.3's missing "objective
+units" point) were both small, surgical, and directly tied to material
+already in the chapter — not new scenarios invented to fill a hole.
+One further candidate (Ch.5's Purpose Comments) is logged but
+deliberately left for later, per the standing instruction not to
+restore material merely to increase page count.
 
 ---
 
@@ -487,6 +607,194 @@ Chapter 8). Next task is unchanged from above: write Chapter 8
 verify `defer:`/`w:is` against the real runtime before assuming it
 behaves like Brodie's `DOER`/`MAKE`, then revisit the Chapter 7/8
 figure entries once that chapter's content exists to anchor them to.
+
+---
+
+## Session: 2026-08-30/31 — Chapters 8-9, then a full book-level audit
+
+Between the last dated entry and this one (not separately logged at
+the time — noted here for continuity): Chapter 8 ("Bundling State,
+Redirecting Behavior") and Chapter 9 ("Minimizing Control Structures")
+were both written, verified, illustrated, and pushed — see their own
+commit messages and `PLAN.md`'s chapter table for what each covers.
+Graham then supplied the real 2004 3rd-edition PDF
+(`thinking-forth-2000/thinking-forth-color.pdf`), which was used to
+verify every illustration already in use (all pixel-identical to the
+original; one earlier "mismatch" finding, `img7-211`, turned out to be
+wrong and was corrected — see `GAPS.md`).
+
+With all eight of Brodie's numbered chapters covered, Graham asked for
+a book-level audit before any further numbered chapters: an ending (the
+manuscript stopped cold after Chapter 9 with no closing material at
+all), a full section-by-section mapping of Brodie's chapters 1–8
+against this book's actual treatment, and a full illustration audit
+against the real 2004 edition — explicitly including a review of
+whether relocating fig3.8/fig3.9 into the thermostat example was
+pedagogically justified, not just administratively convenient.
+
+**Ending:** wrote `manuscript/epilogue.md`, "8th's Effect on Thinking"
+— original prose (no manufactured interviews, per explicit
+instruction), returning to the book's own running examples (the
+thermostat, `apples`, `roman`, `checkout`, `channel-actions`) rather
+than inventing new ones, organized around the themes Graham named:
+human-scale software, simplicity, factoring as a habit of noticing,
+knowing when not to generalize, and what a concatenative language
+teaches that outlasts the language itself.
+
+**Chapter-mapping audit:** full table now lives in this file, above
+this entry. Two real gaps found and fixed (both small, both directly
+tied to material already in the affected chapter, neither restoring
+content just to lengthen a chapter): Ch.1 was overclaiming that
+namespaces are "enforced by the interpreter" (they're organizational;
+8th's real access-control word, `private`, is a different, narrower,
+library-scoped mechanism — now logged in `GAPS.md`); Ch.3 was missing
+Brodie's "objective units" point (interfaces should pass converted,
+meaningful values, not raw/unconverted state) — added as a short
+paragraph tying directly into the thermostat's already-existing
+`read-temp` (which already does this correctly, just never named why).
+One candidate left unfixed on purpose: Ch.5's "Purpose Comments" tip,
+logged as worth a future small addition, not done now.
+
+**Illustration audit:** full table (every figure in Brodie's book, not
+just the ones already used, with book page, type, and reasoning) now
+lives in `ILLUSTRATIONS.md`. Verdict on fig3.8/fig3.9: **kept in
+place.** Both figures are Brodie's own *generalized* abstraction
+(generic `MODULE 1`/`BUFFER A` vocabulary, not Tiny-Editor-specific
+terms), introduced right after his nine-page Tiny Editor case study
+generalizes into them — the thermostat's `mode`/`set-mode` reaches the
+identical generalization point, just via a shorter build-up, consistent
+with this book's established choice (Ch.5) never to walk through
+flowchart-driven design critique. No figure was found needing MOVE or
+MODERNIZE.
+
+**Runtime verification:** none needed this session — no new 8th code
+was written; the audit and fixes were prose/documentation work plus
+two short additions to already-verified chapters (neither introduced
+new runnable examples).
+
+**Current stopping point:** epilogue written, both audits complete and
+recorded, three small manuscript fixes applied (Ch.1 namespace
+accuracy, Ch.3 objective-units paragraph, Ch.9 "don't test the
+impossible" bullet). Docx/PDF rebuild and full visual inspection still
+pending as of this entry — see the build log immediately below once
+it's done. **Not pushed yet** — Graham asked explicitly to hold the
+push until the audit and final pages are checked.
+
+**Best next task:** once the rebuild is inspected and looks right,
+push this checkpoint. After that, the appendices question is still
+open (see `PLAN.md`) — Appendix E ("Summary of Style Conventions,"
+rebuilt from this book's own conventions rather than Brodie's list) is
+the only one of the five that looked clearly worth doing when last
+discussed; Graham dismissed that question rather than answering it, so
+ask again rather than assuming.
+
+---
+
+## Session: 2026-08-31 (continued) — Attribution audit + illustration re-check
+
+Two follow-up asks, same day as the book-level audit above, before any
+appendix or format work: (1) a full historical/intellectual provenance
+pass — does the manuscript's cumulative impression correctly separate
+Charles Moore's own judgment (as Forth's inventor) from Leo Brodie's
+role as author/interviewer/synthesizer/teacher? — and (2) a stricter
+final re-check of the illustration audit, explicitly re-testing
+fig3.8/fig3.9's relocation into the thermostat example.
+
+**Attribution audit:** searched the whole manuscript for every
+"Brodie"/"Moore"/invented/identified/introduced/discovered/argued/
+proposed/coined/developed occurrence (55 hits) and checked each
+substantive one against `thinking-forth-2000/thinking-forth-color.pdf`.
+Three real corrections, all evidence-based:
+
+- Ch.1: "Leo Brodie identified [implicit calls/data passing] in Forth"
+  → Brodie's own text calls these "two Forth inventions" (Moore's, as
+  the language's creator); corrected to credit Forth's own design.
+- Ch.2: the generality-means-complexity point (resist over-generalizing
+  a data structure) was unattributed prose; it's Moore's own position,
+  drawn out at length in a direct interview. Added one sentence of
+  credit.
+- Ch.6: "Factor at the point you feel unsure" was presented as one of
+  "Brodie's" factoring criteria; it's close to a direct Moore quote
+  ("A word should be a line long... short words give you a good
+  feeling"). Added a sentence crediting Moore before the heuristic list.
+
+Everything else checked out already accurate — notably Ch.8, which is
+substantially Brodie's *own* constructed material (the state-table
+example, and `DOER`/`MAKE`, confirmed via his own first-person "I
+invented" claim in the source) and was already correctly attributed to
+him throughout, not over- or under-credited either way. Full reasoning
+for each fix is in `GAPS.md`'s "Historical/intellectual attribution
+audit" entry. Also added one sentence to `manuscript/00-preface.md`
+making the Brodie/Moore relationship explicit, as requested, rather
+than leaving a reader to infer it chapter by chapter.
+
+**Illustration re-check:** re-tested fig3.8/fig3.9's relocation against
+a stricter standard — move only if it still illustrates precisely the
+same conceptual point, restore or omit otherwise. Held up: both figures
+are already Brodie's own generalized abstraction (generic `MODULE 1`/
+`BUFFER A` vocabulary, not Tiny-Editor-specific), introduced at the
+exact point his nine-page Tiny Editor case study generalizes into them;
+the thermostat's `mode`/`set-mode` reaches that same generalization
+point, just via a shorter build-up. Verdict unchanged: **KEEP —
+RELOCATED**. Every `KEEP` illustration's filename was also cross-
+checked byte-for-byte against `thinking-forth-1.0/` (all exact matches,
+no filename was ever inferred) and against `manuscript/illustrations/`
+— see `ILLUSTRATIONS.md` for the full table with the filename-
+convention note added this pass.
+
+**Rebuild and inspection:** no `.8th` code files were touched this
+session (all edits were prose), so no runtime re-verification was
+needed. Rebuilt the docx and PDF proof (93 pages, up from 91) and
+visually inspected the front matter, TOC, all of Chapters 1–3 in full
+(where the fixes landed), the Ch.6 and Ch.9 edit points, and the
+epilogue through the final page. Clean throughout — no orphan
+captions, no duplicated or missing images, no stray page breaks, no
+trailing blank pages.
+
+**Mid-session pivot, same day:** while the visual inspection was still
+running, Graham gave new direction for the *next* pass: move the
+manuscript source from Markdown to **AsciiDoc** (`.adoc`), specifically
+because AsciiDoc tooling is more robust for outside contributors
+sending pull requests without accidentally breaking the layout, and
+build the PDF via **pandoc** rather than the current hand-rolled
+`tools/build-docx.js` + Word-COM pipeline. Asked and confirmed two
+things before touching anything: (1) finish and commit this attribution/
+illustration pass on the *current* pipeline first, migration is its own
+follow-up, not folded in; (2) **DOCX is being dropped entirely** —
+AsciiDoc source and a pandoc-built PDF are the only outputs going
+forward, no more editable Word master. **Blocker found, not yet
+resolved:** pandoc is not installed in this environment (confirmed via
+`which pandoc`); chocolatey is available (`which choco` succeeds) and
+is the likely install path, but that hasn't been done yet — first task
+next session.
+
+**Current stopping point:** attribution + illustration alignment pass
+complete, committed (see this file's own commit for the hash — check
+`git log` rather than assuming a specific one here). Not yet decided
+whether this was pushed; check `git status`/`git log origin/master`
+before assuming.
+
+**Best next task:** the AsciiDoc/pandoc migration. Concretely: (1)
+install pandoc (chocolatey looks like the path); (2) convert
+`manuscript/*.md` (13 files: 3 front-matter + 9 chapters + epilogue) to
+`.adoc`, preserving structure, code blocks, tables, and image
+references exactly — decide and document an explicit convention for
+this project's markdown-specific bits (the `![caption](path)` image
+syntax, the fenced-code language tags `8th`/`text`, internal cross-
+chapter links) since AsciiDoc's equivalents aren't identical syntax;
+(3) write a new build script that runs `pandoc` to produce
+`proof/Thinking-8th-proof.pdf` directly from the `.adoc` sources —
+decide whether pandoc's default PDF engine (likely wanting a LaTeX
+install, e.g. via `tectonic` or `wkhtmltopdf`/`weasyprint` as
+alternatives) is available or needs installing too, and don't assume
+it produces the same 6.8125"×9.125" trim size or pagination as the
+current build without checking; (4) retire `tools/build-docx.js` and
+the Word-COM PDF-export instructions once the new pipeline is proven
+equivalent (or better) — don't delete them until there's a working
+replacement to compare against; (5) update `README.md`,
+`HANDOFF.md`'s "Publication workflow" section, and `PLAN.md`'s file
+conventions to describe the new pipeline, since several existing docs
+currently describe the DOCX-based one as canonical.
 
 ---
 

@@ -229,8 +229,13 @@ whatever chain of logic picked among them.
 
 Brodie's chapter spends a long section on criteria for *when* a piece of
 code has earned its own name — heuristics rather than rules, since no
-mechanical test settles it. The ones that hold up regardless of language
-are worth keeping, in roughly this form:
+mechanical test settles it, and several of the sharpest ones come
+straight from how Charles Moore describes his own practice. Asked how
+long a Forth definition should be, Moore's answer was blunt: about a
+line — "short words give you a good feeling." That rule of thumb, more
+than anything Brodie adds to it, is what anchors the first heuristic
+below. The ones that hold up regardless of language are worth keeping,
+in roughly this form:
 
 - **Factor at the point you feel unsure**, or where the logic starts to
   push past what you can hold in your head at once. That feeling is

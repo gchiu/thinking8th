@@ -85,8 +85,10 @@ the word that ties them together (`breakfast`) are all just words, invoked
 the same way, by name. There is no `main()` that is structurally different
 from the functions it calls.
 
-Two things about 8th make this possible, and Leo Brodie identified both of
-them in Forth forty years ago: calls are implicit, and so is data passing.
+Two things about 8th make this possible — carried forward from two of
+Forth's own founding design choices, which Brodie's book takes as its
+starting point for everything that follows: calls are implicit, and so
+is data passing.
 
 **Calls are implicit.** You don't write `call cereal`; you write `cereal`.
 Every name 8th finds — a word, a variable, a constant — carries its own
@@ -130,16 +132,29 @@ only by whatever naming discipline the programmer imposes.
 8th takes the same idea and builds it into the language as a real feature:
 the **namespace**. Its own manual defines a namespace as "a vocabulary of
 (usually) related words" — which is Brodie's definition of "lexicon,"
-independently arrived at, formalized, and enforced by the interpreter
-rather than left to convention. Every built-in word that operates on
-numbers lives in the `n:` namespace — `n:+`, which "A Note on Notation"
-already showed you, along with `n:-`, `n:1-`, and others you'll meet as
-they come up. Strings live in `s:`, arrays in `a:`, maps in `m:`, and so
-on. When you write your own
-component, you can give its words their own namespace prefix the same way,
-and 8th's `with:` / `;with` lets you temporarily bring a namespace's words
-into scope unprefixed, for readability, without ever losing the boundary
-between components.
+independently arrived at and given a formal home in the dictionary
+rather than left to convention alone. Every built-in word that operates
+on numbers lives in the `n:` namespace — `n:+`, which "A Note on
+Notation" already showed you, along with `n:-`, `n:1-`, and others
+you'll meet as they come up. Strings live in `s:`, arrays in `a:`, maps
+in `m:`, and so on. When you write your own component, you can give its
+words their own namespace prefix the same way, and 8th's `with:` /
+`;with` lets you temporarily bring a namespace's words into scope
+unprefixed, for readability, without ever losing the boundary between
+components.
+
+Worth being precise about what kind of boundary that is: a namespace
+organizes, it doesn't lock. Nothing stops another component from calling
+`stock:internal-word` directly if it happens to know the name, any more
+than a Forth programmer was ever physically stopped from reaching into
+someone else's lexicon. The boundary is a naming discipline everyone
+agrees to respect, not an enforcement mechanism — which is exactly the
+distinction Brodie draws when he says information-hiding, done his way,
+is about protecting a design from *change*, not protecting one
+component from another the way a language with real access control
+would. (8th does have a genuine access-control word, `private`, but it's
+scoped to a loaded library file, not to namespaces in general — a
+different tool, for a narrower job than a lexicon's boundary.)
 
 This is the one place in this chapter where "the natural 8th approach" is
 genuinely, structurally different from Forth's, rather than a change of
