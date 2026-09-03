@@ -926,23 +926,18 @@ see its own header comment). Updated `README.md` and this file's
 "Publication workflow"/"Manuscript status" sections to describe the
 new pipeline.
 
-**Known issue, not yet resolved:** `proof/Thinking-8th-proof.pdf` was
-locked by another process (`Device or resource busy`, persisted across
-retries) when trying to replace it with the freshly pandoc-built
-version. Did not force past this (no killing processes, no working
-around an OS-level file lock) — most likely Graham has the file open
-in a viewer. The freshly-built replacement exists; check whether it
-made it into place before assuming the committed PDF reflects this
-session's work, and rebuild via `cd tools && node build-pdf.js` if not.
+**Resolved, same session:** `proof/Thinking-8th-proof.pdf` was locked
+by another process (`Device or resource busy`, persisted across
+retries) — Graham had it open in a viewer. He closed it and said so;
+rebuilt clean via `cd tools && node build-pdf.js` (89 pages, correct
+6.8125"×9.125" trim, matching the version already verified page-by-page
+above) and committed/pushed separately from the rest of the migration.
 
-**Current stopping point:** migration functionally complete and
-verified; blocked only on the PDF file lock for the final swap-in.
-Not yet committed as of this entry (check `git log`/`git status`
-rather than assuming).
+**Current stopping point:** migration complete, verified, committed,
+and pushed in full, including the proof PDF.
 
-**Best next task:** confirm `proof/Thinking-8th-proof.pdf` is the
-freshly-built version (rebuild if needed), commit, push. Then, only if
-Graham wants further pipeline polish: the automatic-hyphenation
+**Best next task:** nothing blocking. Only if Graham wants further
+pipeline polish: the automatic-hyphenation
 cosmetic issue noted above, and reconsidering whether chapter-start
 page breaks are worth re-adding to `tools/book-template.typ` (removed
 during this pass because a naive `pagebreak()` inside the H1 `show`
