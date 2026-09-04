@@ -38,22 +38,27 @@ for what that means in practice.
 - `thinking-forth-1.0/` — the original *Thinking Forth* LaTeX source,
   pulled from <https://sourceforge.net/projects/thinking-forth/> and
   licensed CC BY-NC-SA 2.0. Kept as reference material only, and never
-  itself part of the build — the ten redrawn illustrations under
-  `manuscript/illustrations/` started as files found in
-  `thinking-forth-1.0/png/`, verified against Brodie's actual captions,
-  then copied into the tracked location above (see `GAPS.md` for the
-  verification and licensing history).
+  itself part of the build — the twelve publication illustrations under
+  `manuscript/illustrations/` started as files found in the working
+  `thinking-forth-1.0/png/` directory (itself of mixed or incompletely
+  documented provenance, not treated as an authority on origin), and
+  were individually verified against Brodie's actual captions and
+  against the real 2004 3rd-edition PDF before being copied into the
+  tracked location above (see `ILLUSTRATIONS.md` for the full
+  per-figure record).
 - `thinking-forth-2000/thinking-forth-color.pdf` — the actual typeset
   2004 3rd edition of *Thinking Forth* (same CC BY-NC-SA license),
   supplied directly by Graham. Reference only, like `thinking-forth-1.0/`
   — every figure this book has used was cross-checked against it and
-  confirmed accurate (see `ILLUSTRATIONS.md` and `GAPS.md`). Useful for
-  finding a figure's real page: PDF page number = printed book page
-  number + 18.
+  confirmed accurate (see `ILLUSTRATIONS.md`). Useful for finding a
+  figure's real page: PDF page number = printed book page number + 18.
 
-Project tracking: [`PLAN.md`](PLAN.md) (method and chapter roadmap),
-[`GAPS.md`](GAPS.md) (uncertain or version-dependent 8th behavior),
-[`ILLUSTRATIONS.md`](ILLUSTRATIONS.md) (skipped-figure tracking),
-[`HANDOFF.md`](HANDOFF.md) (current state and workflow),
-[`PUBLISHING.md`](PUBLISHING.md) (canonical-source rule and the
-multi-format build pipeline).
+See [`PUBLISHING.md`](PUBLISHING.md) for the canonical-source rule and
+the full multi-format build pipeline, and
+[`ILLUSTRATIONS.md`](ILLUSTRATIONS.md) for the figure-by-figure
+provenance record. Found a bug, an inaccuracy, or have a correction?
+Open a [GitHub Issue](https://github.com/gchiu/thinking8th/issues) —
+that's where outstanding questions and corrections are tracked. Pull
+requests for focused improvements are welcome; `manuscript/*.adoc` is
+the only place prose changes belong (see `PUBLISHING.md`'s
+canonical-source rule before editing anything under `proof/`).

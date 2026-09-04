@@ -6,7 +6,7 @@
 //
 // Requires `pandoc` and `typst` on PATH. Neither needs admin rights to
 // install -- both ship as a single portable executable; see
-// HANDOFF.md's publication-workflow section for how they were installed
+// PUBLISHING.md for the pinned versions and install instructions used
 // in this environment (no chocolatey/system-package-manager access).
 //
 // tools/fix-8th-lang.lua is applied at build time, not to the source:

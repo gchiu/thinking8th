@@ -155,6 +155,31 @@ Every format was built and inspected for: normal prose/headings/TOC,
 all 12 kept illustrations (with captions), the Chapter 2 rate table
 and the Chapter 5 SED-abbreviation table, inline `` `n:*` ``/backslash/
 `--` code spans, multi-line fenced code blocks, the Chapter 8 state
-diagrams (fig7-3/fig7-5), and the epilogue through the final page. See
-`HANDOFF.md`'s publishing-pipeline session entry for the specific
-defects found (and fixed, or reported) during that pass.
+diagrams (fig7-3/fig7-5), and the epilogue through the final page —
+confirmed against each format's real content (HTML source, unzipped
+EPUB XHTML, unzipped DOCX `word/document.xml`, the generated Markdown
+itself), not against a lossy plain-text re-export, which produces
+false alarms by rendering embedded images as bracketed alt-text
+instead of showing they're actually present.
+
+One real defect was found and fixed during this verification: the
+generated Markdown's illustration links (written in the `.adoc` source
+as `illustrations/fig1-7.png`, correct relative to `manuscript/`,
+where the images actually live) didn't resolve from the generated
+file's own location in `proof/`. Fixed in `tools/build.js`'s
+`buildMarkdown()` step by rewriting those links to
+`../manuscript/illustrations/...` as a post-processing pass; the
+rewritten paths were confirmed to resolve on disk. The equivalent
+`code/chNN/...` links needed no such fix, since `manuscript/` and
+`proof/` are siblings at the same depth and the `../code/...` form
+already written in the source resolves correctly from both.
+
+**Not validated:** the EPUB output has not been run through the
+official `epubcheck` validator (it requires a Java runtime, which
+isn't part of this toolchain). Structural inspection — a valid
+`nav.xhtml` and `toc.ncx`, correct XHTML content, images and captions
+present — found nothing wrong, but that is a weaker guarantee than
+formal EPUB validation, particularly before relying on the file for
+KDP or another strict ingestion path. Run `epubcheck` against
+`proof/Thinking-8th.epub` before submitting it anywhere that requires
+that guarantee.

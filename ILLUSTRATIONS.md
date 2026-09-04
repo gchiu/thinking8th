@@ -30,9 +30,9 @@ what ties a row to its context in the discussion below. The
 *underlying file* uses a hyphen instead of a dot and is never renamed:
 `fig1-7.eps` in `thinking-forth-1.0/` (the original archive) and, for
 every row marked `KEEP`, `fig1-7.png` in `manuscript/illustrations/`
-(copied in, filename preserved exactly, when the illustration was
-verified and wired into the manuscript — see `GAPS.md` for that
-verification history). Undotted IDs (`img1-004`, `no-scrambled`) are
+(copied in, filename preserved exactly, once verified pixel-identical
+to the real 2004 3rd edition and wired into the manuscript — see the
+per-figure detail below). Undotted IDs (`img1-004`, `no-scrambled`) are
 themselves the exact archive filename — Brodie's own uncaptioned
 cartoons were never given a "Figure N.M" number, only a bare
 descriptive filename, and this audit preserves that distinction rather
@@ -66,7 +66,7 @@ than inventing a figure number for them.
 | fig2.2 | ~48 | diagram | An iterative approach to analysis | OMIT | same condensation as fig2.1; largely redundant with it in the original too |
 | **fig2.3** | **51** | diagram | A data-flow diagram | **KEEP** | inserted, "Sketching Interfaces in Words, Not Diagrams" |
 | fig2.4 | 55 | diagram | Decision tree | OMIT | this book goes straight from prose to decision table, skipping the intermediate tree (a genuine scope choice, not an oversight) |
-| fig2.5 | 56 | diagram | The decision table | OMIT | superseded — real Markdown table in the manuscript |
+| fig2.5 | 56 | diagram | The decision table | OMIT | superseded — real table in the manuscript |
 | fig2.6 | 57 | diagram | Simplified decision table | OMIT | superseded, same reason |
 | fig2.7 | 58 | diagram | Sectional decision table | OMIT | superseded — `parking-fee.8th`'s factoring achieves the identical split in real code |
 | fig2.8 | 58 | diagram | Decision table w/o operator involvement | OMIT | superseded, same reason |
@@ -114,11 +114,10 @@ the figures' own content or their relationship to the lesson: two
 modules duplicating shared state at a seam, versus one shared
 component both sides call into — which is exactly what `mode`'s
 encapsulation *is*. Kept in place. See
-`manuscript/chapter03-decomposition.md`'s "Decomposition by Component:
-A Thermostat" section for the surrounding text (now slightly expanded
-this session with an "objective units" paragraph drawn from the Tiny
-Editor material's own follow-on lesson — see the chapter-mapping audit
-in `HANDOFF.md`).
+`manuscript/chapter03-decomposition.adoc`'s "Decomposition by
+Component: A Thermostat" section for the surrounding text, which
+includes an "objective units" paragraph drawn from the Tiny Editor
+material's own follow-on lesson in Brodie's original.
 
 **Re-checked 2026-08-31 against the sharper test** ("move only if it
 still illustrates precisely the same conceptual point; if moving it
@@ -179,7 +178,7 @@ names and never renamed.
 | fig7.7 | 221 | diagram | `DOER` and `MAKE` | OMIT | Ch.8 explains `defer:`/`w:is` in prose rather than walking through `DOER`/`MAKE` step-by-step |
 | fig7.8 | 222 | diagram | Multiple `MAKE`s in parallel | OMIT | same reason |
 | fig7.9 | 223 | diagram | Multiple `MAKE`s in series | OMIT | same reason |
-| img7-211 | 209 | cartoon | "…too many variables!" | OMIT | correct pairing confirmed this session (see `GAPS.md`); simply not needed — Ch.8's `defer:`/`w:is` treatment never anchors to this joke |
+| img7-211 | 209 | cartoon | "…too many variables!" | OMIT | correct pairing confirmed directly against the real 2004 3rd-edition PDF; simply not needed — Ch.8's `defer:`/`w:is` treatment never anchors to this joke |
 
 ### Chapter 8 → Thinking 8th Chapter 9
 
@@ -198,7 +197,7 @@ already sits (the fig3.8/fig3.9 case above is a genuine relocation
 *from Brodie's chapter*, already accounted for as `KEEP — RELOCATED`,
 not a case of this book putting a figure in the wrong place). Nothing
 found needs a redrawn/updated version — every figure kept has already
-been verified pixel-identical to the 2004 original (see `GAPS.md`), and
+been verified pixel-identical to the 2004 original, and
 every figure omitted is omitted because its underlying lesson is
 already served by real, tested 8th code or an original replacement, not
 because the art itself is dated.
@@ -221,10 +220,9 @@ Spot-checked every figure this book had already used
 (`fig1-7`/`fig1-8`/`fig1-9`, `fig2-3`, `fig3-8`/`fig3-9`,
 `fig4-1`/`fig4-2`/`fig4-3`, `img4-110`, `fig7-1`, `fig7-3`, `fig7-5`,
 `fig8-6`) against this PDF — every one is pixel-identical to the
-redrawn PNG already in `manuscript/illustrations/`. One earlier entry
+publication PNG already in `manuscript/illustrations/`. One earlier entry
 in this file (`img7-211`, below) turned out to be a wrong call, now
-corrected in place; everything else stands. See `GAPS.md` for the full
-verification note, including two firsts from this pass:
+corrected in place; everything else stands. Two firsts from this pass:
 `fig7-7`/`fig7-8`/`fig7-9` (the `DOER`/`MAKE` diagrams, viewed for the
 first time — still not used, see below) and the 2004/1994 prefaces
 (new material, read in full, changes nothing already written).
@@ -243,12 +241,15 @@ Corrected below.
 
 **Rendering:** `.eps` is a binary/PostScript format with no rasterizer
 (Ghostscript, ImageMagick) installed directly in this environment — but
-mid-audit, a complete set of pre-rendered PNGs for every `.eps` in the
-archive turned up at `thinking-forth-1.0/png/*.png` (64 files, one per
-`.eps`, matching filenames — origin unclear, not something this session
-generated; see `GAPS.md`). That made it possible to actually view every
-figure discussed below rather than infer content from caption text
-alone. All six "genuinely missing" entries and two sampled "decorative"
+mid-audit, PNG renders for figures in the archive turned up at
+`thinking-forth-1.0/png/*.png`. That directory is a working collection
+containing files of mixed or incompletely documented provenance — it
+holds more files than the archive has `.eps` sources, and not every
+filename in it matches an archive `.eps` — so it is not itself treated
+as an authoritative source for how any individual PNG was produced. It
+was useful for what it is: a way to actually view figures discussed
+below rather than infer content from caption text alone. All six
+"genuinely missing" entries and two sampled "decorative"
 entries were viewed directly and confirmed; the caption-only inferences
 for the remainder were not all individually re-checked against the
 images (would be excessive for figures already correctly categorized as
@@ -265,10 +266,16 @@ BY-NC-SA 2.0 — over what it calls "the work," and `title.tex` states
 is no separate illustrator credit or carved-out rights holder for the
 artwork specifically. On its face this suggests the figures are covered
 by the same license as the text. That is a *license* reading, not a
-*decision* — see `GAPS.md` for why using Brodie's actual artwork in this
-book is a separate, unresolved question even if the license permits it,
-and is **not** being acted on in this pass per the standing instruction
-not to insert Brodie's original artwork automatically.
+*decision*: whether to use Brodie's actual artwork is a separate
+pedagogical question from whether the license permits it, and per the
+standing instruction not to insert Brodie's original artwork
+automatically, this book uses publication PNGs that were individually
+cross-checked against the authoritative 2004 PDF for identity and
+placement, rather than the archive's `.eps` artwork files themselves.
+The working `thinking-forth-1.0/png/` directory those PNGs came from
+contains files of mixed or incompletely documented provenance and is
+not itself treated as an authoritative provenance source (see "ten
+figures wired in" below).
 
 **Status key:** `AVAILABLE-IN-ARCHIVE` (file present, not yet judged
 further), `SUPERSEDED` (this book already replaced the figure's job with
@@ -280,21 +287,21 @@ no anchor point here), `GENUINELY-MISSING` (the concept the figure
 supported *is* in this book's text, with nothing visual standing in for
 it — historical status, see the note below), `INSERTED` (Graham resolved
 the licensing/pedagogical question this file raised, and directed that
-the redrawn PNGs be wired into the manuscript; done 2026-08-30 — see
+the publication PNGs be wired into the manuscript; done 2026-08-30 — see
 "Ten figures wired in" below).
 
 **Update, 2026-08-30 — ten figures wired in.** All ten `GENUINELY-MISSING`
 entries below have been inserted as real images into the manuscript,
 on Graham's explicit instruction, resolving the licensing/pedagogical
 question raised above (his call to make, and he's made it). Source:
-the AI-redrawn PNGs verified against their captions in
-`thinking-forth-1.0/png/` (see `GAPS.md` for that verification work),
-copied into `manuscript/illustrations/` (a new, tracked location —
-`thinking-forth-1.0/` itself stays reference-only and untouched, per
-`README.md`) and referenced from the relevant `chapterNN-*.md` files
-with original, non-Brodie-caption alt text. `tools/build-docx.js` was
-extended to support markdown image syntax (`![caption](path)`) to make
-this possible. The detailed per-figure write-ups below are kept as-is —
+the publication PNGs found in `thinking-forth-1.0/png/`, verified
+against their captions and cross-checked against the authoritative
+2004 PDF, copied into `manuscript/illustrations/` (a new, tracked
+location — `thinking-forth-1.0/` itself stays reference-only and
+untouched, per `README.md`) and referenced from the relevant
+`chapterNN-*.adoc` files via AsciiDoc's `image::` directive, with
+original, non-Brodie-caption alt text. The detailed per-figure
+write-ups below are kept as-is —
 they're still accurate descriptions of what each image shows and why it
 was chosen — but their category is now `INSERTED`, not
 `GENUINELY-MISSING`; see each chapter's manuscript file for the actual
@@ -325,7 +332,7 @@ placement and surrounding prose.
 | fig2-2 | 2 | An iterative approach to analysis | `.eps` | NOT-USED-IN-ADAPTATION (condensed to "Iteration Beats Prediction" prose) |
 | fig2-3 | 2 | A data-flow diagram | `.eps` | **INSERTED** — see below |
 | fig2-4 | 2 | Example of a decision tree | `.eps` | NOT-USED-IN-ADAPTATION (this book goes straight from prose to decision table, skipping the intermediate tree) |
-| fig2-5 | 2 | The decision table | `.eps` | SUPERSEDED (real Markdown table in `chapter02-analysis.md`) |
+| fig2-5 | 2 | The decision table | `.eps` | SUPERSEDED (real table in `chapter02-analysis.adoc`) |
 | fig2-6 | 2 | A simplified decision table | `.eps` | SUPERSEDED (same) |
 | fig2-7 | 2 | The sectional decision table | `.eps` | SUPERSEDED (`parking-fee.8th`'s factoring achieves the same split in real code) |
 | fig2-8 | 2 | Decision table w/o operator involvement | `.eps` | SUPERSEDED (same) |
@@ -430,8 +437,8 @@ point against this book's current text.
    not actually part of it.** `fig4-1`'s caption is "A problem that is
    easier to solve backward than forward" — a general "getting
    unstuck" illustration for the section's opening point, not the
-   water-jug puzzle itself. Now **viewed** (a redrawn PNG for it turned
-   up after this entry was first written): it's a hand-drawn maze,
+   water-jug puzzle itself. Now **viewed** (a publication PNG for it
+   turned up after this entry was first written): it's a hand-drawn maze,
    labeled "Start" and "End," with no numbers or jugs in it at all —
    confirms it's a standalone backward-reasoning analogy, not a third
    view of the two containers. Archive: `fig4-1.eps`, `fig4-2.eps`,
@@ -490,7 +497,7 @@ retroactive entries above, which are logged here only.
   `.eps`, no `includegraphics`. `fig6-1` is a 9-box ASCII grid,
   `fig6-2` is the `POINTS`/`#POINTS`/`DRAW` code Brodie's compile-time-
   factoring section walks through. Both are fully reproduced as real,
-  runnable 8th examples in `manuscript/chapter06-factoring.md` (the
+  runnable 8th examples in `manuscript/chapter06-factoring.adoc` (the
   `leftmargin`/`#points` example) rather than needing an illustration
   at all. No gap logged for Chapter 6.
 - **Chapter 7 (`chapter7.tex`) has seven figure references**, none
@@ -499,7 +506,7 @@ retroactive entries above, which are logged here only.
     `CMOVE>` stack-commentary form, part of the "Make Stack Drawings"
     and "Stack Tips" material (the `COUNT`-reordering tip and the
     single-value error-code convention) that this adaptation's Chapter
-    7 (`manuscript/chapter07-taming-the-stack.md`) chose not to cover
+    7 (`manuscript/chapter07-taming-the-stack.adoc`) chose not to cover
     at all this round — no clean, non-contrived 8th example presented
     itself without reintroducing `rot`-style gymnastics the chapter
     was actively steering away from. NOT-USED-IN-ADAPTATION, not
@@ -508,32 +515,34 @@ retroactive entries above, which are logged here only.
     conceptual diagrams) and `fig7-7`/`fig7-8`/`fig7-9` (`DOER`/`MAKE`
     diagrams) and `img7-211` (the "too many variables" cartoon)
     illustrate Brodie's "The State Table" and "Vectored Execution"
-    sections, which this session deliberately deferred to a future
-    Chapter 8 (see `HANDOFF.md`) rather than covering in Chapter 7 —
-    8th's maps and `defer:`/`w:is` are the planned idiomatic targets,
-    not yet written or verified. Revisit this entry once that chapter
-    exists.
-    **Update, next session:** redrawn PNGs for four of these turned up
-    in `thinking-forth-1.0/png/` and were viewed. `fig7-1` ("Example of
-    a stack commentary") matches its caption exactly — a hand-drawn
-    `CMOVE>` stack-effect worksheet with Operations/Stack-effects/
-    Return-stack columns. `fig7-3` ("Conceptual model for saving a
-    state table") and `fig7-5` ("...alternating-states tables") also
-    match exactly — labeled-box arrays (`POINTERS`→`SAVED`, then
-    `REAL`/`PSEUDO` side by side), genuinely useful references for
-    writing the future Chapter 8's map-based state-table treatment.
-    ~~`img7-211` does NOT match its caption~~ — **correction, see
-    `GAPS.md`: this was wrong.** Checked against the real 2004 3rd-
+    sections. **Historical note, from before this book's Chapter 8
+    existed:** this session deliberately deferred that material to a
+    not-yet-written Chapter 8 rather than covering it in Chapter 7,
+    with 8th's maps and `defer:`/`w:is` planned as the idiomatic
+    targets. Chapter 8 has since been written — see "Update, Chapter 8
+    written" below for the actual outcome.
+    **Update, next session:** publication PNGs for four of these
+    turned up in `thinking-forth-1.0/png/` and were viewed. `fig7-1`
+    ("Example of a stack commentary") matches its caption exactly — a
+    hand-drawn `CMOVE>` stack-effect worksheet with Operations/Stack-
+    effects/Return-stack columns. `fig7-3` ("Conceptual model for
+    saving a state table") and `fig7-5` ("...alternating-states
+    tables") also match exactly — labeled-box arrays (`POINTERS`→
+    `SAVED`, then `REAL`/`PSEUDO` side by side), genuinely useful
+    references for writing Chapter 8's map-based state-table treatment
+    (Chapter 8 itself not yet written at the time of this note).
+    ~~`img7-211` does NOT match its caption~~ — **correction: this was
+    wrong.** Checked against the real 2004 3rd-
     edition PDF (`thinking-forth-2000/thinking-forth-color.pdf`,
     supplied by Graham): the picture (a woman beside a bandaged,
     traction-suspended patient) genuinely is paired with the cannon/
     windmill/trapeze/balloon caption in the original — the mismatch
     between an absurd caption and an unrelated picture *is* the joke.
-    The redrawn PNG was correct all along. `fig7-7`/`fig7-8`/`fig7-9`
+    The publication PNG was correct all along. `fig7-7`/`fig7-8`/`fig7-9`
     have now been viewed too (same PDF pass) — see below.
     **Update, Chapter 8 written:** `fig7-3` and `fig7-5` are now
     **INSERTED** — copied into `manuscript/illustrations/` and wired
-    into `manuscript/chapter08-bundling-state.md`'s "A Table of Related
+    into `manuscript/chapter08-bundling-state.adoc`'s "A Table of Related
     Values" and "Two Live States, One Set of Names" sections, with
     original captions. `fig7-1` was NOT inserted: Chapter 8 doesn't walk
     through Brodie's `CMOVE`-based stack-commentary form at all (it uses

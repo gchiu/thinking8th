@@ -12,11 +12,10 @@
 //   node build.js md         builds just proof/Thinking-8th.generated.md
 //   node build.js docx       builds just proof/Thinking-8th.generated.docx
 //
-// Requires `pandoc` and `typst` on PATH -- see HANDOFF.md's
-// "Publication workflow" section for the exact pinned versions this
-// was built and tested against, and how to install both without admin
-// rights (neither needs an installer; both ship as one portable
-// executable).
+// Requires `pandoc` and `typst` on PATH -- see PUBLISHING.md for the
+// exact pinned versions this was built and tested against, and how to
+// install both without admin rights (neither needs an installer; both
+// ship as one portable executable).
 
 const { execFileSync } = require("child_process");
 const fs = require("fs");
@@ -42,9 +41,9 @@ function ensureProofDir() {
 
 // ---------- PDF (Pandoc -> Typst) ----------
 // Kept as its own script (build-pdf.js), verified independently and
-// referenced directly by HANDOFF.md/PUBLISHING.md -- this target just
-// runs it, rather than duplicating its pandoc invocation here, so
-// there's exactly one place that command lives.
+// referenced directly by PUBLISHING.md -- this target just runs it,
+// rather than duplicating its pandoc invocation here, so there's
+// exactly one place that command lives.
 function buildPdf() {
   execFileSync(process.execPath, [path.join(__dirname, "build-pdf.js")], {
     stdio: "inherit",
@@ -133,7 +132,7 @@ function buildMarkdown() {
 // tools/book-reference.docx is pandoc's own default reference.docx
 // with one deliberate change: an explicit page size matching this
 // book's 6.8125"x9.125" trim (added by hand-editing word/document.xml's
-// sectPr -- see the migration's HANDOFF.md entry for exactly how).
+// sectPr -- see PUBLISHING.md's DOCX section for exactly how).
 // Everything else (fonts, heading styles, table/code styles) is
 // pandoc's own sensible default, not a second authoring system to
 // maintain -- deliberately, per the "if practical, use a reference
